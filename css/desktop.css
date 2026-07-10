@@ -1,0 +1,494 @@
+/* ══════════════════════════════════════════════════════════════
+   DESKTOP.CSS — 6-COLUMN SMALL MOVIE CARDS (FIXED BADGE SCOPE)
+   Load AFTER style.css to guarantee override
+   ══════════════════════════════════════════════════════════════ */
+
+@media (min-width: 1024px) {
+
+  /* ── KILL EXTERNAL GRID LAYOUT ── */
+  .video-grid,
+  .content-main .video-grid,
+  .section .video-grid,
+  .content-grid .video-grid,
+  .main-container .video-grid,
+  body[data-page="viewall"] .video-grid,
+  body .main-container .content-main .section .video-grid {
+    display: grid !important;
+    grid-template-columns: repeat(6, 1fr) !important;
+    grid-template-rows: auto !important;
+    grid-auto-flow: row !important;
+    gap: 16px !important;
+    padding: 20px 32px 40px !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    list-style: none !important;
+    box-sizing: border-box !important;
+    column-count: unset !important;
+    columns: unset !important;
+    column-gap: unset !important;
+    flex-wrap: unset !important;
+  }
+  
+  /* ── FORCE GRID CHILDREN TO RESPECT GAP ── */
+.video-grid>*,
+.video-grid>li,
+.video-grid>a,
+.video-grid>div,
+.video-grid>.video-card,
+.video-grid>.movie-card,
+.video-grid>.card {
+  margin: 0 !important;
+  min-width: 0 !important;
+  width: auto !important;
+}
+.video-grid {
+  background: red !important;        /* should show red lines between cards */
+}
+.video-grid > * {
+  background: green !important;      /* cards turn green, red = your gap */
+}
+  /* ── FORCE EACH CARD TO BE A SMALL GRID ITEM ── */
+  .video-grid > a,
+  .video-grid > .video-card,
+  .video-grid > div:not(.skeleton-card),
+  .video-grid > li,
+  .content-main .video-grid > a,
+  .content-main .video-grid > .video-card,
+  .content-main .video-grid > div:not(.skeleton-card),
+  .section .video-grid > a,
+  .section .video-grid > .video-card,
+  .section .video-grid > div:not(.skeleton-card) {
+    background: #181818 !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    text-decoration: none !important;
+    color: inherit !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    flex: 0 1 auto !important;
+    flex-basis: auto !important;
+    float: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease,
+      border-color 0.3s ease !important;
+  }
+
+  .video-grid > a:hover,
+  .video-grid > .video-card:hover,
+  .video-grid > div:not(.skeleton-card):hover,
+  .video-grid > li:hover {
+    transform: translateY(-4px) scale(1.02) !important;
+    box-shadow:
+      0 16px 48px rgba(0, 0, 0, 0.55),
+      0 0 30px rgba(229, 9, 20, 0.06) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    z-index: 2 !important;
+  }
+
+  /* ════════════════════════════════════════════
+     POSTER / THUMBNAIL — 2:3 RATIO
+     ════════════════════════════════════════════ */
+  .video-grid .card-thumb,
+  .video-grid .thumbnail,
+  .video-grid .thumb-wrap,
+  .video-grid .poster-wrap,
+  .video-grid .img-wrap,
+  .video-grid > a > div:first-child,
+  .video-grid > .video-card > div:first-child,
+  .video-grid > div:not(.skeleton-card) > div:first-child,
+  .video-grid > li > div:first-child,
+  .content-main .video-grid > a > div:first-child,
+  .content-main .video-grid > .video-card > div:first-child,
+  .section .video-grid > a > div:first-child,
+  .section .video-grid > .video-card > div:first-child {
+    position: relative !important;
+    width: 100% !important;
+    aspect-ratio: 2 / 3 !important;
+    overflow: hidden !important;
+    background: #111 !important;
+    flex-shrink: 0 !important;
+    max-height: none !important;
+    height: auto !important;
+    min-height: 0 !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .video-grid .card-thumb img,
+  .video-grid .thumbnail img,
+  .video-grid .thumb-wrap img,
+  .video-grid .poster-wrap img,
+  .video-grid .img-wrap img,
+  .video-grid > a > div:first-child img,
+  .video-grid > .video-card > div:first-child img,
+  .video-grid > div:not(.skeleton-card) > div:first-child img,
+  .video-grid > li > div:first-child img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    transition: transform 0.35s ease, filter 0.35s ease !important;
+  }
+
+  .video-grid > a:hover > div:first-child img,
+  .video-grid > .video-card:hover > div:first-child img,
+  .video-grid > div:not(.skeleton-card):hover > div:first-child img,
+  .video-grid > li:hover > div:first-child img {
+    transform: scale(1.06) !important;
+    filter: brightness(1.1) !important;
+  }
+
+  /* ════════════════════════════════════════════
+     OVERLAY BADGES — ONLY inside poster container
+     Scoped to .card-thumb / .thumbnail / first-child div
+     to avoid catching metadata spans below the poster
+     ════════════════════════════════════════════ */
+
+  /* ── Duration: bottom-right of poster ONLY ── */
+  .video-grid .card-thumb > .duration,
+  .video-grid .card-thumb > [class*="duration"],
+  .video-grid .card-thumb > [class*="Duration"],
+  .video-grid .card-thumb > [class*="time-badge"],
+  .video-grid .card-thumb > [class*="Time"],
+  .video-grid .thumbnail > .duration,
+  .video-grid .thumbnail > [class*="duration"],
+  .video-grid .thumbnail > [class*="Duration"],
+  .video-grid .thumbnail > [class*="time-badge"],
+  .video-grid .thumb-wrap > .duration,
+  .video-grid .thumb-wrap > [class*="duration"],
+  .video-grid .poster-wrap > .duration,
+  .video-grid .img-wrap > .duration,
+  .video-grid > a > div:first-child > .duration,
+  .video-grid > a > div:first-child > [class*="duration"],
+  .video-grid > a > div:first-child > [class*="Duration"],
+  .video-grid > a > div:first-child > [class*="time-badge"],
+  .video-grid > .video-card > div:first-child > .duration,
+  .video-grid > .video-card > div:first-child > [class*="duration"],
+  .video-grid > div:not(.skeleton-card) > div:first-child > .duration,
+  .video-grid > div:not(.skeleton-card) > div:first-child > [class*="duration"],
+  .video-grid > li > div:first-child > .duration {
+    position: absolute !important;
+    bottom: 6px !important;
+    right: 6px !important;
+    left: auto !important;
+    top: auto !important;
+    padding: 1px 6px !important;
+    background: rgba(0, 0, 0, 0.88) !important;
+    border-radius: 4px !important;
+    border: none !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 10px !important;
+    font-weight: 500 !important;
+    color: #fff !important;
+    z-index: 3 !important;
+    letter-spacing: 0.2px;
+    line-height: 1.5 !important;
+  }
+
+  /* ── Quality Badge: top-left of poster ONLY ── */
+  .video-grid .card-thumb > .quality-badge,
+  .video-grid .card-thumb > .hd-badge,
+  .video-grid .card-thumb > [class*="quality"]:not([class*="meta"]):not([class*="row"]),
+  .video-grid .card-thumb > [class*="hd-badge"],
+  .video-grid .card-thumb > [class*="HD"]:not([class*="meta"]):not([class*="row"]),
+  .video-grid .thumbnail > .quality-badge,
+  .video-grid .thumbnail > .hd-badge,
+  .video-grid .thumbnail > [class*="quality"]:not([class*="meta"]):not([class*="row"]),
+  .video-grid .thumb-wrap > .quality-badge,
+  .video-grid .thumb-wrap > .hd-badge,
+  .video-grid .poster-wrap > .quality-badge,
+  .video-grid .img-wrap > .quality-badge,
+  .video-grid > a > div:first-child > .quality-badge,
+  .video-grid > a > div:first-child > .hd-badge,
+  .video-grid > a > div:first-child > [class*="quality"]:not([class*="meta"]):not([class*="row"]),
+  .video-grid > a > div:first-child > [class*="HD"]:not([class*="meta"]):not([class*="row"]),
+  .video-grid > .video-card > div:first-child > .quality-badge,
+  .video-grid > .video-card > div:first-child > .hd-badge,
+  .video-grid > .video-card > div:first-child > [class*="quality"]:not([class*="meta"]):not([class*="row"]),
+  .video-grid > div:not(.skeleton-card) > div:first-child > .quality-badge,
+  .video-grid > div:not(.skeleton-card) > div:first-child > .hd-badge,
+  .video-grid > li > div:first-child > .quality-badge {
+    position: absolute !important;
+    top: 6px !important;
+    left: 6px !important;
+    right: auto !important;
+    bottom: auto !important;
+    padding: 1px 5px !important;
+    background: #E50914 !important;
+    border-radius: 3px !important;
+    border: none !important;
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 8px !important;
+    font-weight: 700 !important;
+    color: #fff !important;
+    z-index: 3 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px;
+    line-height: 1.5 !important;
+  }
+
+  /* ── Translated Badge: top-right of poster ONLY ── */
+  .video-grid .card-thumb > [class*="translated"],
+  .video-grid .card-thumb > [class*="Translated"],
+  .video-grid .thumbnail > [class*="translated"],
+  .video-grid .thumbnail > [class*="Translated"],
+  .video-grid .thumb-wrap > [class*="translated"],
+  .video-grid .poster-wrap > [class*="translated"],
+  .video-grid .img-wrap > [class*="translated"],
+  .video-grid > a > div:first-child > [class*="translated"],
+  .video-grid > a > div:first-child > [class*="Translated"],
+  .video-grid > .video-card > div:first-child > [class*="translated"],
+  .video-grid > .video-card > div:first-child > [class*="Translated"],
+  .video-grid > div:not(.skeleton-card) > div:first-child > [class*="translated"],
+  .video-grid > div:not(.skeleton-card) > div:first-child > [class*="Translated"],
+  .video-grid > li > div:first-child > [class*="translated"] {
+    position: absolute !important;
+    top: 6px !important;
+    right: 6px !important;
+    left: auto !important;
+    bottom: auto !important;
+    padding: 1px 6px !important;
+    background: rgba(229, 9, 20, 0.9) !important;
+    border-radius: 3px !important;
+    border: none !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 8px !important;
+    font-weight: 700 !important;
+    color: #fff !important;
+    z-index: 3 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.4px;
+    line-height: 1.5 !important;
+  }
+
+  /* ════════════════════════════════════════════
+     KILL absolute positioning on ANY element
+     that is NOT inside the poster container
+     This fixes year/rating flying to the top
+     ════════════════════════════════════════════ */
+  .video-grid > a > *:not(div:first-child),
+  .video-grid > .video-card > *:not(div:first-child),
+  .video-grid > div:not(.skeleton-card) > *:not(div:first-child),
+  .video-grid > li > *:not(div:first-child) {
+    position: static !important;
+  }
+
+  .video-grid > a > *:not(div:first-child) *,
+  .video-grid > .video-card > *:not(div:first-child) *,
+  .video-grid > div:not(.skeleton-card) > *:not(div:first-child) *,
+  .video-grid > li > *:not(div:first-child) * {
+    position: static !important;
+  }
+
+  /* ── CARD TITLE ── */
+  .video-grid .card-title,
+  .video-grid .video-title,
+  .video-grid .title,
+  .video-grid h3,
+  .video-grid > a h3,
+  .video-grid > .video-card h3,
+  .video-grid > li h3,
+  .video-grid .card-info h3,
+  .video-grid .card-details h3 {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 11.5px !important;
+    font-weight: 600 !important;
+    color: #ffffff !important;
+    padding: 8px 10px 2px !important;
+    margin: 0 !important;
+    line-height: 1.3 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    text-decoration: none !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    position: static !important;
+  }
+
+  /* ── CARD UPLOADER / CHANNEL ── */
+  .video-grid .card-uploader,
+  .video-grid .uploader,
+  .video-grid .channel-name,
+  .video-grid .channel,
+  .video-grid > a .uploader,
+  .video-grid > a .channel-name {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 10px !important;
+    font-weight: 400 !important;
+    color: #888 !important;
+    padding: 0 10px 4px !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    line-height: 1.4 !important;
+    position: static !important;
+  }
+
+  /* ════════════════════════════════════════════
+     METADATA BADGES — Year, Rating, Duration etc.
+     These MUST be static inline flex, NEVER absolute
+     ════════════════════════════════════════════ */
+  .video-grid .card-meta,
+  .video-grid .meta-row,
+  .video-grid .metadata,
+  .video-grid .card-details,
+  .video-grid > a .meta,
+  .video-grid > a .card-meta,
+  .video-grid > .video-card .meta,
+  .video-grid > .video-card .card-meta,
+  .video-grid > div:not(.skeleton-card) .meta,
+  .video-grid > div:not(.skeleton-card) .card-meta,
+  .video-grid > li .meta {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 3px !important;
+    padding: 2px 10px !important;
+    margin: 0 !important;
+    position: static !important;
+  }
+  .video-grid .card-meta span,
+  .video-grid .meta-row span,
+  .video-grid .metadata span,
+  .video-grid .card-details span,
+  .video-grid > a .meta span,
+  .video-grid > a .card-meta span,
+  .video-grid > .video-card .meta span,
+  .video-grid > .video-card .card-meta span,
+  .video-grid > div:not(.skeleton-card) .meta span,
+  .video-grid > div:not(.skeleton-card) .card-meta span,
+  .video-grid > li .meta span {
+    padding: 2px 5px !important;
+    background: rgba(255, 255, 255, 0.07) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-radius: 4px !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 9px !important;
+    font-weight: 500 !important;
+    color: #aaa !important;
+    white-space: nowrap !important;
+    line-height: 1.4 !important;
+    margin: 0 !important;
+    display: inline-block !important;
+    position: static !important;
+  }
+  .video-grid .card-meta span:hover,
+  .video-grid .meta-row span:hover,
+  .video-grid .metadata span:hover,
+  .video-grid .card-details span:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #ddd !important;
+  }
+
+  /* ── GENRE TEXT ── */
+  .video-grid .card-genre,
+  .video-grid .genre-text,
+  .video-grid .genres,
+  .video-grid > a .genre,
+  .video-grid > .video-card .genre {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 10px !important;
+    font-weight: 400 !important;
+    color: #666 !important;
+    padding: 3px 10px 0 !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    line-height: 1.4 !important;
+    position: static !important;
+  }
+
+  /* ── BOTTOM STATS ── */
+  .video-grid .card-stats,
+  .video-grid .stats-row,
+  .video-grid .stats,
+  .video-grid > a .stats,
+  .video-grid > .video-card .stats {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 5px 10px 8px !important;
+    margin: 0 !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 9.5px !important;
+    font-weight: 400 !important;
+    color: #555 !important;
+    line-height: 1.4 !important;
+    position: static !important;
+  }
+  .video-grid .card-stats span,
+  .video-grid .stats-row span,
+  .video-grid .stats span,
+  .video-grid > a .stats span,
+  .video-grid > .video-card .stats span {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 3px !important;
+    margin: 0 !important;
+    position: static !important;
+  }
+  .video-grid .card-stats svg,
+  .video-grid .stats-row svg,
+  .video-grid .stats svg {
+    width: 11px !important;
+    height: 11px !important;
+    opacity: 0.5;
+  }
+
+  /* ── SKELETON CARDS ── */
+  .video-grid .skeleton-card {
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    background: #181818 !important;
+    border: 1px solid rgba(255, 255, 255, 0.04) !important;
+  }
+  .video-grid .skeleton-thumb {
+    aspect-ratio: 2 / 3 !important;
+    border-radius: 0 !important;
+  }
+  .video-grid .skeleton-text {
+    margin: 8px 10px !important;
+    border-radius: 4px !important;
+  }
+  .video-grid .skeleton-text.short {
+    width: 60% !important;
+    margin-bottom: 8px !important;
+  }
+
+  /* ── LOAD MORE ── */
+  .load-more-container {
+    text-align: center;
+    padding: 8px 32px 56px;
+  }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center;
+    padding: 90px 32px;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: #0a0a0a !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+  }
+
+}
