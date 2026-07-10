@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Watch this Live TV Channel on Xstream.">
+  <title>Watch Channel — Xstream</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="live">
+
+  <div id="toast-container"></div>
+  <nav id="main-nav" class="navbar"></nav>
+
+  <main class="video-page-main">
+    <div class="video-page-grid">
+
+      <!-- Video Player Column -->
+      <div class="video-player-col">
+        <!-- Player -->
+        <div class="video-player-wrapper" id="video-player-wrapper">
+          <div class="skeleton skeleton-player"></div>
+        </div>
+
+        <!-- Video Info -->
+        <div class="video-info" id="video-info" style="display:none;">
+          <h1 class="video-title" id="video-title"></h1>
+          <div class="video-meta">
+            <div class="video-stats">
+              <span class="stat-item" id="video-views">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <span>0 viewers</span>
+              </span>
+              <span class="stat-item live-badge-stat" id="video-country-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                <span></span>
+              </span>
+              <span class="stat-item live-badge-stat" style="color: #ff4757; font-weight: 600;">
+                <span class="live-indicator-dot" style="margin-right: 5px; width: 8px; height: 8px; display: inline-block; border-radius: 50%; background: #ff4757;"></span>
+                LIVE
+              </span>
+            </div>
+            <div class="video-actions">
+              <button class="action-btn" id="share-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                Share
+              </button>
+              <button class="action-btn" id="favourite-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                <span id="favourite-label">Favourite</span>
+              </button>
+            </div>
+          </div>
+          <div class="video-description-box">
+            <p id="video-description">You are watching a live broadcast. Stream quality may vary based on your internet connection.</p>
+          </div>
+        </div>
+
+        <!-- Video Not Found -->
+        <div id="video-not-found" class="empty-state" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          <h3>Channel Not Found</h3>
+          <p>This channel may have been removed or the link is incorrect.</p>
+          <a href="live.html" class="btn-accent">Back to Live TV</a>
+        </div>
+      </div>
+
+      <!-- Related Videos Sidebar -->
+      <aside class="related-sidebar">
+        <h3 class="related-title">Suggested Channels</h3>
+        <div id="related-videos" class="related-list">
+          <div class="skeleton-widget-item"><div class="skeleton skeleton-widget-thumb"></div><div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></div>
+          <div class="skeleton-widget-item"><div class="skeleton skeleton-widget-thumb"></div><div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></div>
+          <div class="skeleton-widget-item"><div class="skeleton skeleton-widget-thumb"></div><div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></div>
+          <div class="skeleton-widget-item"><div class="skeleton skeleton-widget-thumb"></div><div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></div>
+          <div class="skeleton-widget-item"><div class="skeleton skeleton-widget-thumb"></div><div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer id="main-footer" class="footer"></footer>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+  
+  <!-- HLS.js (REQUIRED FOR LIVE STREAMS) -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  
+  <script src="js/optimizer.js"></script>
+  
+  <!-- Core App Script (Restores missing functions) -->
+ <script src="config.js"></script>
+<script src="js/app.js"></script>
+  
+  <!-- Channel Page Logic -->
+  <script src="js/channel.js"></script>
+  
+</body>
+</html>

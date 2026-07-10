@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Maintenance Mode — Xstream</title>
+<link rel="icon" type="image/webkit" sizes="16x16" href="https://ik.imagekit.io/s95tumxuk/IMG_2611.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body, html { margin: 0; padding: 0; height: 100%; font-family: 'DM Sans', sans-serif; background: #08080d; color: #eaeaf0; overflow: hidden; }
+
+  /* ── Background thumbnail grid ── */
+  .bg-movies {
+    position: fixed; inset: 0; z-index: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 160px);
+    grid-template-rows: repeat(auto-fill, 230px);
+    gap: 6px;
+    padding: 6px;
+    justify-content: center;
+    align-content: start;
+    animation: drift 60s linear infinite;
+  }
+  .bg-movies .thumb {
+    width: 100%; height: 100%;
+    border-radius: 8px;
+    object-fit: cover;
+    opacity: .18;
+    filter: blur(1.5px) saturate(.6);
+    transition: opacity .4s;
+  }
+  @keyframes drift {
+    0%   { transform: translateY(0); }
+    50%  { transform: translateY(-230px); }
+    100% { transform: translateY(0); }
+  }
+
+  /* Dark overlay for readability */
+  .bg-overlay {
+    position: fixed; inset: 0; z-index: 1;
+    background: radial-gradient(ellipse at center, rgba(8,8,13,.7) 0%, rgba(8,8,13,.92) 70%);
+    pointer-events: none;
+  }
+
+  /* Vignette */
+  .vignette {
+    position: fixed; inset: 0; z-index: 2;
+    background: radial-gradient(ellipse at center, transparent 30%, rgba(8,8,13,.85) 100%);
+    pointer-events: none;
+  }
+
+  /* ── Content ── */
+  .container {
+    position: relative; z-index: 3;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    height: 100%; text-align: center; padding: 20px;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; margin-bottom: 40px; text-decoration: none; color: #fff; }
+  .logo svg { width: 40px; height: 40px; }
+  .logo span { font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; font-weight: 700; }
+  .icon-box {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: rgba(230,57,70,0.1);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 30px; border: 1px solid rgba(230,57,70,0.2);
+    backdrop-filter: blur(10px);
+  }
+  .icon-box svg { width: 40px; height: 40px; color: #e63946; }
+  h1 {
+    font-family: 'Space Grotesk', sans-serif; font-size: 2.5rem;
+    margin: 0 0 15px 0;
+    background: linear-gradient(135deg, #eaeaf0, #8a8aa4);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  p { font-size: 1.1rem; color: #8a8aa4; max-width: 500px; line-height: 1.6; margin: 0 0 30px 0; }
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 20px; border-radius: 30px;
+    background: rgba(230,57,70,0.1); border: 1px solid rgba(230,57,70,0.2);
+    color: #e63946; font-weight: 600; font-size: .9rem;
+    backdrop-filter: blur(10px);
+  }
+  .pulse-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #e63946; animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(230,57,70,.7); }
+    70%  { box-shadow: 0 0 0 10px rgba(230,57,70,0); }
+    100% { box-shadow: 0 0 0 0 rgba(230,57,70,0); }
+  }
+  .footer-text { position: absolute; bottom: 20px; color: #55556e; font-size: .8rem; }
+</style>
+</head>
+<body>
+
+<!-- ── Background movie thumbnails ── -->
+<div class="bg-movies" id="bgMovies"></div>
+<div class="bg-overlay"></div>
+<div class="vignette"></div>
+
+<!-- ── Main content ── -->
+<div class="container">
+  <a href="index.html" class="logo">
+    <svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#e63946"/><path d="M13 10l10 6-10 6V10z" fill="#fff"/></svg>
+    <span>Xstream</span>
+  </a>
+  <div class="icon-box">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+  </div>
+  <h1>Under Maintenance</h1>
+  <p>We're currently performing scheduled upgrades to our servers to bring you a better streaming experience. We'll be back online shortly!</p>
+  <div class="status-badge">
+    <div class="pulse-dot"></div>
+    System Upgrading
+  </div>
+  <div class="footer-text">&copy; 2024 Xstream Movies. All rights reserved.</div>
+</div>
+
+<script>
+  // Generate many movie-like thumbnails in the background
+  const grid = document.getElementById('bgMovies');
+
+  // Unique seeds so every thumbnail looks different
+  const seeds = [
+    'action1','drama2','scifi3','horror4','comedy5','thriller6','romance7',
+    'fantasy8','mystery9','war10','crime11','western12','noir13','anime14',
+    'indie15','doc16','musical17','spy18','superhero19','zombie20',
+    'heist21','samurai22','viking23','pirate24','space25','jungle26',
+    'city27','ocean28','desert29','arctic30','cave31','volcano32',
+    'forest33','castle34','ruins35','neon36','sunset37','storm38',
+    'fire39','ice40','shadow41','mirror42','clock43','door44',
+    'bridge45','tower46','mountain47','river48','lake49','arena50',
+    'arena51','arena52','arena53','arena54','arena55','arena56',
+    'arena57','arena58','arena59','arena60','arena61','arena62',
+    'arena63','arena64','arena65','arena66','arena67','arena68',
+    'arena69','arena70','arena71','arena72','arena73','arena74'
+  ];
+
+  seeds.forEach(seed => {
+    const img = document.createElement('img');
+    img.className = 'thumb';
+    img.loading = 'lazy';
+    img.src = `https://picsum.photos/seed/${seed}/320/460.jpg`;
+    img.alt = '';
+    grid.appendChild(img);
+  });
+</script>
+</body>
+</html>

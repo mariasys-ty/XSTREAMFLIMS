@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="XStream — Browse complete TV series with all seasons and episodes.">
+  <meta name="keywords" content="tv series, series online, streaming, full seasons, episodes, watch series">
+  <meta name="author" content="XStream">
+  <meta property="og:title" content="XStream — TV Series">
+  <meta property="og:description" content="Explore complete TV series with all seasons and episodes in one place.">
+  <title>TV Series — XStream</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/desktop3.css">
+</head>
+<body data-page="series">
+
+  <div id="toast-container"></div>
+  <nav id="main-nav" class="navbar"></nav>
+
+  <!-- Mobile Menu Overlay (rendered by app.js) -->
+  <div id="mobile-overlay" class="mobile-overlay"></div>
+  <div id="mobile-menu" class="mobile-menu"></div>
+
+<!-- Page Header — Cinematic Hero -->
+<section class="page-header series-hero">
+  <img id="series-hero-image" src="https://ik.imagekit.io/s95tumxuk/IMG_3556.png" alt="">
+  <div class="page-header-content hero-content">
+    <div class="hero-left">
+      <nav class="breadcrumb" id="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current" id="breadcrumb-current">TV Series</span>
+      </nav>
+      <h1 class="page-title" id="viewall-page-title">TV Series</h1>
+      <p class="page-subtitle" id="viewall-page-subtitle">Browse complete TV series with all seasons and episodes in one place.</p>
+      <div class="hero-stats">
+        <div class="hero-stat-card">
+          <span class="hero-stat-icon">📺</span>
+          <div class="hero-stat-info">
+            <span class="hero-stat-number">3,245+</span>
+            <span class="hero-stat-label">TV Series</span>
+          </div>
+        </div>
+        <div class="hero-stat-card">
+          <span class="hero-stat-icon">🎬</span>
+          <div class="hero-stat-info">
+            <span class="hero-stat-number">28,450+</span>
+            <span class="hero-stat-label">Seasons</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- Main Content -->
+  <main class="main-container" id="series-page-content">
+    <div class="content-grid">
+
+      <!-- Main Column -->
+      <div class="content-main">
+
+        <!-- Filter Bar -->
+        <div class="filter-bar" id="filter-bar">
+          <div class="filter-left">
+            <h2 class="section-title" id="viewall-title">
+              <svg class="title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="9" y1="2" x2="9" y2="22"/><line x1="15" y1="2" x2="15" y2="22"/></svg>
+              All Series
+            </h2>
+          </div>
+          <div class="filter-right">
+            <div class="filter-search-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input type="text" id="filter-search" placeholder="Search series...">
+            </div>
+            <select id="genre-filter" class="filter-select">
+              <option value="all">All Genres</option>
+              <option value="Action">Action</option>
+              <option value="Adventure">Adventure</option>
+              <option value="Animation">Animation</option>
+              <option value="Anime">Anime</option>
+              <option value="Biography">Biography</option>
+              <option value="Comedy">Comedy</option>
+              <option value="Crime">Crime</option>
+              <option value="Documentary">Documentary</option>
+              <option value="Drama">Drama</option>
+              <option value="Fantasy">Fantasy</option>
+              <option value="Historical">Historical</option>
+              <option value="Horror">Horror</option>
+              <option value="Mystery">Mystery</option>
+              <option value="Romance">Romance</option>
+              <option value="Sci-Fi">Sci-Fi</option>
+              <option value="Thriller">Thriller</option>
+              <option value="War">War</option>
+              <option value="Western">Western</option>
+              <option value="Family">Family</option>
+              <option value="Sitcom">Sitcom</option>
+              <option value="Mini-Series">Mini-Series</option>
+              <option value="Science Fiction">Science Fiction</option>
+              <option value="Supernatural">Supernatural</option>
+              <option value="Psychological">Psychological</option>
+              <option value="Political">Political</option>
+              <option value="Legal">Legal</option>
+              <option value="Medical">Medical</option>
+              <option value="Musical">Musical</option>
+              <option value="Sport">Sport</option>
+              <option value="Anthology">Anthology</option>
+              <option value="Reality">Reality</option>
+            </select>
+            <select id="status-filter" class="filter-select">
+              <option value="all">All Status</option>
+              <option value="ongoing">Ongoing</option>
+              <option value="completed">Completed</option>
+            </select>
+            <select id="sort-filter" class="filter-select">
+              <option value="recent">Newest First</option>
+              <option value="trending">Trending</option>
+              <option value="views">Most Viewed</option>
+              <option value="likes">Most Liked</option>
+              <option value="rating">Highest Rated</option>
+              <option value="title">Title A-Z</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Active Search/Filters Display -->
+        <div class="active-filters" id="active-filters" style="display:none;">
+          <span class="active-filters-label">Showing results for:</span>
+          <div class="active-filter-chips" id="active-filter-chips"></div>
+          <button class="clear-filters-btn" id="clear-all-filters">Clear All</button>
+        </div>
+
+        <!-- Videos Grid -->
+        <section class="section">
+          <div class="video-grid" id="videos-grid">
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+          </div>
+          <div id="load-more-container" class="load-more-container" style="display:none;">
+            <button id="load-more-btn" class="btn-outline">Load More Series</button>
+            <div id="load-more-spinner" class="spinner" style="display:none;"></div>
+          </div>
+          <div id="no-videos" class="empty-state" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="64" height="64"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+            <h3>No series found</h3>
+            <p>Try adjusting your filters or search terms.</p>
+            <button onclick="clearSeriesFilters()" class="btn-accent" style="margin-top:16px;display:inline-flex;align-items:center;gap:8px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              Reset Filters
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <!-- Search Widget -->
+        <div class="widget">
+          <h3 class="widget-title">Search Series</h3>
+          <div class="search-box">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="text" id="sidebar-search" placeholder="Search by title, genre, network..." autocomplete="off">
+          </div>
+        </div>
+
+        <!-- Status Widget -->
+        <div class="widget">
+          <h3 class="widget-title">By Status</h3>
+          <ul class="category-list" id="sidebar-status">
+            <li><a href="#" data-status="ongoing" class="status-link-ongoing"><span class="cat-icon">🟢</span> Ongoing <span class="cat-count" id="count-ongoing">0</span></a></li>
+            <li><a href="#" data-status="completed" class="status-link-completed"><span class="cat-icon">🔵</span> Completed <span class="cat-count" id="count-completed">0</span></a></li>
+          </ul>
+        </div>
+
+        <!-- Popular Series Widget -->
+        <div class="widget">
+          <h3 class="widget-title">Popular Series</h3>
+          <div id="popular-videos-widget" class="widget-video-list">
+            <div class="skeleton-widget-item"><div class="skeleton skeleton-widget-thumb"></div><div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></div>
+            <div class="skeleton-widget-item"><div class="skeleton skeleton-widget-thumb"></div><div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></div>
+            <div class="skeleton-widget-item"><div class="skeleton skeleton-widget-thumb"></div><div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></div>
+            <div class="skeleton-widget-item"><div class="skeleton skeleton-widget-thumb"></div><div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></div>
+            <div class="skeleton-widget-item"><div class="skeleton skeleton-widget-thumb"></div><div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></div>
+          </div>
+        </div>
+
+        <!-- Trending Tags Widget -->
+        <div class="widget">
+          <h3 class="widget-title">Trending Genres</h3>
+          <div class="tag-cloud" id="tag-cloud">
+            <a href="#" class="tag" data-genre="action">#Action</a>
+            <a href="#" class="tag" data-genre="drama">#Drama</a>
+            <a href="#" class="tag" data-genre="thriller">#Thriller</a>
+            <a href="#" class="tag" data-genre="sci-fi">#SciFi</a>
+            <a href="#" class="tag" data-genre="crime">#Crime</a>
+            <a href="#" class="tag" data-genre="comedy">#Comedy</a>
+            <a href="#" class="tag" data-genre="horror">#Horror</a>
+            <a href="#" class="tag" data-genre="mystery">#Mystery</a>
+            <a href="#" class="tag" data-genre="romance">#Romance</a>
+            <a href="#" class="tag" data-genre="fantasy">#Fantasy</a>
+            <a href="#" class="tag" data-genre="animation">#Animation</a>
+            <a href="#" class="tag" data-genre="anime">#Anime</a>
+            <a href="#" class="tag" data-genre="documentary">#Documentary</a>
+            <a href="#" class="tag" data-genre="war">#War</a>
+            <a href="#" class="tag" data-genre="historical">#Historical</a>
+            <a href="#" class="tag" data-genre="western">#Western</a>
+            <a href="#" class="tag" data-genre="family">#Family</a>
+            <a href="#" class="tag" data-genre="sitcom">#Sitcom</a>
+            <a href="#" class="tag" data-genre="mini-series">#MiniSeries</a>
+            <a href="#" class="tag" data-genre="science-fiction">#ScienceFiction</a>
+            <a href="#" class="tag" data-genre="supernatural">#Supernatural</a>
+            <a href="#" class="tag" data-genre="psychological">#Psychological</a>
+            <a href="#" class="tag" data-genre="political">#Political</a>
+            <a href="#" class="tag" data-genre="legal">#Legal</a>
+            <a href="#" class="tag" data-genre="medical">#Medical</a>
+            <a href="#" class="tag" data-genre="musical">#Musical</a>
+            <a href="#" class="tag" data-genre="sport">#Sport</a>
+            <a href="#" class="tag" data-genre="anthology">#Anthology</a>
+            <a href="#" class="tag" data-genre="reality">#Reality</a>
+            <a href="#" class="tag" data-genre="adventure">#Adventure</a>
+            <a href="#" class="tag" data-genre="biography">#Biography</a>
+          </div>
+        </div>
+
+      </aside>
+    </div>
+  </main>
+
+  <!-- Footer (rendered by app.js) -->
+  <footer id="main-footer" class="footer"></footer>
+
+  <!-- ============================================ -->
+  <!-- SCRIPTS: Order is CRITICAL                    -->
+  <!-- 1. Firebase SDKs (must be first)              -->
+  <!-- 2. app.js (initializes firebase/database)     -->
+  <!-- 3. series.js (uses database from app.js)      -->
+  <!-- ============================================ -->
+
+  <!-- Step 1: Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <!-- Step 2: Main App -->
+  <script src="config.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- Step 3: Series Page Logic -->
+  <script src="js/series.js"></script>
+
+  <!-- Wire filter-search to sidebar-search (new, does not modify existing JS) -->
+  <script>
+    (function() {
+      var fs = document.getElementById('filter-search');
+      var ss = document.getElementById('sidebar-search');
+      if (fs && ss) {
+        fs.addEventListener('input', function() {
+          ss.value = fs.value;
+          ss.dispatchEvent(new Event('input', {bubbles: true}));
+        });
+      }
+    })();
+  </script>
+
+</body>
+</html>

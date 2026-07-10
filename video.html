@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Watch this Movie on Xstream.">
+  <title>Watch movie — Xstream</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/ad.css">
+
+<style>
+/* ══════════════════════════════════════════════════════════════
+   POSTER OVERLAY — MOBILE DEFAULT: HIDDEN
+   This element is new (not in external CSS), so we must
+   explicitly hide it below 1024px.
+   ══════════════════════════════════════════════════════════════ */
+.poster-play-overlay {
+  display: none !important;
+}
+.poster-play-bg,
+.poster-play-darken,
+.poster-play-btn {
+  display: none !important;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   DESKTOP — 1024px AND ABOVE
+   Every selector uses body[data-page="video"] to guarantee
+   it beats ANY rule in css/style.css or css/ad.css,
+   regardless of their specificity or !important usage.
+   ══════════════════════════════════════════════════════════════ */
+@media (min-width: 1024px) {
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 7px; }
+  ::-webkit-scrollbar-track { background: #050505; }
+  ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #444; }
+  ::selection { background: rgba(229,9,20,0.35); color: #fff; }
+
+  /* ── Body ── */
+  body[data-page="video"] {
+    background: #050505 !important;
+    background-image: radial-gradient(ellipse at 20% 10%, rgba(229,9,20,0.02) 0%, transparent 50%) !important;
+  }
+
+  /* ── Main ── */
+  body[data-page="video"] .video-page-main {
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* ══════════════════════════════════════
+     PAGE GRID — single column, stacked
+     ══════════════════════════════════════ */
+  body[data-page="video"] .video-page-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+    max-width: 1440px !important;
+    margin: 0 auto !important;
+    padding: 36px 48px 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    float: none !important;
+    clear: both !important;
+    width: auto !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+    position: static !important;
+  }
+
+  /* ══════════════════════════════════════
+     PLAYER COL — internal 2-col grid
+     LEFT: poster   RIGHT: info
+     ══════════════════════════════════════ */
+  body[data-page="video"] .video-player-col {
+    display: grid !important;
+    grid-template-columns: 1fr 1.2fr !important;
+    grid-template-rows: auto auto !important;
+    gap: 0 40px !important;
+    align-items: start !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    float: none !important;
+    clear: both !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    overflow: visible !important;
+    position: static !important;
+  }
+
+  /* Grid placements */
+  body[data-page="video"] .player-poster-container {
+    grid-column: 1 !important;
+    grid-row: 1 / 3 !important;
+  }
+  body[data-page="video"] .video-info {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+  }
+  body[data-page="video"] .social-nav-buttons {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    margin-top: 24px !important;
+  }
+  body[data-page="video"] #video-not-found {
+    grid-column: 1 / -1 !important;
+    grid-row: 1 !important;
+  }
+
+  /* ══════════════════════════════════════
+     POSTER / PLAYER CARD — left column
+     ══════════════════════════════════════ */
+  body[data-page="video"] .player-poster-container {
+    position: relative !important;
+    height: 540px !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+    background: #0a0a0a !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    box-shadow:
+      0 20px 70px rgba(0,0,0,0.55),
+      0 0 0 1px rgba(255,255,255,0.03) inset !important;
+    align-self: start !important;
+    float: none !important;
+    clear: both !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    overflow: hidden !important;
+    position: relative !important;
+  }
+
+  body[data-page="video"] .video-player-wrapper {
+    position: relative !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: #000 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+  }
+  body[data-page="video"] .video-player-wrapper video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    display: block !important;
+    background: #000 !important;
+    border-radius: 0 !important;
+  }
+  body[data-page="video"] .skeleton-player {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 0 !important;
+  }
+
+  /* ══════════════════════════════════════
+     POSTER PLAY OVERLAY — desktop only
+     ══════════════════════════════════════ */
+  body[data-page="video"] .poster-play-overlay {
+    display: none !important;
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 10 !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out !important;
+    border-radius: 0 !important;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+  }
+  body[data-page="video"] .poster-play-overlay.poster-fade-out {
+    opacity: 0 !important;
+    transform: scale(1.04) !important;
+    pointer-events: none !important;
+  }
+  body[data-page="video"] .poster-play-bg {
+    display: block !important;
+    position: absolute !important;
+    inset: 0 !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    transition: transform 0.5s ease !important;
+  }
+  body[data-page="video"] .poster-play-overlay:hover .poster-play-bg {
+    transform: scale(1.04);
+  }
+  body[data-page="video"] .poster-play-darken {
+    display: block !important;
+    position: absolute !important;
+    inset: 0 !important;
+    background: linear-gradient(
+      to top,
+      rgba(0,0,0,0.7) 0%,
+      rgba(0,0,0,0.3) 40%,
+      rgba(0,0,0,0.15) 100%
+    ) !important;
+    z-index: 1 !important;
+  }
+  body[data-page="video"] .poster-play-btn {
+    display: flex !important;
+    position: relative !important;
+    z-index: 2 !important;
+    width: 80px !important;
+    height: 80px !important;
+    border-radius: 50% !important;
+    background: rgba(229,9,20,0.2) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+    border: 2px solid rgba(229,9,20,0.4) !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow:
+      0 0 40px rgba(229,9,20,0.3),
+      0 0 80px rgba(229,9,20,0.1) !important;
+    animation: playPulse 2.8s ease-in-out infinite !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease !important;
+    outline: none !important;
+    color: transparent !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+  }
+  body[data-page="video"] .poster-play-btn:hover {
+    transform: scale(1.15) !important;
+    background: rgba(229,9,20,0.35) !important;
+    box-shadow:
+      0 0 60px rgba(229,9,20,0.5),
+      0 0 120px rgba(229,9,20,0.15) !important;
+    animation: none !important;
+  }
+  body[data-page="video"] .poster-play-btn svg {
+    width: 32px !important;
+    height: 32px !important;
+    margin-left: 4px !important;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
+  }
+  @keyframes playPulse {
+    0%, 100% { box-shadow: 0 0 40px rgba(229,9,20,0.3), 0 0 80px rgba(229,9,20,0.1); }
+    50% { box-shadow: 0 0 55px rgba(229,9,20,0.45), 0 0 100px rgba(229,9,20,0.15); }
+  }
+
+  /* ══════════════════════════════════════
+     VIDEO INFO — right column
+     ══════════════════════════════════════ */
+  body[data-page="video"] .video-info {
+    display: block !important;
+    padding: 8px 0 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    float: none !important;
+    clear: both !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    overflow: visible !important;
+    position: static !important;
+  }
+  body[data-page="video"] .video-title {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 36px !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    line-height: 1.12 !important;
+    letter-spacing: -0.4px !important;
+    margin: 0 0 18px 0 !important;
+    padding: 0 !important;
+  }
+  body[data-page="video"] .video-meta {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 18px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    float: none !important;
+    clear: both !important;
+    width: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Stat badges */
+  body[data-page="video"] .video-stats {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    align-items: center !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    float: none !important;
+    clear: both !important;
+    width: auto !important;
+    overflow: visible !important;
+  }
+  body[data-page="video"] .video-stats .stat-item {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 5px 12px !important;
+    background: rgba(255,255,255,0.06) !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    border-radius: 8px !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 12.5px !important;
+    font-weight: 500 !important;
+    color: #aaa !important;
+    white-space: nowrap !important;
+    margin: 0 !important;
+    transition: background 0.2s, color 0.2s !important;
+    cursor: default !important;
+    float: none !important;
+  }
+  body[data-page="video"] .video-stats .stat-item:hover {
+    background: rgba(255,255,255,0.1) !important;
+    color: #ddd !important;
+  }
+  body[data-page="video"] .video-stats .stat-item svg {
+    width: 14px !important;
+    height: 14px !important;
+    opacity: 0.6 !important;
+    flex-shrink: 0 !important;
+  }
+  body[data-page="video"] .video-stats .stat-item span {
+    font-size: 12.5px !important;
+  }
+
+  /* Action buttons */
+  body[data-page="video"] .video-actions {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    float: none !important;
+    clear: both !important;
+    width: auto !important;
+    overflow: visible !important;
+  }
+  body[data-page="video"] .video-actions .action-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+    padding: 9px 18px !important;
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.07) !important;
+    border-radius: 10px !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #bbb !important;
+    cursor: pointer !important;
+    transition: all 0.25s ease !important;
+    outline: none !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+    float: none !important;
+  }
+  body[data-page="video"] .video-actions .action-btn svg {
+    width: 16px !important;
+    height: 16px !important;
+    flex-shrink: 0 !important;
+  }
+  body[data-page="video"] .video-actions .action-btn:hover {
+    background: rgba(255,255,255,0.1) !important;
+    border-color: rgba(255,255,255,0.12) !important;
+    color: #fff !important;
+    transform: translateY(-1px) !important;
+  }
+  body[data-page="video"] .video-actions .action-btn:active {
+    transform: translateY(0) !important;
+  }
+  body[data-page="video"] .video-actions .action-btn.active,
+  body[data-page="video"] .video-actions .action-btn.liked {
+    background: rgba(229,9,20,0.15) !important;
+    border-color: rgba(229,9,20,0.3) !important;
+    color: #E50914 !important;
+  }
+  body[data-page="video"] .video-actions .action-btn.active svg,
+  body[data-page="video"] .video-actions .action-btn.liked svg {
+    color: #E50914 !important;
+  }
+
+  /* Description */
+  body[data-page="video"] .video-description-box {
+    display: block !important;
+    margin-top: 4px !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    float: none !important;
+    clear: both !important;
+    width: auto !important;
+    overflow: visible !important;
+  }
+  body[data-page="video"] .video-description-box p {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    color: #888 !important;
+    line-height: 1.75 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* ══════════════════════════════════════
+     SOCIAL NAV BUTTONS
+     ══════════════════════════════════════ */
+  body[data-page="video"] .social-nav-buttons {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    float: none !important;
+    clear: both !important;
+    width: auto !important;
+    overflow: visible !important;
+    position: static !important;
+  }
+  body[data-page="video"] .social-nav-buttons .social-nav-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 10px 20px !important;
+    border-radius: 10px !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #fff !important;
+    text-decoration: none !important;
+    transition: all 0.25s ease !important;
+    border: none !important;
+    margin: 0 !important;
+    cursor: pointer !important;
+    float: none !important;
+  }
+  body[data-page="video"] .social-nav-buttons .social-nav-btn svg {
+    width: 18px !important;
+    height: 18px !important;
+    flex-shrink: 0 !important;
+  }
+  body[data-page="video"] .social-nav-buttons .social-nav-btn--telegram {
+    background: rgba(0,136,204,0.15) !important;
+    border: 1px solid rgba(0,136,204,0.25) !important;
+  }
+  body[data-page="video"] .social-nav-buttons .social-nav-btn--telegram:hover {
+    background: rgba(0,136,204,0.3) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 24px rgba(0,136,204,0.2) !important;
+  }
+  body[data-page="video"] .social-nav-buttons .social-nav-btn--whatsapp {
+    background: rgba(37,211,102,0.12) !important;
+    border: 1px solid rgba(37,211,102,0.2) !important;
+  }
+  body[data-page="video"] .social-nav-buttons .social-nav-btn--whatsapp:hover {
+    background: rgba(37,211,102,0.25) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 24px rgba(37,211,102,0.15) !important;
+  }
+  body[data-page="video"] .social-nav-buttons .social-nav-btn--youtube {
+    background: rgba(255,0,0,0.12) !important;
+    border: 1px solid rgba(255,0,0,0.2) !important;
+  }
+  body[data-page="video"] .social-nav-buttons .social-nav-btn--youtube:hover {
+    background: rgba(255,0,0,0.25) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 24px rgba(255,0,0,0.15) !important;
+  }
+
+  /* ══════════════════════════════════════
+     RELATED VIDEOS — full width horizontal
+     ══════════════════════════════════════ */
+  body[data-page="video"] .related-sidebar {
+    display: block !important;
+    grid-column: 1 / -1 !important;
+    margin-top: 48px !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    max-height: none !important;
+    float: none !important;
+    clear: both !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    position: static !important;
+  }
+  body[data-page="video"] .related-title {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    padding: 0 0 18px !important;
+    margin: 0 !important;
+    border-bottom: none !important;
+    letter-spacing: -0.3px !important;
+    background: transparent !important;
+  }
+
+  /* Horizontal scroll */
+  body[data-page="video"] .related-list,
+  body[data-page="video"] .widget-video-list {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 18px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding: 0 0 12px !important;
+    margin: 0 !important;
+    list-style: none !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    float: none !important;
+    clear: both !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    position: static !important;
+  }
+  body[data-page="video"] .related-list::-webkit-scrollbar,
+  body[data-page="video"] .widget-video-list::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  /* Each related card — vertical poster layout */
+  body[data-page="video"] .related-list .widget-video-item,
+  body[data-page="video"] .related-list a,
+  body[data-page="video"] .related-list > div,
+  body[data-page="video"] .widget-video-list .widget-video-item,
+  body[data-page="video"] .widget-video-list a,
+  body[data-page="video"] .widget-video-list > div {
+    display: flex !important;
+    flex-direction: column !important;
+    min-width: 185px !important;
+    max-width: 185px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    text-decoration: none !important;
+    color: inherit !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+    cursor: pointer !important;
+    border: none !important;
+    border-radius: 12px !important;
+    background: #141414 !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25) !important;
+    overflow: hidden !important;
+    scroll-snap-align: start !important;
+    float: none !important;
+    clear: both !important;
+    position: static !important;
+  }
+  body[data-page="video"] .related-list .widget-video-item:hover,
+  body[data-page="video"] .related-list a:hover,
+  body[data-page="video"] .related-list > div:hover,
+  body[data-page="video"] .widget-video-list .widget-video-item:hover,
+  body[data-page="video"] .widget-video-list a:hover,
+  body[data-page="video"] .widget-video-list > div:hover {
+    transform: translateY(-6px) !important;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.45), 0 0 30px rgba(229,9,20,0.06) !important;
+    background: #1a1a1a !important;
+  }
+
+  /* Thumbnail */
+  body[data-page="video"] .related-list .widget-video-item img,
+  body[data-page="video"] .related-list a img,
+  body[data-page="video"] .widget-video-list .widget-video-item img,
+  body[data-page="video"] .widget-video-list a img {
+    width: 100% !important;
+    min-width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 2/3 !important;
+    object-fit: cover !important;
+    border-radius: 0 !important;
+    background: #0d0d0d !important;
+    flex-shrink: 0 !important;
+    display: block !important;
+    transition: transform 0.35s ease, filter 0.35s ease !important;
+  }
+  body[data-page="video"] .related-list .widget-video-item:hover img,
+  body[data-page="video"] .related-list a:hover img,
+  body[data-page="video"] .widget-video-list .widget-video-item:hover img,
+  body[data-page="video"] .widget-video-list a:hover img {
+    transform: scale(1.05) !important;
+    filter: brightness(1.1) !important;
+  }
+
+  /* Info below thumbnail */
+  body[data-page="video"] .related-list .widget-info,
+  body[data-page="video"] .widget-video-list .widget-info {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    padding: 12px !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+  }
+  body[data-page="video"] .related-list .widget-title,
+  body[data-page="video"] .widget-video-list .widget-title,
+  body[data-page="video"] .related-list .widget-video-item .title,
+  body[data-page="video"] .widget-video-list .widget-video-item .title {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 12.5px !important;
+    font-weight: 600 !important;
+    color: #e0e0e0 !important;
+    line-height: 1.35 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-decoration: none !important;
+  }
+  body[data-page="video"] .related-list .widget-video-item:hover .widget-title,
+  body[data-page="video"] .widget-video-list .widget-video-item:hover .widget-title {
+    color: #fff !important;
+  }
+  body[data-page="video"] .related-list .widget-meta,
+  body[data-page="video"] .widget-video-list .widget-meta,
+  body[data-page="video"] .related-list .widget-video-item .meta,
+  body[data-page="video"] .widget-video-list .widget-video-item .meta {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 400 !important;
+    color: #666 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  /* Skeleton widget items */
+  body[data-page="video"] .skeleton-widget-item {
+    display: flex !important;
+    flex-direction: column !important;
+    min-width: 185px !important;
+    max-width: 185px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    border-radius: 12px !important;
+    background: #141414 !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25) !important;
+    overflow: hidden !important;
+    float: none !important;
+    clear: both !important;
+    position: static !important;
+  }
+  body[data-page="video"] .skeleton-widget-thumb {
+    width: 100% !important;
+    min-width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 2/3 !important;
+    border-radius: 0 !important;
+  }
+  body[data-page="video"] .skeleton-widget-item > div {
+    padding: 12px !important;
+  }
+  body[data-page="video"] .skeleton-widget-item .skeleton-text {
+    border-radius: 5px !important;
+    margin: 5px 0 !important;
+  }
+  body[data-page="video"] .skeleton-widget-item .skeleton-text.short {
+    width: 60% !important;
+  }
+
+  /* ══════════════════════════════════════
+     ADVERTS — full width below
+     ══════════════════════════════════════ */
+  body[data-page="video"] .Adverts-sidebar {
+    display: block !important;
+    max-width: 1440px !important;
+    margin: 0 auto !important;
+    padding: 40px 48px 48px !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    float: none !important;
+    clear: both !important;
+    width: auto !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+    position: static !important;
+  }
+  body[data-page="video"] .Adverts-title {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    margin: 0 0 20px 0 !important;
+    padding: 0 !important;
+    letter-spacing: -0.3px !important;
+  }
+  body[data-page="video"] .ad-banner-wrapper {
+    display: block !important;
+    background: #141414 !important;
+    border: 1px solid rgba(255,255,255,0.05) !important;
+    border-radius: 14px !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 0 16px 0 !important;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2) !important;
+    min-height: 90px !important;
+    float: none !important;
+    clear: both !important;
+    width: auto !important;
+    position: static !important;
+  }
+  body[data-page="video"] .ad-banner-wrapper:last-child {
+    margin-bottom: 0 !important;
+  }
+
+  /* ══════════════════════════════════════
+     EMPTY STATE
+     ══════════════════════════════════════ */
+  body[data-page="video"] .empty-state {
+    text-align: center !important;
+    padding: 80px 40px !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    float: none !important;
+    clear: both !important;
+    width: auto !important;
+    overflow: visible !important;
+    position: static !important;
+  }
+  body[data-page="video"] .empty-state svg {
+    color: #2a2a2a !important;
+  }
+  body[data-page="video"] .empty-state h3 {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: #fff !important;
+    margin-top: 20px !important;
+  }
+  body[data-page="video"] .empty-state p {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 15px !important;
+    color: #777 !important;
+    margin-top: 8px !important;
+  }
+  body[data-page="video"] .btn-accent {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 13px 30px !important;
+    background: #E50914 !important;
+    color: #fff !important;
+    border-radius: 12px !important;
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    text-decoration: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.25s ease !important;
+    margin-top: 20px !important;
+  }
+  body[data-page="video"] .btn-accent:hover {
+    background: #ff1a25 !important;
+    box-shadow: 0 0 36px rgba(229,9,20,0.3) !important;
+    transform: translateY(-2px) !important;
+    color: #fff !important;
+  }
+
+  /* ══════════════════════════════════════
+     FOOTER
+     ══════════════════════════════════════ */
+  body[data-page="video"] .footer {
+    background: #0a0a0a !important;
+    border-top: 1px solid rgba(255,255,255,0.05) !important;
+    margin-top: 0 !important;
+  }
+
+}
+/* ── END DESKTOP 1024px+ ── */
+</style>
+</head>
+<body data-page="video">
+
+  <div id="toast-container"></div>
+  <nav id="main-nav" class="navbar"></nav>
+
+  <main class="video-page-main">
+    <div class="video-page-grid">
+
+      <div class="video-player-col">
+
+        <!-- Player Card -->
+        <div class="player-poster-container" id="player-poster-container">
+          <div class="video-player-wrapper" id="video-player-wrapper">
+            <div class="skeleton skeleton-player"></div>
+          </div>
+          <div class="poster-play-overlay" id="poster-play-overlay">
+            <div class="poster-play-bg" id="poster-play-bg"></div>
+            <div class="poster-play-darken"></div>
+            <button class="poster-play-btn" id="poster-play-btn" aria-label="Play movie">
+              <svg viewBox="0 0 24 24" fill="white"><polygon points="8,5 19,12 8,19"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Video Info -->
+        <div class="video-info" id="video-info" style="display:none;">
+          <h1 class="video-title" id="video-title"></h1>
+          <div class="video-meta">
+            <div class="video-stats">
+              <span class="stat-item" id="video-views">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <span>0 views</span>
+              </span>
+              <span class="stat-item" id="video-date">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                <span></span>
+              </span>
+              <span class="stat-item" id="video-country-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                <span></span>
+              </span>
+            </div>
+            <div class="video-actions">
+              <button class="action-btn" id="like-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+                <span id="like-count">0</span>
+              </button>
+              <button class="action-btn" id="dislike-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>
+                <span id="dislike-count">0</span>
+              </button>
+              <button class="action-btn" id="share-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                Share
+              </button>
+              <button class="action-btn" id="favourite-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                <span id="favourite-label">Favourite</span>
+              </button>
+              <button class="action-btn" id="download-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 8 12 3 17 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Download
+              </button>
+            </div>
+          </div>
+          <div class="video-description-box">
+            <p id="video-description"></p>
+          </div>
+        </div>
+
+        <div class="social-nav-buttons">
+          <a href="https://t.me/xstreamfilms" target="_blank" rel="noopener noreferrer" class="social-nav-btn social-nav-btn--telegram">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+            Join Channal
+          </a>
+          <a href="https://whatsapp.com/channel/0029Vb7mjGr2v1Ijuvz2CL1n" target="_blank" rel="noopener noreferrer" class="social-nav-btn social-nav-btn--whatsapp">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            WhatsApp channal
+          </a>
+          <a href="https://youtube.com/@xstreamflims?si=yvK4AwmC3VcMJSzz" target="_blank" rel="noopener noreferrer" class="social-nav-btn social-nav-btn--youtube">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            Subscribe
+          </a>
+        </div>
+
+        <!-- Video Not Found -->
+        <div id="video-not-found" class="empty-state" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          <h3>Movie Not Found</h3>
+          <p>This video may have been removed or doesn't exist.</p>
+          <a href="index.html" class="btn-accent">Back to Home</a>
+        </div>
+      </div>
+
+      <!-- Related Videos -->
+      <aside class="related-sidebar">
+        <h3 class="related-title">Related Videos</h3>
+        <div id="related-videos" class="related-list widget-video-list">
+          <div class="skeleton-widget-item"><div class="skeleton skeleton-widget-thumb"></div><div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></div>
+          <div class="skeleton-widget-item"><div class="skeleton skeleton-widget-thumb"></div><div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></div>
+          <div class="skeleton-widget-item"><div class="skeleton skeleton-widget-thumb"></div><div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></div>
+          <div class="skeleton-widget-item"><div class="skeleton skeleton-widget-thumb"></div><div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></div>
+          <div class="skeleton-widget-item"><div class="skeleton skeleton-widget-thumb"></div><div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></div>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <aside class="Adverts-sidebar">
+    <h3 class="Adverts-title">Adverts</h3>
+    <div class="ad-banner-wrapper" id="ad-banner-top"></div>
+    <div class="ad-banner-wrapper" id="ad-banner-bottom"></div>
+  </aside>
+
+  <footer id="main-footer" class="footer"></footer>
+
+  <script src="js/offline-manager.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js').catch(function(err) {
+          console.warn('SW registration failed:', err);
+        });
+      });
+    }
+  </script>
+
+  <script src="js/optimizer.js"></script>
+  <script src="js/threat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+  <script src="config.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/WT.js"></script>
+
+<script>
+  (function() {
+    'use strict';
+    var VIDEO_ELEMENT_ID = 'videoPlayer';
+    var isTracking = false;
+    var isPaused = false;
+    var currentMovieId = null;
+    var currentUserId = null;
+    var currentTitle = '';
+    var positionInterval = null;
+
+    function getVideoPlayer(callback, retries) {
+      retries = retries || 0;
+      var maxRetries = 20;
+      var player = document.getElementById(VIDEO_ELEMENT_ID);
+      if (!player) {
+        var fallbacks = ['video', '#player', '.video-player', 'video[controls]'];
+        for (var i = 0; i < fallbacks.length; i++) {
+          player = document.querySelector(fallbacks[i]);
+          if (player) { console.log('[Tracker] Found video with fallback:', fallbacks[i]); break; }
+        }
+      }
+      if (player) { callback(player); return; }
+      if (retries < maxRetries) {
+        setTimeout(function() { getVideoPlayer(callback, retries + 1); }, 250);
+      } else {
+        console.error('[Tracker] Video player NOT found after', maxRetries, 'retries.');
+      }
+    }
+
+    function getMovieInfo() {
+      var params = new URLSearchParams(window.location.search);
+      return { id: params.get('id') || params.get('movie') || params.get('episode') || 'unknown', title: document.title || 'Unknown Title' };
+    }
+
+    function getUserId() {
+      try {
+        if (typeof auth !== 'undefined' && auth && auth.currentUser) return auth.currentUser.uid;
+        if (typeof AppState !== 'undefined' && AppState && AppState.currentUser) return AppState.currentUser.uid;
+      } catch (e) {}
+      return null;
+    }
+
+    function startTracking(player) {
+      if (!player || isTracking) return;
+      currentMovieId = getMovieInfo().id;
+      currentUserId = getUserId();
+      currentTitle = getMovieInfo().title;
+
+      player.addEventListener('loadedmetadata', function() {
+        if (typeof WatchTime !== 'undefined') { WatchTime.startWatching(currentMovieId, currentUserId, currentTitle, player.duration); isTracking = true; isPaused = false; }
+      });
+      if (player.readyState >= 1 && player.duration > 0 && typeof WatchTime !== 'undefined' && !isTracking) { WatchTime.startWatching(currentMovieId, currentUserId, currentTitle, player.duration); isTracking = true; }
+
+      player.addEventListener('play', function() {
+        if (!isTracking) { if (typeof WatchTime !== 'undefined') { WatchTime.startWatching(currentMovieId, currentUserId, currentTitle, player.duration || 0); isTracking = true; isPaused = false; } }
+        else if (isPaused) { if (typeof WatchTime !== 'undefined') { WatchTime.resumeWatching(); isPaused = false; } }
+      });
+      player.addEventListener('pause', function() { if (!isTracking || player.ended) return; if (typeof WatchTime !== 'undefined') { WatchTime.pauseWatching(); isPaused = true; } });
+      player.addEventListener('ended', function() { if (isTracking && typeof WatchTime !== 'undefined') { WatchTime.completeMovie(currentMovieId, currentUserId); isTracking = false; isPaused = false; stopPositionUpdates(); } });
+      player.addEventListener('error', function() { console.error('[Tracker] Player error:', player.error ? player.error.message : 'Unknown'); });
+      startPositionUpdates(player);
+    }
+
+    function startPositionUpdates(player) {
+      stopPositionUpdates();
+      positionInterval = setInterval(function() { if (!player || !isTracking || isPaused || player.paused || player.ended) return; if (typeof WatchTime !== 'undefined') WatchTime.updateWatchTime(currentMovieId, currentUserId, player.currentTime); }, 3000);
+    }
+    function stopPositionUpdates() { if (positionInterval) { clearInterval(positionInterval); positionInterval = null; } }
+
+    window.addEventListener('beforeunload', function() { stopPositionUpdates(); if (isTracking && typeof WatchTime !== 'undefined') { var p = document.getElementById(VIDEO_ELEMENT_ID); if (p && !p.ended && !p.paused) WatchTime.stopWatching(currentMovieId, currentUserId); } });
+
+    function watchForEpisodeChange() {
+      var lastId = currentMovieId;
+      setInterval(function() { var info = getMovieInfo(); if (info.id !== lastId && info.id !== 'unknown') { if (isTracking && typeof WatchTime !== 'undefined') WatchTime.stopWatching(currentMovieId, currentUserId); isTracking = false; isPaused = false; lastId = info.id; currentMovieId = info.id; currentTitle = info.title; getVideoPlayer(function(p) { isTracking = false; startTracking(p); }); } }, 1000);
+    }
+
+    function init() { if (typeof WatchTime === 'undefined') { console.error('[Tracker] WT.js not loaded!'); return; } getVideoPlayer(function(p) { startTracking(p); watchForEpisodeChange(); }); }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  })();
+</script>
+
+  <!-- ========== POSTER → PLAYER PLAY INTERACTION (desktop only) ========== -->
+  <script>
+  (function() {
+    'use strict';
+
+    var overlay  = document.getElementById('poster-play-overlay');
+    var playBtn  = document.getElementById('poster-play-btn');
+    var posterBg = document.getElementById('poster-play-bg');
+    var wrapper  = document.getElementById('video-player-wrapper');
+
+    if (!overlay || !playBtn || !wrapper) return;
+
+    /* Only activate on desktop */
+    function isDesktop() { return window.innerWidth >= 1024; }
+    if (!isDesktop()) return;
+
+    window.addEventListener('resize', function() {
+      if (!isDesktop() && overlay.style.display === 'flex') {
+        overlay.style.display = 'none';
+      }
+    });
+
+    var videoReady = false;
+
+    function setupOverlay(video) {
+      if (videoReady) return;
+      videoReady = true;
+
+      /* Get poster image from multiple sources */
+      var posterUrl = video.poster || '';
+      if (!posterUrl) {
+        var img = wrapper.querySelector('img');
+        if (img && img.src) posterUrl = img.src;
+      }
+      if (!posterUrl) {
+        var col = document.querySelector('.video-player-col');
+        if (col) {
+          var ci = col.querySelector('img');
+          if (ci && ci.src) posterUrl = ci.src;
+        }
+      }
+      if (!posterUrl) {
+        var og = document.querySelector('meta[property="og:image"]');
+        if (og && og.content) posterUrl = og.content;
+      }
+      if (posterUrl) {
+        posterBg.style.backgroundImage = 'url(' + posterUrl + ')';
+      }
+
+      /* Prevent preloading video until play */
+      video.preload = 'none';
+      video.removeAttribute('autoplay');
+      video.pause();
+
+      /* Show overlay */
+      overlay.style.display = 'flex';
+
+      /* Play button click */
+      playBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        /* Enable loading */
+        video.preload = 'auto';
+
+        /* Fade out overlay */
+        overlay.classList.add('poster-fade-out');
+
+        /* Start playback */
+        video.play().catch(function(err) {
+          console.warn('[PlayOverlay] Play failed:', err);
+        });
+
+        /* Remove overlay after animation */
+        setTimeout(function() {
+          overlay.style.display = 'none';
+          overlay.classList.remove('poster-fade-out');
+        }, 350);
+      });
+    }
+
+    /* Observe for video element insertion by app.js */
+    var observer = new MutationObserver(function() {
+      var video = wrapper.querySelector('video');
+      if (video) {
+        observer.disconnect();
+        setTimeout(function() { setupOverlay(video); }, 200);
+      }
+    });
+    observer.observe(wrapper, { childList: true, subtree: true });
+
+    /* Also check if video already exists */
+    var existing = wrapper.querySelector('video');
+    if (existing) {
+      observer.disconnect();
+      setTimeout(function() { setupOverlay(existing); }, 200);
+    }
+
+  })();
+  </script>
+
+  <script src="js/ad.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof AdSystem !== 'undefined') {
+        AdSystem.init('ad-banner-top', { position: 'all', maxAds: 10 });
+        AdSystem.init('ad-banner-bottom', { position: 'all', maxAds: 10 });
+      }
+    });
+    document.addEventListener('profileReady', function() {
+      if (typeof AdSystem !== 'undefined') {
+        AdSystem.init('ad-banner-top', { position: 'all', maxAds: 10 });
+        AdSystem.init('ad-banner-bottom', { position: 'all', maxAds: 10 });
+      }
+    });
+  </script>
+
+</body>
+</html>

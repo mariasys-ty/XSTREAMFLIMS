@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+ 
+  <meta name="description" content="XStream — Watch live TV channels from around the world. News, Sports, Entertainment, and more. Verified streams, favorites, and Picture-in-Picture.">
+  <meta name="keywords" content="live tv, streaming, news, sports, entertainment, world tv, , hls">
+  <meta name="author" content="XStream">
+  <meta property="og:title" content="XStream — Live TV">
+  <meta property="og:description" content="Stream live world TV channels directly in your browser with verified streams and PiP support.">
+  <title>Live TV — XStream</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- LIVE TV PAGE STYLES -->
+  <style>
+    /* ===== Live Player Modal ===== */
+    #live-player-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.94);
+      z-index: 999999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Poppins', sans-serif;
+      backdrop-filter: blur(8px);
+    }
+    #live-player-modal .player-wrapper {
+      width: 92%;
+      max-width: 1100px;
+      position: relative;
+    }
+    #close-live-player {
+      position: absolute;
+      top: -48px;
+      right: 0;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    #close-live-player:hover {
+      background: #ff4757;
+      border-color: #ff4757;
+      transform: translateY(-2px);
+    }
+    #live-video-player {
+      width: 100%;
+      max-height: 80vh;
+      background: #000;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    #live-player-title {
+      color: #ffffff;
+      margin-top: 18px;
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+    #live-player-meta {
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      font-size: 0.8rem;
+      margin-top: 6px;
+    }
+
+    /* ===== Player Controls Bar ===== */
+    .player-controls-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+    .player-ctrl-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.7);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .player-ctrl-btn:hover {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+    }
+    .player-ctrl-btn.active {
+      background: var(--accent, #ff4757);
+      border-color: var(--accent, #ff4757);
+      color: #fff;
+    }
+
+    /* ===== Channel Offline Badge ===== */
+    .channel-offline-badge {
+      pointer-events: none;
+    }
+
+    /* ===== Favorite Button Animations ===== */
+    .fav-btn {
+      transition: transform 0.2s ease, color 0.2s ease !important;
+    }
+    .fav-btn:active {
+      transform: scale(0.85) !important;
+    }
+
+    /* ===== PiP Button ===== */
+    .pip-btn {
+      transition: opacity 0.2s ease, background 0.2s ease !important;
+    }
+
+    /* ===== Quality Badge ===== */
+    .quality-badge {
+      pointer-events: none;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+
+    /* ===== Verified Section Scrollbar ===== */
+    #recommended-channels-row::-webkit-scrollbar {
+      height: 4px;
+    }
+    #recommended-channels-row::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    #recommended-channels-row::-webkit-scrollbar-thumb {
+      background: var(--border-color, rgba(255,255,255,0.1));
+      border-radius: 4px;
+    }
+
+    /* ===== Recent Row Scrollbar ===== */
+    #recent-channels-row::-webkit-scrollbar {
+      height: 4px;
+    }
+    #recent-channels-row::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    #recent-channels-row::-webkit-scrollbar-thumb {
+      background: var(--border-color, rgba(255,255,255,0.1));
+      border-radius: 4px;
+    }
+
+    /* ===== Source Indicator ===== */
+    #source-indicator {
+      transition: opacity 0.3s ease;
+    }
+
+    /* ===== Load More Button ===== */
+    #load-more-btn {
+      font-family: 'Poppins', sans-serif;
+    }
+    #load-more-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* ===== Offline Toggle ===== */
+    #show-offline-toggle {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    /* ===== Sidebar Category Icons ===== */
+    .cat-icon {
+      font-size: 0.85rem;
+      width: 20px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    /* ===== Sidebar Category Link ===== */
+    #live-sidebar-categories a {
+      display: flex !important;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ===== Verified Category Label ===== */
+    #recommended-channels-row > div > div:first-child {
+      position: sticky;
+      top: 0;
+      background: var(--bg-primary, #0a0a0f);
+      padding: 6px 0;
+      z-index: 2;
+    }
+
+    /* ===== Skeleton Updates for 24 items ===== */
+    .skeleton-card {
+      break-inside: avoid;
+    }
+
+    /* ===== Live Badge Pulse on Hero ===== */
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255,71,87,0.4); }
+      50% { box-shadow: 0 0 0 6px rgba(255,71,87,0); }
+    }
+    .hero-live-badge {
+      animation: pulse-glow 2s infinite;
+    }
+
+    /* ===== Responsive Player ===== */
+    @media (max-width: 768px) {
+      #live-player-modal .player-wrapper {
+        width: 96%;
+      }
+      #close-live-player {
+        top: -42px;
+        padding: 6px 14px;
+        font-size: 0.8rem;
+      }
+      #live-video-player {
+        max-height: 40vh;
+        border-radius: 8px;
+      }
+      .player-controls-bar {
+        gap: 8px;
+      }
+      .player-ctrl-btn {
+        padding: 6px 12px;
+        font-size: 0.75rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #live-video-player {
+        max-height: 35vh;
+      }
+      .player-controls-bar {
+        gap: 6px;
+      }
+      .player-ctrl-btn span {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body data-page="live">
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- Navigation -->
+  <nav id="main-nav" class="navbar"></nav>
+
+  <!-- Mobile Menu Overlay -->
+  <div id="mobile-overlay" class="mobile-overlay"></div>
+  <div id="mobile-menu" class="mobile-menu"></div>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="page-header-content">
+      <nav class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Live TV</span>
+      </nav>
+      <h1 class="page-title">Live TV</h1>
+      <p class="page-subtitle">Stream verified live TV channels from around the world — News, Sports, Entertainment, and more.</p>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main-container">
+    <div class="content-grid">
+
+      <!-- Main Column -->
+      <div class="content-main">
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+          <div class="filter-left">
+            <h2 class="section-title">
+              <svg class="title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.87 4.87a8 8 0 1 1 11.26 0"/><path d="M4.87 4.87 2 7"/><path d="M2 7h4"/><path d="M12 2v4"/><path d="M20 12h4"/><path d="M20 12a8 8 0 0 1-8 8"/></svg>
+              All Channels
+            </h2>
+            <span class="video-count-badge" id="channel-count-badge"></span>
+          </div>
+          <div class="filter-right">
+            <select id="live-category-filter" class="filter-select">
+              <option value="all">All Categories</option>
+              <option value="favorites">⭐ Favorites</option>
+              <optgroup label="Popular">
+                <option value="news">News</option>
+                <option value="sports">Sports</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="movies">Movies</option>
+                <option value="music">Music</option>
+              </optgroup>
+              <optgroup label="Lifestyle">
+                <option value="lifestyle">Lifestyle</option>
+                <option value="weather">Weather</option>
+                <option value="food">Food & Cooking</option>
+                <option value="travel">Travel</option>
+                <option value="fashion">Fashion</option>
+                <option value="health">Health</option>
+              </optgroup>
+              <optgroup label="Knowledge">
+                <option value="documentary">Documentary</option>
+                <option value="education">Education</option>
+                <option value="science">Science</option>
+                <option value="history">History</option>
+                <option value="culture">Culture</option>
+                <option value="business">Business</option>
+                <option value="tech">Technology</option>
+              </optgroup>
+              <optgroup label="Family">
+                <option value="kids">Kids</option>
+                <option value="cartoon">Cartoon</option>
+                <option value="gaming">Gaming</option>
+              </optgroup>
+              <optgroup label="Other">
+                <option value="religious">Religious</option>
+                <option value="comedy">Comedy</option>
+                <option value="drama">Drama</option>
+                <option value="shopping">Shopping</option>
+                <option value="legislative">Legislative</option>
+                <option value="event">Events</option>
+                <option value="general">General</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="widget" style="margin-bottom: 24px;">
+          <div class="search-box">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="text" id="live-search" placeholder="Search channels, countries, or categories..." autocomplete="off">
+          </div>
+        </div>
+
+        <!-- Live TV Grid (Populated by live.js v2.0) -->
+        <section class="section">
+          <div class="video-grid" id="live-tv-grid">
+            <!-- Skeleton Loaders (24 to match gridPageSize) -->
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+          </div>
+
+          <!-- Empty State -->
+          <div id="no-channels" class="empty-state" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="64" height="64"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
+            <h3>No Channels Found</h3>
+            <p>We couldn't find any channels matching your search or filters.</p>
+          </div>
+
+          <!-- Service Offline State -->
+          <div id="tv-service-offline" class="empty-state" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="64" height="64"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.56 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+            <h3>TV Service Offline</h3>
+            <p>The live TV service is currently unavailable. Please check your connection and try again.</p>
+          </div>
+        </section>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+
+      <!-- Quick Categories -->
+<div class="widget">
+  <h3 class="widget-title">Categories</h3>
+  <div class="vj-grid" id="live-sidebar-categories">
+    <a href="#" data-category="all" class="vj-btn active">📺 All Channels</a>
+    
+    <a href="#" data-category="favorites" class="vj-btn" style="grid-column: 1 / -1;">⭐ Favorites</a>
+    
+    <small class="vj-label">Popular</small>
+    <a href="#" data-category="news" class="vj-btn">📰 News</a>
+    <a href="#" data-category="sports" class="vj-btn">⚽ Sports</a>
+    <a href="#" data-category="entertainment" class="vj-btn">🎬 Entertainment</a>
+    <a href="#" data-category="movies" class="vj-btn">🍿 Movies</a>
+    <a href="#" data-category="music" class="vj-btn">🎵 Music</a>
+    
+    <small class="vj-label">Lifestyle</small>
+    <a href="#" data-category="lifestyle" class="vj-btn">✨ Lifestyle</a>
+    <a href="#" data-category="weather" class="vj-btn">🌤️ Weather</a>
+    <a href="#" data-category="food" class="vj-btn">🍳 Food</a>
+    <a href="#" data-category="travel" class="vj-btn">✈️ Travel</a>
+    <a href="#" data-category="fashion" class="vj-btn">👗 Fashion</a>
+    <a href="#" data-category="health" class="vj-btn">❤️ Health</a>
+    
+    <small class="vj-label">Knowledge</small>
+    <a href="#" data-category="documentary" class="vj-btn">🌍 Documentary</a>
+    <a href="#" data-category="education" class="vj-btn">📚 Education</a>
+    <a href="#" data-category="science" class="vj-btn">🔬 Science</a>
+    <a href="#" data-category="history" class="vj-btn">🕰️ History</a>
+    <a href="#" data-category="culture" class="vj-btn">🎨 Culture</a>
+    <a href="#" data-category="business" class="vj-btn">💼 Business</a>
+    <a href="#" data-category="tech" class="vj-btn">💻 Technology</a>
+    
+    <small class="vj-label">Family</small>
+    <a href="#" data-category="kids" class="vj-btn">🧸 Kids</a>
+    <a href="#" data-category="cartoon" class="vj-btn">🐱 Cartoon</a>
+    <a href="#" data-category="gaming" class="vj-btn">🎮 Gaming</a>
+    
+    <small class="vj-label">Other</small>
+    <a href="#" data-category="religious" class="vj-btn">🙏 Religious</a>
+    <a href="#" data-category="comedy" class="vj-btn">😂 Comedy</a>
+    <a href="#" data-category="drama" class="vj-btn">🎭 Drama</a>
+    <a href="#" data-category="shopping" class="vj-btn">🛍️ Shopping</a>
+    <a href="#" data-category="legislative" class="vj-btn">🏛️ Legislative</a>
+    <a href="#" data-category="event" class="vj-btn">📅 Events</a>
+    <a href="#" data-category="general" class="vj-btn">📡 General</a>
+  </div>
+</div>
+
+        <!-- Popular Channels Widget -->
+        <div class="widget">
+          <h3 class="widget-title">Popular Channels</h3>
+          <div id="popular-channels-widget" class="widget-video-list">
+            <div class="skeleton-widget-item"><div class="skeleton skeleton-widget-thumb"></div><div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></div>
+            <div class="skeleton-widget-item"><div class="skeleton skeleton-widget-thumb"></div><div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></div>
+            <div class="skeleton-widget-item"><div class="skeleton skeleton-widget-thumb"></div><div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></div>
+          </div>
+        </div>
+
+        <!-- Keyboard Shortcuts Widget -->
+        <div class="widget">
+          <h3 class="widget-title">Keyboard Shortcuts</h3>
+          <div style="font-size:0.82rem; color:var(--text-secondary); line-height:2;">
+            <div style="display:flex;justify-content:space-between;align-items:center;"><span>Next channel</span><kbd style="background:var(--bg-secondary);padding:2px 8px;border-radius:4px;font-size:0.75rem;border:1px solid var(--border-color);color:var(--text-primary);">↓ / J</kbd></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;"><span>Previous channel</span><kbd style="background:var(--bg-secondary);padding:2px 8px;border-radius:4px;font-size:0.75rem;border:1px solid var(--border-color);color:var(--text-primary);">↑ / K</kbd></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;"><span>Toggle favorite</span><kbd style="background:var(--bg-secondary);padding:2px 8px;border-radius:4px;font-size:0.75rem;border:1px solid var(--border-color);color:var(--text-primary);">F</kbd></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;"><span>Open channel</span><kbd style="background:var(--bg-secondary);padding:2px 8px;border-radius:4px;font-size:0.75rem;border:1px solid var(--border-color);color:var(--text-primary);">Enter</kbd></div>
+          </div>
+        </div>
+
+        <!-- Info Widget -->
+        <div class="widget">
+          <h3 class="widget-title">How it Works</h3>
+          <div style="font-size:0.85rem; color:var(--text-secondary); line-height:1.7;">
+            <p style="margin-bottom:10px;"><strong style="color:var(--text-primary);">1. Browse</strong> — Use categories, search, or the verified section to find channels.</p>
+            <p style="margin-bottom:10px;"><strong style="color:var(--text-primary);">2. Favorite</strong> — Star channels to build your personal list. Press <kbd style="background:var(--bg-secondary);padding:1px 5px;border-radius:3px;font-size:0.7rem;border:1px solid var(--border-color);">F</kbd> to quick-toggle.</p>
+            <p style="margin-bottom:10px;"><strong style="color:var(--text-primary);">3. PiP Mode</strong> — Hover a card and click the PiP button to watch in a floating window.</p>
+            <p><strong style="color:var(--text-primary);">4. Watch</strong> — Click any channel to open the full player. Verified channels marked with quality badges.</p>
+          </div>
+        </div>
+
+        <!-- Source Info Widget -->
+        <div class="widget" id="source-info-widget" style="display:none;">
+          <h3 class="widget-title">Data Sources</h3>
+          <div id="source-info-content" style="font-size:0.82rem; color:var(--text-secondary); line-height:1.8;">
+          </div>
+        </div>
+
+      </aside>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer id="main-footer" class="footer"></footer>
+
+  <!-- Live Player Modal -->
+  <div id="live-player-modal">
+    <div class="player-wrapper">
+      <button id="close-live-player">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Close
+      </button>
+      <video id="live-video-player" controls playsinline></video>
+      <div id="live-player-title"></div>
+      <div id="live-player-meta"></div>
+      <div class="player-controls-bar">
+        <button class="player-ctrl-btn" id="player-pip-btn" title="Picture in Picture">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><rect x="2" y="3" width="20" height="14" rx="2"/><rect x="12" y="9" width="8" height="8" rx="1" fill="currentColor" opacity="0.3"/></svg>
+          <span>PiP</span>
+        </button>
+        <button class="player-ctrl-btn" id="player-fav-btn" title="Add to Favorites">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <span>Favorite</span>
+        </button>
+        <button class="player-ctrl-btn" id="player-prev-btn" title="Previous Channel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><polyline points="15 18 9 12 15 6"/></svg>
+          <span>Prev</span>
+        </button>
+        <button class="player-ctrl-btn" id="player-next-btn" title="Next Channel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><polyline points="9 18 15 12 9 6"/></svg>
+          <span>Next</span>
+        </button>
+        <button class="player-ctrl-btn" id="player-shuffle-btn" title="Random Channel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+          <span>Random</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+  <!-- HLS.js — Required for live TV in Chrome/Firefox/Edge -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+  <!-- App Scripts -->
+  <script src="js/optimizer.js"></script>
+ <script src="config.js"></script>
+<script src="js/app.js"></script>
+  <script src="js/live.js"></script>
+</body>
+</html>

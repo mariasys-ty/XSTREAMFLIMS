@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Watch this series on Xstream.">
+  <title>Watch Series — Xstream</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/watch.css">
+  <link rel="stylesheet" href="css/ad.css">
+</head>
+<body data-page="series-watch">
+
+  <div id="toast-container"></div>
+  <nav id="main-nav" class="navbar"></nav>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-overlay" class="mobile-overlay"></div>
+  <div id="mobile-menu" class="mobile-menu"></div>
+
+  <main class="video-page-main" id="watch-page-content">
+    <div class="video-page-grid">
+
+      <!-- Left Column: Player + Info + Episodes -->
+      <div class="video-player-col">
+
+        <!-- HERO SECTION: Full Poster Background with Player & Info -->
+        <div id="watch-header">
+          <div class="skeleton skeleton-player" style="position:absolute;inset:0;z-index:0;border-radius:0;"></div>
+        </div>
+        
+
+        <!-- Seasons & Episodes -->
+        <div id="seasons-container" style="margin: 0 24px;">
+          <h2 class="seasons-container-header">Seasons & Episodes</h2>
+          <div id="season-tabs">
+            <div class="skeleton skeleton-text" style="height:42px;width:200px;margin-bottom:12px;border-radius:8px;"></div>
+            <div class="skeleton skeleton-text" style="height:42px;width:180px;margin-bottom:12px;border-radius:8px;"></div>
+          </div>
+          <div id="episode-list">
+            <div class="skeleton skeleton-text" style="height:76px;margin-bottom:6px;border-radius:8px;"></div>
+            <div class="skeleton skeleton-text" style="height:76px;margin-bottom:6px;border-radius:8px;"></div>
+            <div class="skeleton skeleton-text" style="height:76px;margin-bottom:6px;border-radius:8px;"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Related Series -->
+      <aside class="related-sidebar">
+        <div class="related-series-section">
+          <h3 class="related-title">Related Series</h3>
+          <div id="related-series" class="related-list">
+            <div class="skeleton-widget-item"><div class="skeleton skeleton-widget-thumb"></div><div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></div>
+            <div class="skeleton-widget-item"><div class="skeleton skeleton-widget-thumb"></div><div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></div>
+            <div class="skeleton-widget-item"><div class="skeleton skeleton-widget-thumb"></div><div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></div>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+
+    <!-- Not Found State -->
+    <div id="video-not-found" class="empty-state" style="display:none; grid-column:1/-1;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="64" height="64"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+      <h3>Series Not Found</h3>
+      <p>This series may have been removed or doesn't exist.</p>
+      <a href="series.html" class="btn-accent" style="margin-top:16px;">Browse Series</a>
+    </div>
+  </main>
+  
+   <aside class="Adverts-sidebar">
+   <h3 class="Adverts-title"> Adverts</h3>
+   <!-- ✅ Ad banners OUTSIDE the grid, AFTER main -->
+   <div class="ad-banner-wrapper" id="ad-banner-top"></div>
+   <div class="ad-banner-wrapper" id="ad-banner-bottom">
+     
+   </div>
+ </aside>
+
+  <footer id="main-footer" class="footer"></footer>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script src="config.js"></script>
+<!-- ORDER MATTERS: Firebase SDK first, then app.js, then WT.js -->
+<script src="js/app.js"></script>
+<script src="js/WT.js"></script>
+
+<script>
+  /* =============================================
+   VIDEO PLAYER TRACKING INITIALIZATION
+   Safe initialization that handles null references
+   ============================================= */
+  
+  (function() {
+    'use strict';
+    
+    /* ─── Configuration ─── */
+    // CHANGE THIS to match your actual video element ID!
+    var VIDEO_ELEMENT_ID = 'videoPlayer';
+    // If your video has a different ID, change it here:
+    // Common IDs: 'videoPlayer', 'player', 'video', 'episode-video', 'main-video'
+    
+    /* ─── State ─── */
+    var isTracking = false;
+    var isPaused = false;
+    var currentMovieId = null;
+    var currentUserId = null;
+    var currentTitle = '';
+    var positionInterval = null;
+    
+    /* ─── Safely get video element with retries ─── */
+    function getVideoPlayer(callback, retries) {
+      retries = retries || 0;
+      var maxRetries = 20; // 20 * 250ms = 5 seconds max wait
+      
+      // Try to find by ID
+      var player = document.getElementById(VIDEO_ELEMENT_ID);
+      
+      // If not found by ID, try common selectors as fallback
+      if (!player) {
+        var fallbacks = ['video', '#player', '.video-player', 'video[controls]'];
+        for (var i = 0; i < fallbacks.length; i++) {
+          player = document.querySelector(fallbacks[i]);
+          if (player) {
+            console.log('[Tracker] Found video with fallback selector:', fallbacks[i]);
+            break;
+          }
+        }
+      }
+      
+      if (player) {
+        console.log('[Tracker] Video player found:', player.id || player.tagName);
+        callback(player);
+        return;
+      }
+      
+      if (retries < maxRetries) {
+        setTimeout(function() {
+          getVideoPlayer(callback, retries + 1);
+        }, 250);
+      } else {
+        console.error('[Tracker] Video player NOT found after', maxRetries, 'retries. Check your VIDEO_ELEMENT_ID setting.');
+      }
+    }
+    
+    /* ─── Extract movie/episode info from URL ─── */
+    function getMovieInfo() {
+      var params = new URLSearchParams(window.location.search);
+      return {
+        id: params.get('id') || params.get('movie') || params.get('episode') || 'unknown',
+        title: document.title || 'Unknown Title'
+      };
+    }
+    
+    /* ─── Get user ID ─── */
+    function getUserId() {
+      try {
+        if (typeof auth !== 'undefined' && auth && auth.currentUser) {
+          return auth.currentUser.uid;
+        }
+        if (typeof AppState !== 'undefined' && AppState && AppState.currentUser) {
+          return AppState.currentUser.uid;
+        }
+      } catch (e) {}
+      return null; // WT.js will use guest ID
+    }
+    
+    /* ─── Start tracking ─── */
+    function startTracking(player) {
+      if (!player || isTracking) return;
+      
+      currentMovieId = getMovieInfo().id;
+      currentUserId = getUserId();
+      currentTitle = getMovieInfo().title;
+      
+      console.log('[Tracker] Setting up tracking for:', currentMovieId);
+      
+      /* ─── loadedmetadata: Start watch session when duration is known ─── */
+      player.addEventListener('loadedmetadata', function onMetaLoaded() {
+        console.log('[Tracker] Metadata loaded, duration:', player.duration);
+        
+        if (typeof WatchTime !== 'undefined') {
+          WatchTime.startWatching(
+            currentMovieId,
+            currentUserId,
+            currentTitle,
+            player.duration
+          );
+          isTracking = true;
+          isPaused = false;
+          console.log('[Tracker] WatchTime session started');
+        } else {
+          console.error('[Tracker] WatchTime module not loaded!');
+        }
+      });
+      
+      // If metadata already loaded (cached video), start immediately
+      if (player.readyState >= 1 && player.duration > 0) {
+        if (typeof WatchTime !== 'undefined' && !isTracking) {
+          WatchTime.startWatching(
+            currentMovieId,
+            currentUserId,
+            currentTitle,
+            player.duration
+          );
+          isTracking = true;
+          console.log('[Tracker] WatchTime session started (cached metadata)');
+        }
+      }
+      
+      /* ─── Play event ─── */
+      player.addEventListener('play', function() {
+        console.log('[Tracker] Play event fired');
+        
+        if (!isTracking) {
+          // First play - start tracking
+          if (typeof WatchTime !== 'undefined') {
+            WatchTime.startWatching(
+              currentMovieId,
+              currentUserId,
+              currentTitle,
+              player.duration || 0
+            );
+            isTracking = true;
+            isPaused = false;
+          }
+        } else if (isPaused) {
+          // Resume from pause
+          if (typeof WatchTime !== 'undefined') {
+            WatchTime.resumeWatching();
+            isPaused = false;
+            console.log('[Tracker] Resumed');
+          }
+        }
+      });
+      
+      /* ─── Pause event ─── */
+      player.addEventListener('pause', function() {
+        if (!isTracking) return;
+        
+        // Don't pause if video ended (ended fires after pause)
+        if (player.ended) return;
+        
+        if (typeof WatchTime !== 'undefined') {
+          WatchTime.pauseWatching();
+          isPaused = true;
+          console.log('[Tracker] Paused');
+        }
+      });
+      
+      /* ─── Ended event ─── */
+      player.addEventListener('ended', function() {
+        console.log('[Tracker] Video ended');
+        
+        if (isTracking && typeof WatchTime !== 'undefined') {
+          WatchTime.completeMovie(currentMovieId, currentUserId);
+          isTracking = false;
+          isPaused = false;
+          stopPositionUpdates();
+          console.log('[Tracker] Marked as completed');
+        }
+      });
+      
+      /* ─── Error event ─── */
+      player.addEventListener('error', function(e) {
+        var error = player.error;
+        console.error('[Tracker] Player error:', error ? error.message : 'Unknown error');
+      });
+      
+      /* ─── Position tracking interval ─── */
+      startPositionUpdates(player);
+      
+      console.log('[Tracker] All event listeners attached');
+    }
+    
+    /* ─── Position update interval ─── */
+    function startPositionUpdates(player) {
+      stopPositionUpdates(); // Clear any existing interval
+      
+      positionInterval = setInterval(function() {
+        if (!player || !isTracking || isPaused) return;
+        if (player.paused || player.ended) return;
+        
+        if (typeof WatchTime !== 'undefined') {
+          WatchTime.updateWatchTime(
+            currentMovieId,
+            currentUserId,
+            player.currentTime
+          );
+        }
+      }, 3000); // Update every 3 seconds
+    }
+    
+    function stopPositionUpdates() {
+      if (positionInterval) {
+        clearInterval(positionInterval);
+        positionInterval = null;
+      }
+    }
+    
+    /* ─── Cleanup on page unload (WT.js handles this, but as safety net) ─── */
+    window.addEventListener('beforeunload', function() {
+      stopPositionUpdates();
+      
+      if (isTracking && typeof WatchTime !== 'undefined') {
+        var player = document.getElementById(VIDEO_ELEMENT_ID);
+        if (player && !player.ended && !player.paused) {
+          WatchTime.stopWatching(currentMovieId, currentUserId);
+          console.log('[Tracker] Cleanup on unload');
+        }
+      }
+    });
+    
+    /* ─── Handle episode changes (for series pages) ─── */
+    function watchForEpisodeChange() {
+      var lastEpisodeId = currentMovieId;
+      
+      setInterval(function() {
+        var newInfo = getMovieInfo();
+        if (newInfo.id !== lastEpisodeId && newInfo.id !== 'unknown') {
+          console.log('[Tracker] Episode changed:', lastEpisodeId, '→', newInfo.id);
+          
+          // Stop current session
+          if (isTracking && typeof WatchTime !== 'undefined') {
+            WatchTime.stopWatching(currentMovieId, currentUserId);
+          }
+          
+          // Reset state
+          isTracking = false;
+          isPaused = false;
+          lastEpisodeId = newInfo.id;
+          currentMovieId = newInfo.id;
+          currentTitle = newInfo.title;
+          
+          // Re-initialize with new video element (if it changed)
+          getVideoPlayer(function(player) {
+            isTracking = false; // Reset again to allow new session
+            startTracking(player);
+          });
+        }
+      }, 1000);
+    }
+    
+    /* ─── INIT: Wait for DOM then start ─── */
+    function init() {
+      console.log('[Tracker] Initializing...');
+      
+      if (typeof WatchTime === 'undefined') {
+        console.error('[Tracker] WT.js not loaded! Make sure WT.js is included before this script.');
+        return;
+      }
+      
+      getVideoPlayer(function(player) {
+        startTracking(player);
+        watchForEpisodeChange();
+      });
+    }
+    
+    // Start when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      // DOM already loaded
+      init();
+    }
+    
+  })();
+</script>
+<script src="js/series.js"></script>
+ <script src="js/ad.js"></script>
+   <script>
+    /* Initialize ad banners after page loads */
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof AdSystem !== 'undefined') {
+        AdSystem.init('ad-banner-top', {
+          position: 'all',
+          maxAds: 10
+        });
+        AdSystem.init('ad-banner-bottom', {
+          position: 'all',
+          maxAds: 10
+        });
+      } else {
+        console.warn('AdSystem not loaded — check js/ad.js');
+      }
+    });
+    
+    /* Also init after auth state */
+    document.addEventListener('profileReady', function() {
+      if (typeof AdSystem !== 'undefined') {
+        AdSystem.init('ad-banner-top', {
+          position: 'all',
+          maxAds: 10
+        });
+        AdSystem.init('ad-banner-bottom', {
+          position: 'all',
+          maxAds: 10
+        });
+      }
+    });
+  </script>
+</body>
+</html>

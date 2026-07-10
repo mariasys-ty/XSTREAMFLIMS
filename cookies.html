@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta name="description" content="Xstream Cookie Policy — What cookies and local storage we use, why, and how to manage them.">
+  <title>Cookie Policy — XSTREAM MOVIES</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="cookies">
+
+  <div id="toast-container"></div>
+  <nav id="main-nav" class="navbar"></nav>
+  <div id="mobile-overlay" class="mobile-overlay"></div>
+  <div id="mobile-menu" class="mobile-menu"></div>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="page-header-content">
+      <nav class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Cookie Policy</span>
+      </nav>
+      <h1 class="page-title">Cookie Policy</h1>
+      <p class="page-subtitle">Last updated: January 2025</p>
+    </div>
+  </section>
+
+  <main class="main-container">
+    <div class="legal-content">
+
+      <!-- Table of Contents -->
+      <nav class="legal-toc">
+        <h3>Table of Contents</h3>
+        <ol>
+          <li><a href="#cook-what">What Are Cookies?</a></li>
+          <li><a href="#cook-types">Types of Browser Storage We Use</a></li>
+          <li><a href="#cook-details">Detailed Breakdown</a></li>
+          <li><a href="#cook-third">Third-Party Cookies</a></li>
+          <li><a href="#cook-manage">How to Manage & Delete</a></li>
+          <li><a href="#cook-impact">Impact of Disabling</a></li>
+          <li><a href="#cook-updates">Updates to This Policy</a></li>
+          <li><a href="#cook-contact">Contact Us</a></li>
+        </ol>
+      </nav>
+
+      <!-- 1. What Are Cookies -->
+      <section class="legal-section" id="cook-what">
+        <h2>1. What Are Cookies?</h2>
+        <p>Cookies are small text files that websites place on your device (computer, tablet, or phone) when you visit them. They are widely used to make websites work more efficiently, remember your preferences, and provide information to the website owners.</p>
+        <p>In addition to traditional cookies, modern websites may use other browser storage technologies such as <strong>localStorage</strong> and <strong>sessionStorage</strong>, which function similarly but offer different capabilities in terms of data capacity and persistence.</p>
+        <p>This policy covers all forms of browser storage used by the Xstream movies platform — not just cookies, but also localStorage and any other client-side data storage mechanisms.</p>
+      </section>
+
+      <!-- 2. Types -->
+      <section class="legal-section" id="cook-types">
+        <h2>2. Types of Browser Storage We Use</h2>
+        <p>We keep our use of browser storage to an absolute minimum. Here are the categories we use:</p>
+
+        <div class="cookie-type-card">
+          <div class="cookie-type-header">
+            <span class="cookie-badge essential">Essential</span>
+            <h3>Authentication Cookies</h3>
+          </div>
+          <p>Set by Firebase Auth to maintain your logged-in session. Without these, you would need to sign in every time you visit a new page on the Platform.</p>
+        </div>
+
+        <div class="cookie-type-card">
+          <div class="cookie-type-header">
+            <span class="cookie-badge essential">Essential</span>
+            <h3>localStorage Preferences</h3>
+          </div>
+          <p>Used to store your like/dislike history and viewed video IDs locally in your browser. This data never leaves your device and is not transmitted to our servers. Keys used: <code>sv_liked</code>, <code>sv_disliked</code>, <code>sv_viewed</code>.</p>
+        </div>
+
+        <div class="cookie-type-card">
+          <div class="cookie-type-header">
+            <span class="cookie-badge none">Not Used</span>
+            <h3>Analytics Cookies</h3>
+          </div>
+          <p>We do <strong>not</strong> use Google Analytics, Hotjar, Mixpanel, or any other analytics service. No behavioral tracking cookies are set.</p>
+        </div>
+
+        <div class="cookie-type-card">
+          <div class="cookie-type-header">
+            <span class="cookie-badge none">Not Used</span>
+            <h3>Advertising Cookies</h3>
+          </div>
+          <p>We do <strong>not</strong> serve advertisements on the Platform. No ad networks, retargeting pixels, or ad-related cookies are used.</p>
+        </div>
+
+        <div class="cookie-type-card">
+          <div class="cookie-type-header">
+            <span class="cookie-badge none">Not Used</span>
+            <h3>Social Media Cookies</h3>
+          </div>
+          <p>We do <strong>not</strong> embed Facebook, Twitter, or other social media widgets that would set tracking cookies on our pages.</p>
+        </div>
+      </section>
+
+      <!-- 3. Detailed Breakdown -->
+      <section class="legal-section" id="cook-details">
+        <h2>3. Detailed Breakdown</h2>
+        <p>Below is a complete table of all browser storage items used by the Platform:</p>
+
+        <div class="cookie-table-wrapper">
+          <table class="cookie-table">
+            <thead>
+              <tr>
+                <th>Storage Item</th>
+                <th>Type</th>
+                <th>Set By</th>
+                <th>Purpose</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>__session</code></td>
+                <td>Cookie</td>
+                <td>Firebase Auth</td>
+                <td>Maintains login session across page requests</td>
+                <td>Session (expires when browser closes)</td>
+              </tr>
+              <tr>
+                <td><code>firebaseAuthUser</code></td>
+                <td>Cookie</td>
+                <td>Firebase Auth</td>
+                <td>Persists authentication state across browser sessions</td>
+                <td>Up to 2 weeks (if "Remember Me" is selected)</td>
+              </tr>
+              <tr>
+                <td><code>sv_liked</code></td>
+                <td>localStorage</td>
+                <td>Xstream</td>
+                <td>Stores IDs of videos you've liked</td>
+                <td>Permanent until manually cleared</td>
+              </tr>
+              <tr>
+                <td><code>sv_disliked</code></td>
+                <td>localStorage</td>
+                <td>Xstream</td>
+                <td>Stores IDs of videos you've disliked</td>
+                <td>Permanent until manually cleared</td>
+              </tr>
+              <tr>
+                <td><code>sv_viewed</code></td>
+                <td>localStorage</td>
+                <td>Xstream</td>
+                <td>Stores IDs of videos you've viewed (prevents double-counting views)</td>
+                <td>Permanent until manually cleared</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="cookie-table-note">That's it. Five items total. No hidden trackers, no third-party cookies, no fingerprinting scripts.</p>
+      </section>
+
+      <!-- 4. Third-Party -->
+      <section class="legal-section" id="cook-third">
+        <h2>4. Third-Party Cookies</h2>
+        <p>The only third-party service that may set cookies on our Platform is <strong>Google Firebase</strong>, which sets authentication cookies as described in the table above. These cookies are essential for the Platform to function.</p>
+        <p><strong>Google Fonts</strong> is loaded via a CDN link in our HTML. Google may set standard CDN cookies for load balancing purposes, but these are not set by or controlled by us. Google's cookie policy applies: <a href="https://policies.google.com/technologies/cookies" target="_blank" rel="noopener">policies.google.com/technologies/cookies</a></p>
+        <p><strong>Cloudinary</strong> hosts our video and image files. When you watch a video or load a thumbnail, the media is served from Cloudinary's CDN. Cloudinary may set standard CDN cookies for caching and performance optimization. These are not set by or controlled by us. Cloudinary's cookie policy applies: <a href="https://cloudinary.com/privacy" target="_blank" rel="noopener">cloudinary.com/privacy</a></p>
+        <p>No other third parties set cookies through our Platform.</p>
+      </section>
+
+      <!-- 5. How to Manage -->
+      <section class="legal-section" id="cook-manage">
+        <h2>5. How to Manage & Delete</h2>
+
+        <h3>5.1 Clearing Xstream localStorage</h3>
+        <p>To clear your like/dislike/view history stored in localStorage:</p>
+        <ol>
+          <li>Open your browser's Developer Tools (F12 or Ctrl+Shift+I / Cmd+Shift+I)</li>
+          <li>Go to the "Application" or "Storage" tab</li>
+          <li>Find "Local Storage" in the left sidebar</li>
+          <li>Click on our domain</li>
+          <li>Find and delete the keys: <code>sv_liked</code>, <code>sv_disliked</code>, <code>sv_viewed</code></li>
+        </ol>
+        <p>Or simply use your browser's "Clear browsing data" function and select "Cookies and other site data" along with "Site data".</p>
+
+        <h3>5.2 Managing Cookies in Your Browser</h3>
+        <p>You can control and delete cookies through your browser settings. The process varies by browser:</p>
+        <ul>
+          <li><strong>Chrome:</strong> Settings → Privacy and security → Cookies and other site data</li>
+          <li><strong>Firefox:</strong> Settings → Privacy & Security → Cookies and Site Data</li>
+          <li><strong>Safari:</strong> Preferences → Privacy → Manage Website Data</li>
+          <li><strong>Edge:</strong> Settings → Cookies and site permissions → Manage and delete cookies</li>
+        </ul>
+        <p>For more details, visit <a href="https://www.allaboutcookies.org/manage-cookies/" target="_blank" rel="noopener">allaboutcookies.org/manage-cookies</a></p>
+
+        <h3>5.3 Disabling Cookies Entirely</h3>
+        <p>You can set your browser to block all cookies. However, this will prevent Firebase Auth from maintaining your login session, meaning you will not be able to stay logged in as you navigate the Platform. The site will still be viewable as a guest, but you will not be able to upload videos, like/dislike content, or access your profile.</p>
+      </section>
+
+      <!-- 6. Impact -->
+      <section class="legal-section" id="cook-impact">
+        <h2>6. Impact of Disabling Storage</h2>
+        <div class="cookie-impact-grid">
+          <div class="cookie-impact-item">
+            <h4>If you block Firebase Auth cookies</h4>
+            <p>You will be automatically signed out and unable to stay logged in. Each page navigation will require re-authentication. Uploading videos and accessing your profile will not function properly.</p>
+          </div>
+          <div class="cookie-impact-item">
+            <h4>If you clear localStorage</h4>
+            <p>Your like/dislike history will be reset. Videos you previously liked/disliked will show as neutral. Videos you've already viewed may have their view count incremented again if you watch them.</p>
+          </div>
+          <div class="cookie-impact-item">
+            <h4>If you block all cookies</h4>
+            <p>The Platform will function in a limited guest mode. You can browse and watch videos, but all account-related features (login, upload, like, profile) will be unavailable.</p>
+          </div>
+          <div class="cookie-impact-item">
+            <h4>If you use private/incognito mode</h4>
+            <p>The Platform works normally in private browsing. Note that localStorage data will be cleared when you close the private window, so your like/dislike history will not persist between sessions.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. Updates -->
+      <section class="legal-section" id="cook-updates">
+        <h2>7. Updates to This Policy</h2>
+        <p>We may update this Cookie Policy if we change how we use browser storage, or if there are regulatory changes that require us to disclose additional information. When we make changes, we will update the "Last updated" date at the top of this page.</p>
+        <p>If we introduce new types of cookies or localStorage usage beyond what is described here, we will update this policy and, for non-essential cookies, provide a way for you to opt out.</p>
+      </section>
+
+      <!-- 8. Contact -->
+      <section class="legal-section" id="cook-contact">
+        <h2>8. Contact Us</h2>
+        <p>If you have questions about our use of cookies or browser storage, please contact us:</p>
+        <ul>
+          <li><strong>Email:</strong> <a href="mailto:support@xstream.com">support@xstream.com</a></li>
+          <li><strong>Contact Form:</strong> <a href="contact.html">xstream.com/contact.html</a></li>
+          <li><strong>Related:</strong> <a href="privacy.html">Privacy Policy</a> · <a href="helpcenter.html">Help Center</a></li>
+        </ul>
+      </section>
+
+    </div>
+  </main>
+
+  <footer id="main-footer" class="footer"></footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="config.js"></script>
+<script src="js/app.js"></script>
+  <script>
+    /* Smooth scroll for TOC links */
+    (function() {
+      var links = document.querySelectorAll('.legal-toc a');
+      for (var i = 0; i < links.length; i++) {
+        links[i].addEventListener('click', function(e) {
+          e.preventDefault();
+          var target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

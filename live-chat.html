@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+ 
+  <title>XStream Live Support</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #141414;
+      --bg-secondary: #1f1f1f;
+      --bg-tertiary: #2a2a2a;
+      --accent: #E50914;
+      --text-primary: #fff;
+      --text-secondary: #a0a0a0;
+      --border: rgba(255,255,255,0.08);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-primary); height: 100vh; display: flex; flex-direction: column; }
+    
+    .chat-header { background: var(--bg-secondary); padding: 16px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    .chat-logo { color: var(--accent); font-weight: 800; font-size: 20px; letter-spacing: -0.5px; }
+    .chat-user-info { margin-left: auto; text-align: right; }
+    .chat-user-info h4 { font-size: 14px; font-weight: 600; }
+    .chat-user-info span { font-size: 12px; color: var(--text-secondary); }
+    .status-dot { width: 8px; height: 8px; background: var(--text-secondary); border-radius: 50%; display: inline-block; margin-left: 6px; }
+    .status-dot.active { background: #46d369; box-shadow: 0 0 6px #46d369; }
+
+    .messages-container { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+    .message { display: flex; gap: 10px; max-width: 75%; animation: fadeIn 0.3s ease; }
+    .message.user { align-self: flex-end; flex-direction: row-reverse; }
+    .message.admin { align-self: flex-start; }
+    .avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--bg-tertiary); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+    .message.admin .avatar { background: var(--accent); color: white; }
+    .bubble { padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; position: relative; word-wrap: break-word; }
+    .message.user .bubble { background: var(--accent); color: white; border-bottom-right-radius: 4px; }
+    .message.admin .bubble { background: var(--bg-tertiary); color: var(--text-primary); border-bottom-left-radius: 4px; }
+    .msg-time { font-size: 11px; color: var(--text-secondary); margin-top: 4px; text-align: right; }
+    .message.admin .msg-time { text-align: left; }
+
+    .chat-input-area { padding: 16px 24px; background: var(--bg-secondary); border-top: 1px solid var(--border); display: flex; gap: 12px; }
+    .chat-input-area input { flex: 1; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary); padding: 14px 18px; border-radius: 24px; font-size: 14px; outline: none; }
+    .chat-input-area input:focus { border-color: var(--accent); }
+    .chat-input-area button { background: var(--accent); border: none; color: white; padding: 0 24px; border-radius: 24px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .chat-input-area button:hover { background: #f40612; }
+    .chat-input-area button:disabled { background: #555; cursor: not-allowed; }
+
+    .banned-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(20,20,20,0.95); display: none; align-items: center; justify-content: center; flex-direction: column; z-index: 10; text-align: center; padding: 20px; }
+    .banned-overlay.show { display: flex; }
+    .banned-overlay h2 { color: var(--accent); margin-bottom: 10px; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 600px) { .message { max-width: 90%; } .chat-header { padding: 12px 16px; } }
+  </style>
+</head>
+<body>
+
+  <div class="chat-header">
+    <div class="chat-logo">XSTREAM</div>
+    <div class="chat-user-info">
+      <h4 id="display-name">Loading...</h4>
+      <span>Connected <span class="status-dot active" id="status-dot"></span></span>
+    </div>
+  </div>
+
+  <div class="messages-container" id="messages"></div>
+
+  <div class="chat-input-area" id="input-area">
+    <input type="text" id="msg-input" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+    <button id="send-btn" onclick="sendMessage()">Send</button>
+  </div>
+
+  <div class="banned-overlay" id="banned-overlay">
+    <h2>Chat Session Ended</h2>
+    <p style="color: var(--text-secondary); max-width: 400px;">This support chat link has been disabled by an administrator. If you need further assistance, please visit our contact page.</p>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+  <script>
+    let db, roomId, userName, userEmail;
+    let isBanned = false;
+
+    function init() {
+      const params = new URLSearchParams(window.location.search);
+      roomId = params.get('room');
+      userEmail = params.get('email');
+
+      if (!roomId || !userEmail) {
+        alert("Invalid chat link.");
+        return;
+      }
+
+      // Generate Name from Email (e.g., john.doe@gmail.com -> John Doe)
+      userName = userEmail.split('@')[0]
+                               .replace(/[._-]/g, ' ')
+                               .replace(/\b\w/g, l => l.toUpperCase());
+      
+      document.getElementById('display-name').textContent = userName;
+
+      // Init Firebase
+      if (!firebase.apps.length) {
+        firebase.initializeApp({
+          apiKey: "AIzaSyCvrWHOHXmVmHkl451aQA6XFCWy7xA9jFw",
+          authDomain: "xstream-9f21e.firebaseapp.com",
+          projectId: "xstream-9f21e",
+          storageBucket: "xstream-9f21e.firebasestorage.app",
+          messagingSenderId: "179015046758",
+          appId: "1:179015046758:web:e7da8143826b59b49e7fa7",
+          databaseURL: "https://xstream-9f21e-default-rtdb.firebaseio.com"
+        });
+      }
+
+      db = firebase.database();
+      firebase.auth().signInAnonymously();
+
+      // Create/Update meta data for this room
+      db.ref('live chat/' + roomId + '/meta').update({
+        userName: userName,
+        email: userEmail,
+        lastActive: Date.now()
+      });
+
+      // Check Ban Status Real-time
+      db.ref('live chat/' + roomId + '/meta/status').on('value', snap => {
+        if (snap.val() === 'banned') {
+          isBanned = true;
+          document.getElementById('banned-overlay').classList.add('show');
+          document.getElementById('input-area').style.display = 'none';
+          document.getElementById('status-dot').classList.remove('active');
+        }
+      });
+
+      // Listen for Messages
+      db.ref('live chat/' + roomId + '/messages').orderByChild('timestamp').on('child_added', snap => {
+        const msg = snap.val();
+        appendMessage(msg.text, msg.sender, msg.timestamp);
+      });
+    }
+
+    function appendMessage(text, sender, timestamp) {
+      const div = document.createElement('div');
+      div.className = `message ${sender}`;
+      const time = new Date(timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      const avatarText = sender === 'admin' ? 'XS' : userName.charAt(0).toUpperCase();
+      
+      div.innerHTML = `
+        <div class="avatar">${avatarText}</div>
+        <div>
+          <div class="bubble">${text.replace(/\n/g, '<br>')}</div>
+          <div class="msg-time">${time}</div>
+        </div>
+      `;
+      document.getElementById('messages').appendChild(div);
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('msg-input');
+      const text = input.value.trim();
+      if (!text || isBanned) return;
+
+      db.ref('live chat/' + roomId + '/messages').push({
+        text: text,
+        sender: 'user',
+        timestamp: Date.now()
+      }).then(() => {
+        input.value = '';
+        // Update last active
+        db.ref('live chat/' + roomId + '/meta').update({ lastActive: Date.now() });
+      });
+    }
+
+    function handleKeyPress(e) {
+      if (e.key === 'Enter') sendMessage();
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>

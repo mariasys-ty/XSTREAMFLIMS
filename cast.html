@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cast Details - XSTREAM</title>
+    <link rel="stylesheet" href="css/style.css"> <!-- Your main stylesheet -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- WORDPRESS-STYLE THEME VARIABLES --- */
+        :root {
+            --wp-bg: #f2f2f2;
+            --wp-white: #ffffff;
+            --wp-text: #333333;
+            --wp-text-light: #777777;
+            --wp-red: #d32f2f;
+            --wp-red-dark: #b71c1c;
+            --wp-border: #e0e0e0;
+        }
+
+        /* Reset basic styles */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            /* Subtle white/light grey paper texture using CSS */
+            background-color: var(--wp-bg);
+            background-image: 
+                linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px),
+                linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: var(--wp-text);
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+        }
+
+        /* --- WORDPRESS CONTAINER --- */
+        /* Centers the content and gives it a white "card" look */
+        .wp-container {
+            max-width: 1100px;
+            margin: 30px auto;
+            background: var(--wp-white);
+            box-shadow: 0 5px 25px rgba(0,0,0,0.07);
+            border: 1px solid var(--wp-border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        /* --- HEADER STYLING --- */
+        .cast-header {
+            padding: 40px 30px;
+            text-align: center;
+            /* RED TEXTURE: Subtle diagonal red stripes */
+            background-color: #fff;
+            background-image: repeating-linear-gradient(
+                45deg,
+                rgba(211, 47, 47, 0.05) 0px,
+                rgba(211, 47, 47, 0.05) 2px,
+                transparent 2px,
+                transparent 12px
+            );
+            border-bottom: 4px solid var(--wp-red);
+            position: relative;
+        }
+
+        /* Standard WP style Avatar circle */
+        .cast-header::before {
+            content: '';
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #f9f9f9;
+            border: 3px solid var(--wp-red);
+            margin: 0 auto 20px auto;
+            display: block;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .cast-name {
+            font-size: 2rem;
+            color: var(--wp-red-dark);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- WORDPRESS STYLE LOADING --- */
+        .loader {
+            color: var(--wp-text-light);
+            font-size: 0.95rem;
+            padding: 20px 0;
+        }
+
+        /* --- SECTION TITLES --- */
+        .section-title {
+            color: var(--wp-text);
+            font-size: 1.3rem;
+            padding: 25px 30px 15px 30px;
+            font-weight: 700;
+            /* Left red bar typical of WP themes */
+            border-left: 5px solid var(--wp-red);
+            background: #fafafa;
+            border-bottom: 1px solid var(--wp-border);
+            margin: 0;
+        }
+
+        /* --- MOVIE GRID LAYOUT --- */
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 25px;
+            padding: 30px;
+        }
+
+        /* --- MOVIE CARDS (Boxed WP Style) --- */
+        a { text-decoration: none; color: inherit; }
+
+        .movie-card {
+            position: relative;
+            border-radius: 4px;
+            overflow: hidden;
+            background: var(--wp-white);
+            border: 1px solid var(--wp-border);
+            /* Soft, typical WP shadow */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            border-color: var(--wp-red); /* Red border on hover */
+        }
+
+        /* --- CARD IMAGES --- */
+        .movie-card img {
+            width: 100%;
+            height: 210px;
+            object-fit: cover;
+            display: block;
+            transition: filter 0.3s ease;
+            /* Subtle white texture overlay on image */
+            background: #fff; 
+            background-image: radial-gradient(#eee 1px, transparent 1px);
+            background-size: 10px 10px;
+        }
+
+        .movie-card:hover img {
+            filter: brightness(0.7) saturate(1.2);
+        }
+
+        /* --- PLAY BUTTON OVERLAY --- */
+        .movie-card::after {
+            content: '▶';
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            color: white;
+            font-size: 1.5rem;
+            background: var(--wp-red);
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy effect */
+            padding-left: 3px;
+            box-shadow: 0 4px 10px rgba(211, 47, 47, 0.4);
+        }
+
+        .movie-card:hover::after {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* --- CARD TEXT --- */
+        .movie-card h3 {
+            font-size: 0.85rem;
+            color: var(--wp-text);
+            padding: 12px 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 600;
+            background: var(--wp-white);
+            border-top: 1px solid var(--wp-border);
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 600px) {
+            .wp-container { margin: 10px; border: none; }
+            .movie-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; padding: 15px; }
+            .cast-name { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Your existing Navbar would go here -->
+    
+    <!-- WordPress Style Wrapper -->
+    <div class="wp-container">
+        
+        <div class="cast-header">
+            <div class="loader" id="loader">Fetching Database...</div>
+            <h1 class="cast-name" id="castName" style="display:none;"></h1>
+        </div>
+
+        <div id="movieSections"></div>
+
+    </div>
+
+    <!-- Include your Firebase scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="js/cast.js"></script>
+</body>
+</html>

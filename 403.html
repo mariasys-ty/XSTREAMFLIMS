@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    (function() {
+      var DESKTOP_W = 1280;
+      var PHONE_MAX = 768;
+      var vps = document.querySelectorAll('meta[name="viewport"]');
+      var vp = vps[0];
+      for (var i = 1; i < vps.length; i++) vps[i].remove();
+      if (screen.width >= PHONE_MAX) {
+        vp.setAttribute('content', 'width=device-width, initial-scale=1.0');
+        return;
+      }
+      var s = screen.width / DESKTOP_W;
+      vp.setAttribute('content', 'width=' + DESKTOP_W + ',initial-scale=' + s);
+      window.addEventListener('resize', function() {
+        if (screen.width >= PHONE_MAX) {
+          vp.setAttribute('content', 'width=device-width, initial-scale=1.0');
+        } else {
+          var s2 = screen.width / DESKTOP_W;
+          vp.setAttribute('content', 'width=' + DESKTOP_W + ',initial-scale=' + s2);
+        }
+      });
+    })();
+  </script>
+  <meta name="robots" content="noindex, nofollow">
+  <title>403 Forbidden — XPorn</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  
+  <style>
+    /* Self-contained styles for Error Page */
+    body, html {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-primary, #0a0a0a);
+    }
+    .error-page-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 40px 24px;
+      font-family: var(--font-body, 'Inter', sans-serif);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Background Glow Effect */
+    .error-bg-glow {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(230, 57, 70, 0.08) 0%, transparent 70%);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .error-content {
+      position: relative;
+      z-index: 1;
+      max-width: 520px;
+    }
+
+    .error-icon-wrapper {
+      width: 100px;
+      height: 100px;
+      background: rgba(230, 57, 70, 0.08);
+      border: 1px solid rgba(230, 57, 70, 0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 32px;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .error-icon-wrapper svg {
+      width: 48px;
+      height: 48px;
+      color: var(--accent, #e63946);
+    }
+
+    .error-code {
+      font-family: var(--font-heading, 'Poppins', sans-serif);
+      font-size: 8rem;
+      font-weight: 900;
+      line-height: 1;
+      color: transparent;
+      -webkit-text-stroke: 2px rgba(230, 57, 70, 0.3);
+      margin: 0 0 8px;
+      letter-spacing: -5px;
+      position: relative;
+    }
+    
+    .error-code::after {
+      content: '403';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, var(--accent, #e63946) 0%, rgba(230, 57, 70, 0.2) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .error-title {
+      font-family: var(--font-heading, 'Poppins', sans-serif);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text-primary, #ffffff);
+      margin: 0 0 16px;
+    }
+
+    .error-message {
+      font-size: 1rem;
+      color: var(--text-muted, #888888);
+      line-height: 1.7;
+      margin: 0 0 40px;
+    }
+
+    .error-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-error-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background: var(--accent, #e63946);
+      color: #ffffff;
+      font-family: var(--font-body, 'Inter', sans-serif);
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3);
+    }
+
+    .btn-error-primary:hover {
+      background: #c0392b;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(230, 57, 70, 0.4);
+    }
+
+    .btn-error-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background: transparent;
+      color: var(--text-secondary, #cccccc);
+      font-family: var(--font-body, 'Inter', sans-serif);
+      font-size: 0.95rem;
+      font-weight: 500;
+      text-decoration: none;
+      border-radius: 10px;
+      border: 1px solid var(--border, rgba(255,255,255,0.15));
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-error-secondary:hover {
+      background: rgba(255,255,255,0.05);
+      color: #ffffff;
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @media (max-width: 600px) {
+      .error-code {
+        font-size: 5.5rem;
+        letter-spacing: -3px;
+      }
+      .error-title {
+        font-size: 1.5rem;
+      }
+      .error-actions {
+        flex-direction: column;
+        width: 100%;
+      }
+      .btn-error-primary, .btn-error-secondary {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="error-page-container">
+    <!-- Subtle Background Glow -->
+    <div class="error-bg-glow"></div>
+
+    <div class="error-content">
+      <!-- Animated Lock Icon -->
+      <div class="error-icon-wrapper">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          <circle cx="12" cy="16" r="1"></circle>
+        </svg>
+      </div>
+
+      <!-- Large Gradient Number -->
+      <h1 class="error-code">403</h1>
+      
+      <h2 class="error-title">Access Forbidden</h2>
+      
+      <p class="error-message">
+        You do not have the required permissions to view this page. 
+        If you believe this is an error, please contact the site administrator or try returning to the homepage.
+      </p>
+
+      <div class="error-actions">
+        <a href="index.html" class="btn-error-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Go to Homepage
+        </a>
+        <button onclick="history.back()" class="btn-error-secondary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Go Back
+        </button>
+      </div>
+    </div>
+  </div>
+<!-- 1. Third-Party SDKs (Must load first) -->
+<!-- Firebase SDKs (Consolidated to v10.12.2 - Only load once!) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<!-- HLS.js - REQUIRED FOR LIVE TV TO WORK IN CHROME/FIREFOX/EDGE -->
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+<!-- 2. Core Systems (Managers) -->
+<!-- Load Optimizer First to set up RAM/CPU helpers -->
+<script src="js/optimizer.js"></script>
+<!-- Load ThreatGuard Second (Needs Firebase to be ready) -->
+
+
+<!-- 3. App Logic (Must load last so it can use the Managers and SDKs) -->
+<script src="config.js"></script>
+<script src="js/app.js"></script>
+<script src="js/live.js"></script>
+</body>
+</html>

@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Downloading - XstreamFlims</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-card: rgba(255, 255, 255, 0.03);
+      --accent: #e50914;
+      --accent-glow: rgba(229, 9, 20, 0.4);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.6);
+      --text-muted: rgba(255, 255, 255, 0.35);
+      --border: rgba(255, 255, 255, 0.06);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --info: #3b82f6;
+      --purple: #a78bfa;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* --- Container --- */
+    .dp-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 24px 20px 80px;
+    }
+
+    /* --- Back Button --- */
+    .dp-back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-family: inherit;
+      cursor: pointer;
+      padding: 10px 0;
+      margin-bottom: 32px;
+      transition: color 0.2s;
+    }
+    .dp-back-btn:hover { color: #fff; }
+    .dp-back-btn svg { flex-shrink: 0; }
+
+    /* --- Content --- */
+    .dp-content { text-align: center; }
+
+    /* --- Thumbnail --- */
+    .dp-thumb-wrap {
+      width: 200px;
+      height: 280px;
+      border-radius: 16px;
+      overflow: hidden;
+      margin: 0 auto 28px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+      border: 2px solid var(--border);
+      position: relative;
+    }
+    .dp-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .dp-thumb-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(10,10,15,0.4) 0%, transparent 40%);
+      pointer-events: none;
+    }
+
+    /* --- Title & Brand --- */
+    .dp-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+      margin: 0 0 6px;
+      line-height: 1.2;
+    }
+    .dp-brand {
+      font-size: 14px;
+      color: var(--accent);
+      margin: 0 0 36px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    /* --- Progress Section --- */
+    .dp-progress-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 24px;
+      margin-bottom: 28px;
+      transition: border-color 0.5s ease, box-shadow 0.5s ease;
+    }
+    .dp-progress-section.completed {
+      border-color: rgba(16, 185, 129, 0.25);
+      animation: success-glow 2.5s ease infinite;
+    }
+    @keyframes success-glow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.12); }
+      50% { box-shadow: 0 0 24px 4px rgba(16, 185, 129, 0.06); }
+    }
+    .dp-progress-section.error-state {
+      border-color: rgba(239, 68, 68, 0.25);
+    }
+
+    /* --- Status Row --- */
+    .dp-status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .dp-status {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: capitalize;
+      transition: color 0.3s;
+    }
+    .dp-status-preparing { color: var(--warning); }
+    .dp-status-connecting { color: var(--info); }
+    .dp-status-downloading { color: var(--success); }
+    .dp-status-finalizing { color: var(--purple); }
+    .dp-status-completed { color: var(--success); }
+    .dp-status-error { color: var(--error); }
+    .dp-status-cancelled { color: var(--error); }
+
+    .dp-percent {
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* --- Progress Bar --- */
+    .dp-bar-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.07);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .dp-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), #ff6b6b);
+      border-radius: 4px;
+      transition: width 0.4s ease;
+      position: relative;
+    }
+    .dp-bar-fill::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+      animation: shimmer 1.8s ease-in-out infinite;
+    }
+    .dp-progress-section.completed .dp-bar-fill {
+      background: linear-gradient(90deg, #10b981, #34d399);
+    }
+    .dp-progress-section.completed .dp-bar-fill::after {
+      display: none;
+    }
+    .dp-progress-section.error-state .dp-bar-fill {
+      background: var(--error);
+    }
+    .dp-progress-section.error-state .dp-bar-fill::after {
+      display: none;
+    }
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
+    }
+
+    /* --- Stats Grid --- */
+    .dp-stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .dp-stat { text-align: left; }
+    .dp-stat-label {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    .dp-stat-value {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* --- Error Message --- */
+    .dp-error-msg {
+      display: none;
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.15);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1.5;
+    }
+    .dp-error-msg.visible { display: block; }
+
+    /* --- Actions --- */
+    .dp-actions {
+      display: none;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      animation: fade-up 0.4s ease;
+    }
+    .dp-actions.visible { display: flex; }
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dp-action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 24px;
+      border-radius: 12px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .dp-action-btn svg { flex-shrink: 0; }
+
+    .dp-action-play {
+      background: var(--accent);
+      color: #fff;
+    }
+    .dp-action-play:hover {
+      filter: brightness(1.15);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+    .dp-action-redownload {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+    .dp-action-redownload:hover { background: rgba(255, 255, 255, 0.15); }
+    .dp-action-delete {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+      border: 1px solid rgba(239, 68, 68, 0.18);
+    }
+    .dp-action-delete:hover { background: rgba(239, 68, 68, 0.2); }
+    .dp-action-retry {
+      background: var(--info);
+      color: #fff;
+    }
+    .dp-action-retry:hover { filter: brightness(1.15); transform: translateY(-1px); }
+    .dp-action-back {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      width: 100%;
+      justify-content: center;
+      margin-top: 4px;
+    }
+    .dp-action-back:hover { border-color: rgba(255,255,255,0.2); color: #fff; }
+
+    /* --- Loading Spinner --- */
+    .dp-page-loader {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      gap: 20px;
+    }
+    .dp-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .dp-page-loader p {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    /* --- Toast --- */
+    .dp-toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .dp-toast {
+      background: rgba(20, 20, 30, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #fff;
+      max-width: 320px;
+      pointer-events: auto;
+      animation: toast-in 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dp-toast.toast-out { animation: toast-out 0.3s ease forwards; }
+    .dp-toast-success { border-left: 3px solid var(--success); }
+    .dp-toast-error { border-left: 3px solid var(--error); }
+    .dp-toast-warning { border-left: 3px solid var(--warning); }
+    .dp-toast-info { border-left: 3px solid var(--info); }
+    @keyframes toast-in {
+      from { opacity: 0; transform: translateX(30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes toast-out {
+      from { opacity: 1; transform: translateX(0); }
+      to { opacity: 0; transform: translateX(30px); }
+    }
+
+    /* --- Cancel Confirm Modal --- */
+    .dp-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10001;
+      opacity: 0;
+      transition: opacity 0.25s;
+      padding: 20px;
+    }
+    .dp-modal-overlay.active { opacity: 1; }
+    .dp-modal-card {
+      background: rgba(20, 20, 30, 0.9);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 28px;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+      transform: scale(0.92);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .dp-modal-overlay.active .dp-modal-card { transform: scale(1); }
+    .dp-modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .dp-modal-msg {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 22px;
+      line-height: 1.5;
+    }
+    .dp-modal-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .dp-modal-btn {
+      flex: 1;
+      padding: 11px 18px;
+      border-radius: 10px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .dp-modal-btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--error);
+    }
+    .dp-modal-btn-danger:hover { background: rgba(239, 68, 68, 0.25); }
+    .dp-modal-btn-ghost {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+    .dp-modal-btn-ghost:hover { background: rgba(255, 255, 255, 0.12); }
+
+    /* --- Responsive --- */
+    @media (max-width: 480px) {
+      .dp-container { padding: 16px 16px 50px; }
+      .dp-thumb-wrap { width: 160px; height: 224px; }
+      .dp-title { font-size: 22px; }
+      .dp-progress-section { padding: 20px 18px; }
+      .dp-stats-grid { gap: 14px; }
+      .dp-stat-value { font-size: 14px; }
+      .dp-action-btn { padding: 11px 18px; font-size: 13px; }
+      .dp-percent { font-size: 20px; }
+      .dp-toast-container { top: 12px; right: 12px; left: 12px; }
+      .dp-toast { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dp-toast-container" id="toastContainer"></div>
+
+  <!-- Page Loader (shown while reading movie data) -->
+  <div class="dp-page-loader" id="pageLoader">
+    <div class="dp-spinner"></div>
+    <p>Loading download info...</p>
+  </div>
+
+  <!-- Main Download Page (hidden initially) -->
+  <div class="dp-container" id="downloadPage" style="display:none;">
+    <button class="dp-back-btn" id="backBtn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      Back
+    </button>
+
+    <div class="dp-content">
+      <div class="dp-thumb-wrap">
+        <img class="dp-thumb" id="movieThumb" src="" alt="">
+      </div>
+      <h1 class="dp-title" id="movieTitle"></h1>
+      <p class="dp-brand" id="movieBrand"></p>
+
+      <div class="dp-progress-section" id="progressSection">
+        <div class="dp-status-row">
+          <span class="dp-status" id="statusText">Preparing...</span>
+          <span class="dp-percent" id="percentText">0%</span>
+        </div>
+        <div class="dp-bar-track">
+          <div class="dp-bar-fill" id="barFill"></div>
+        </div>
+        <div class="dp-stats-grid">
+          <div class="dp-stat">
+            <span class="dp-stat-label">Downloaded</span>
+            <span class="dp-stat-value" id="statDownloaded">0 B</span>
+          </div>
+          <div class="dp-stat">
+            <span class="dp-stat-label">Total Size</span>
+            <span class="dp-stat-value" id="statTotal">--</span>
+          </div>
+          <div class="dp-stat">
+            <span class="dp-stat-label">Speed</span>
+            <span class="dp-stat-value" id="statSpeed">--</span>
+          </div>
+          <div class="dp-stat">
+            <span class="dp-stat-label">Time Left</span>
+            <span class="dp-stat-value" id="statEta">--</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dp-error-msg" id="errorMsg"></div>
+
+      <div class="dp-actions" id="actionsArea"></div>
+    </div>
+  </div>
+
+  <script>
+    /* =============================================
+       Download Page - XstreamFlims
+       Reads movie data from sessionStorage,
+       performs download, saves metadata to localStorage
+       ============================================= */
+    (function() {
+      'use strict';
+
+      var LS_DOWNLOADS = 'xstream_downloads';
+      var LS_DAILY = 'xstream_daily_downloads';
+      var SS_MOVIE = 'xstream_download_movie';
+      var DAILY_LIMIT = 3;
+      var SITE_NAME = 'XstreamFlims';
+      var MAX_BLOB_SIZE = 2 * 1024 * 1024 * 1024;
+
+      var movie = null;
+      var download = null;
+      var interval = null;
+      var abortCtrl = null;
+      var unloadGuard = null;
+
+      /* ---------- Init ---------- */
+
+      function init() {
+        try {
+          var raw = sessionStorage.getItem(SS_MOVIE);
+          if (!raw) { goBack(); return; }
+          movie = JSON.parse(raw);
+        } catch (e) { goBack(); return; }
+
+        if (!movie || !movie.downloadUrl) {
+          toast('Invalid movie data.', 'error');
+          setTimeout(goBack, 1500);
+          return;
+        }
+
+        renderPage();
+        document.getElementById('pageLoader').style.display = 'none';
+        document.getElementById('downloadPage').style.display = 'block';
+        document.getElementById('backBtn').addEventListener('click', handleBack);
+
+        setTimeout(startDownload, 500);
+      }
+
+      function renderPage() {
+        var thumb = movie.thumbnail || movie.poster || '';
+        document.getElementById('movieThumb').src = thumb;
+        document.getElementById('movieThumb').alt = movie.title || 'Movie';
+        document.getElementById('movieThumb').onerror = function() {
+          this.src = 'https://placehold.co/400x560/1a1a2e/e50914?text=No+Image';
+        };
+        document.getElementById('movieTitle').textContent = movie.title || 'Untitled';
+        document.getElementById('movieBrand').textContent = (movie.title || 'Untitled') + ' \u2013 ' + SITE_NAME;
+        document.title = 'Downloading ' + (movie.title || 'Movie') + ' - ' + SITE_NAME;
+      }
+
+      /* ---------- Download ---------- */
+
+      function startDownload() {
+        if (!movie || !movie.downloadUrl) {
+          setError('No download URL provided.');
+          return;
+        }
+
+        abortCtrl = new AbortController();
+        download = {
+          status: 'preparing',
+          downloaded: 0,
+          total: 0,
+          startTime: Date.now(),
+          lastTime: Date.now(),
+          lastBytes: 0,
+          speed: 0,
+          speedSamples: [],
+          chunks: []
+        };
+
+        setStatus('preparing', 'Preparing...');
+        updateUI();
+
+        /* Try HEAD first for file size */
+        fetch(movie.downloadUrl, { method: 'HEAD', signal: abortCtrl.signal })
+          .then(function(res) {
+            var cl = parseInt(res.headers.get('content-length'), 10);
+            if (cl > 0) {
+              download.total = cl;
+              setText('statTotal', fmtBytes(cl));
+            }
+            setStatus('connecting', 'Connecting...');
+            return realDownload(movie.downloadUrl);
+          })
+          .catch(function(err) {
+            if (err.name === 'AbortError') return;
+            if (!download || download.status === 'completed') return;
+            /* HEAD failed — guess size and try GET directly */
+            if (!download.total) {
+              download.total = estimateSize(movie);
+              setText('statTotal', fmtBytes(download.total));
+            }
+            setStatus('connecting', 'Connecting...');
+            realDownload(movie.downloadUrl).catch(function() {
+              if (download && download.status !== 'completed' && download.status !== 'cancelled') {
+                simulateDownload();
+              }
+            });
+          });
+      }
+
+      function realDownload(url) {
+        return fetch(url, { signal: abortCtrl.signal })
+          .then(function(res) {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            if (!download.total) {
+              var cl = parseInt(res.headers.get('content-length'), 10);
+              if (cl > 0) { download.total = cl; setText('statTotal', fmtBytes(cl)); }
+            }
+            if (!res.body) throw new Error('Stream not available');
+
+            setStatus('downloading', 'Downloading...');
+            var reader = res.body.getReader();
+
+            function pump() {
+              return reader.read().then(function(result) {
+                if (result.done) { finalize(); return; }
+
+                var chunk = result.value;
+                download.chunks.push(chunk);
+                download.downloaded += chunk.length;
+
+                var now = Date.now();
+                var dt = (now - download.lastTime) / 1000;
+                if (dt >= 0.5) {
+                  download.speed = (download.downloaded - download.lastBytes) / dt;
+                  download.speedSamples.push(download.speed);
+                  if (download.speedSamples.length > 6) download.speedSamples.shift();
+                  download.lastBytes = download.downloaded;
+                  download.lastTime = now;
+                }
+                updateUI();
+
+                if (download.downloaded > MAX_BLOB_SIZE) {
+                  toast('File too large for memory. Downloading directly...', 'warning');
+                  directDownload(movie);
+                  saveMetaOnly();
+                  return;
+                }
+                return pump();
+              });
+            }
+            return pump();
+          })
+          .catch(function(e) {
+            if (e.name === 'AbortError') return;
+            throw e;
+          });
+      }
+
+      function simulateDownload() {
+        if (!download || !movie) return;
+        if (!download.total) { download.total = estimateSize(movie); setText('statTotal', fmtBytes(download.total)); }
+        setStatus('downloading', 'Downloading...');
+
+        var base = 2.5 * 1024 * 1024;
+        var vary = 1.5 * 1024 * 1024;
+
+        interval = setInterval(function() {
+          if (!download || download.status === 'completed' || download.status === 'error' || download.status === 'cancelled') {
+            clearInterval(interval); interval = null; return;
+          }
+          var spd = Math.max(512 * 1024, base + (Math.random() - 0.5) * 2 * vary);
+          download.speed = spd;
+          download.speedSamples.push(spd);
+          if (download.speedSamples.length > 6) download.speedSamples.shift();
+          download.downloaded = Math.min(download.downloaded + spd * 0.5, download.total);
+          download.lastBytes = download.downloaded;
+          download.lastTime = Date.now();
+          updateUI();
+
+          if (download.downloaded >= download.total) {
+            clearInterval(interval); interval = null;
+            finalize();
+          }
+        }, 500);
+      }
+
+      function finalize() {
+        if (!download) return;
+        setStatus('finalizing', 'Finalizing...');
+        download.status = 'finalizing';
+
+        var fileSize = download.total || estimateSize(movie);
+
+        saveMetadata({ movieId: movie.id, title: movie.title, thumbnail: movie.thumbnail || movie.poster || '', downloadUrl: movie.downloadUrl, fileSize: fileSize, duration: movie.duration || 0 });
+        incrementDaily(movie.id);
+
+        if (download.chunks && download.chunks.length > 0) {
+          setTimeout(function() {
+            try {
+              var blob = new Blob(download.chunks, { type: 'video/mp4' });
+              var url = URL.createObjectURL(blob);
+              var a = document.createElement('a');
+              a.href = url;
+              a.download = getFilename(movie.title);
+              a.style.display = 'none';
+              document.body.appendChild(a);
+              a.click();
+              setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
+              download.chunks = [];
+            } catch (e) { directDownload(movie); }
+            completeUI();
+          }, 1200);
+        } else {
+          setTimeout(function() { directDownload(movie); completeUI(); }, 1200);
+        }
+      }
+
+      function saveMetaOnly() {
+        if (!download) return;
+        var fileSize = download.total || estimateSize(movie);
+        saveMetadata({ movieId: movie.id, title: movie.title, thumbnail: movie.thumbnail || movie.poster || '', downloadUrl: movie.downloadUrl, fileSize: fileSize, duration: movie.duration || 0 });
+        incrementDaily(movie.id);
+        completeUI();
+      }
+
+      function completeUI() {
+        if (!download) return;
+        download.status = 'completed';
+        setStatus('completed', 'Completed');
+        updateUI();
+        showActions('completed');
+        removeGuard();
+        document.getElementById('progressSection').classList.add('completed');
+        toast('"' + (movie.title || 'Video') + '" saved for offline viewing!', 'success');
+      }
+
+      function cancelDownload() {
+        if (abortCtrl) { abortCtrl.abort(); abortCtrl = null; }
+        if (interval) { clearInterval(interval); interval = null; }
+        if (download) { download.status = 'cancelled'; download.chunks = []; }
+        removeGuard();
+        toast('Download cancelled.', 'info');
+        goBack();
+      }
+
+      function cleanup() {
+        if (interval) { clearInterval(interval); interval = null; }
+        if (abortCtrl) { abortCtrl.abort(); abortCtrl = null; }
+        if (download) { download.chunks = []; download = null; }
+        removeGuard();
+        sessionStorage.removeItem(SS_MOVIE);
+      }
+
+      /* ---------- UI Updates ---------- */
+
+      function setStatus(type, text) {
+        var el = document.getElementById('statusText');
+        el.textContent = text;
+        el.className = 'dp-status dp-status-' + type;
+        if (type === 'downloading') addGuard();
+      }
+
+      function updateUI() {
+        if (!download) return;
+        var pct = download.total > 0 ? Math.min((download.downloaded / download.total) * 100, 100) : 0;
+
+        var avg = 0;
+        if (download.speedSamples.length > 0) {
+          var s = 0; for (var i = 0; i < download.speedSamples.length; i++) s += download.speedSamples[i];
+          avg = s / download.speedSamples.length;
+        }
+        var eta = (avg > 0 && download.total > 0) ? (download.total - download.downloaded) / avg : 0;
+
+        setText('percentText', pct.toFixed(1) + '%');
+        document.getElementById('barFill').style.width = pct + '%';
+        setText('statDownloaded', fmtBytes(download.downloaded));
+        setText('statSpeed', download.status === 'downloading' ? fmtSpeed(avg) : '--');
+        setText('statEta', download.status === 'downloading' ? fmtTime(eta) : '--');
+      }
+
+      function setError(msg) {
+        if (download) download.status = 'error';
+        setStatus('error', 'Failed');
+        var el = document.getElementById('errorMsg');
+        el.textContent = msg;
+        el.classList.add('visible');
+        document.getElementById('progressSection').classList.add('error-state');
+        showActions('error');
+        removeGuard();
+      }
+
+      function showActions(state) {
+        var area = document.getElementById('actionsArea');
+        area.className = 'dp-actions visible';
+        area.innerHTML = '';
+
+        if (state === 'completed') {
+          area.innerHTML =
+            btn('dp-action-play', '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Play Now', 'play') +
+            btn('dp-action-redownload', '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Re-download', 'redownload') +
+            btn('dp-action-delete', '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg> Delete', 'delete') +
+            btn('dp-action-back', 'Back to Browsing', 'back-full');
+
+          area.querySelector('[data-action="play"]').onclick = function() {
+            if (movie && movie.downloadUrl) window.open(movie.downloadUrl, '_blank');
+          };
+          area.querySelector('[data-action="redownload"]').onclick = function() {
+            if (movie) directDownload(movie);
+          };
+          area.querySelector('[data-action="delete"]').onclick = function() {
+            if (movie && movie.id) { removeDownload(movie.id); goBack(); }
+          };
+          area.querySelector('[data-action="back-full"]').onclick = function() { goBack(); };
+
+        } else if (state === 'error') {
+          area.innerHTML =
+            btn('dp-action-retry', '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg> Retry Download', 'retry') +
+            btn('dp-action-back', 'Go Back', 'back-full');
+
+          area.querySelector('[data-action="retry"]').onclick = function() {
+            document.getElementById('errorMsg').classList.remove('visible');
+            document.getElementById('progressSection').classList.remove('error-state');
+            area.className = 'dp-actions';
+            startDownload();
+          };
+          area.querySelector('[data-action="back-full"]').onclick = function() { goBack(); };
+        }
+      }
+
+      function btn(cls, label, action) {
+        return '<button class="dp-action-btn ' + cls + '" data-action="' + action + '">' + label + '</button>';
+      }
+
+      /* ---------- Back Button ---------- */
+
+      function handleBack() {
+        if (download && (download.status === 'downloading' || download.status === 'connecting' || download.status === 'preparing' || download.status === 'finalizing')) {
+          showCancelModal();
+        } else {
+          goBack();
+        }
+      }
+
+      function showCancelModal() {
+        var overlay = document.createElement('div');
+        overlay.className = 'dp-modal-overlay';
+        overlay.innerHTML =
+          '<div class="dp-modal-card">' +
+            '<h3 class="dp-modal-title">Cancel Download?</h3>' +
+            '<p class="dp-modal-msg">The download is in progress. Are you sure you want to cancel?</p>' +
+            '<div class="dp-modal-actions">' +
+              '<button class="dp-modal-btn dp-modal-btn-danger" id="modalCancel">Cancel Download</button>' +
+              '<button class="dp-modal-btn dp-modal-btn-ghost" id="modalKeep">Keep Downloading</button>' +
+            '</div>' +
+          '</div>';
+        document.body.appendChild(overlay);
+        requestAnimationFrame(function() { overlay.classList.add('active'); });
+
+        document.getElementById('modalCancel').onclick = function() {
+          if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+          cancelDownload();
+        };
+        document.getElementById('modalKeep').onclick = function() {
+          overlay.classList.remove('active');
+          setTimeout(function() { if (overlay.parentNode) overlay.parentNode.removeChild(overlay); }, 250);
+        };
+      }
+
+      /* ---------- Before Unload Guard ---------- */
+
+      function addGuard() {
+        if (unloadGuard) return;
+        unloadGuard = function(e) { e.preventDefault(); e.returnValue = ''; return ''; };
+        window.addEventListener('beforeunload', unloadGuard);
+      }
+      function removeGuard() {
+        if (unloadGuard) { window.removeEventListener('beforeunload', unloadGuard); unloadGuard = null; }
+      }
+
+      /* ---------- Local Storage ---------- */
+
+      function getDownloads() {
+        try { var d = localStorage.getItem(LS_DOWNLOADS); return d ? JSON.parse(d) : {}; }
+        catch (e) { return {}; }
+      }
+
+      function saveDownloads(data) {
+        try { localStorage.setItem(LS_DOWNLOADS, JSON.stringify(data)); }
+        catch (e) { toast('Storage full. Cannot save.', 'error'); }
+      }
+
+      function saveMetadata(m) {
+        var all = getDownloads();
+        all[m.movieId] = { movieId: m.movieId, title: m.title, thumbnail: m.thumbnail, downloadUrl: m.downloadUrl, downloadedAt: Date.now(), fileSize: m.fileSize, duration: m.duration };
+        saveDownloads(all);
+        saveToFirebase(m);
+      }
+
+      function removeDownload(id) {
+        var all = getDownloads();
+        if (all[id]) {
+          delete all[id];
+          saveDownloads(all);
+          removeFromFirebase(id);
+          toast('Movie removed from downloads.', 'success');
+        }
+      }
+
+      function incrementDaily(movieId) {
+        try {
+          var d = localStorage.getItem(LS_DAILY);
+          var daily = d ? JSON.parse(d) : {};
+          var uid = getUid();
+          var key = getTodayKey();
+          if (!uid) return;
+          if (!daily[uid] || daily[uid].date !== key) {
+            daily[uid] = { date: key, count: 0, ids: [] };
+          }
+          daily[uid].count++;
+          if (!daily[uid].ids) daily[uid].ids = [];
+          daily[uid].ids.push(movieId);
+          localStorage.setItem(LS_DAILY, JSON.stringify(daily));
+        } catch (e) {}
+      }
+
+      /* ---------- Firebase ---------- */
+
+      function saveToFirebase(m) {
+        try {
+          var firebaseConfig = JSON.parse(localStorage.getItem('xstream_firebase_config') || 'null');
+          if (firebaseConfig && firebaseConfig.apiKey) {
+            var uid = getUid();
+            if (uid && typeof firebase !== 'undefined' && firebase.database) {
+              firebase.database().ref('users/' + uid + '/downloads/' + m.movieId).set({
+                title: m.title || 'Untitled',
+                thumbnail: m.thumbnail || '',
+                downloadedAt: Date.now(),
+                fileSize: m.fileSize || 0,
+                duration: m.duration || 0
+              }).catch(function() {});
+            }
+          }
+        } catch (e) {}
+      }
+
+      function removeFromFirebase(id) {
+        try {
+          var uid = getUid();
+          if (uid && typeof firebase !== 'undefined' && firebase.database) {
+            firebase.database().ref('users/' + uid + '/downloads/' + id).remove().catch(function() {});
+          }
+        } catch (e) {}
+      }
+
+      function getUid() {
+        try {
+          var auth = localStorage.getItem('xstream_auth');
+          if (auth) { var parsed = JSON.parse(auth); if (parsed && parsed.uid) return parsed.uid; }
+          if (typeof AppState !== 'undefined' && AppState && AppState.currentUser && AppState.currentUser.uid) return AppState.currentUser.uid;
+          if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) return firebase.auth().currentUser.uid;
+        } catch (e) {}
+        return null;
+      }
+
+      /* ---------- Utilities ---------- */
+
+      function getFilename(title) {
+        var clean = (title || 'Untitled').replace(/[<>:"/\\|?*]/g, '').trim();
+        return clean + ' - ' + SITE_NAME + '.mp4';
+      }
+
+      function directDownload(m) {
+        var a = document.createElement('a');
+        a.href = m.downloadUrl;
+        a.download = getFilename(m.title);
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function() { if (a.parentNode) document.body.removeChild(a); }, 300);
+      }
+
+      function estimateSize(m) {
+        if (m.duration) {
+          var mins = 0;
+          if (typeof m.duration === 'string') {
+            var p = m.duration.split(':');
+            if (p.length === 3) mins = parseInt(p[0]) * 60 + parseInt(p[1]) + parseInt(p[2]) / 60;
+            else if (p.length === 2) mins = parseInt(p[0]) + parseInt(p[1]) / 60;
+          } else if (typeof m.duration === 'number') { mins = m.duration / 60; }
+          return Math.round(mins * 3 * 1024 * 1024);
+        }
+        return 800 * 1024 * 1024;
+      }
+
+      function fmtBytes(b) {
+        if (!b || b === 0) return '0 B';
+        var u = ['B', 'KB', 'MB', 'GB'];
+        var i = Math.min(Math.floor(Math.log(b) / Math.log(1024)), u.length - 1);
+        return (b / Math.pow(1024, i)).toFixed(i > 0 ? 1 : 0) + ' ' + u[i];
+      }
+
+      function fmtSpeed(bps) {
+        if (!bps || bps <= 0) return '--';
+        return fmtBytes(bps) + '/s';
+      }
+
+      function fmtTime(sec) {
+        if (!sec || sec <= 0 || !isFinite(sec)) return '--:--';
+        var h = Math.floor(sec / 3600);
+        var m = Math.floor((sec % 3600) / 60);
+        var s = Math.floor(sec % 60);
+        if (h > 0) return h + 'h ' + m + 'm ' + s + 's';
+        if (m > 0) return m + 'm ' + s + 's';
+        return s + 's';
+      }
+
+      function getTodayKey() {
+        var d = new Date();
+        return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+      }
+
+      function setText(id, text) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = text;
+      }
+
+      function goBack() {
+        cleanup();
+        var referrer = document.referrer;
+        if (referrer && referrer.indexOf(location.host) !== -1) {
+          history.back();
+        } else {
+          window.location.href = window.location.origin;
+        }
+      }
+
+      /* ---------- Toast ---------- */
+
+      function toast(msg, type) {
+        var container = document.getElementById('toastContainer');
+        var el = document.createElement('div');
+        el.className = 'dp-toast dp-toast-' + (type || 'info');
+        el.textContent = msg;
+        container.appendChild(el);
+        setTimeout(function() {
+          el.classList.add('toast-out');
+          setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 300);
+        }, 3500);
+      }
+
+      /* ---------- Boot ---------- */
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+
+    })();
+  </script>
+</body>
+</html>

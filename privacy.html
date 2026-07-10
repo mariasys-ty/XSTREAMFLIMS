@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- 1. Firebase SDKs (MUST BE FIRST) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+ <script src="js/optimizer.js"></script>
+ <script src="js/threat.js"></script>
+  <meta name="description" content="Xstream movies Privacy Policy — How we collect, use, store, and protect your personal data.">
+  <title>Privacy Policy — Xstream movies</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="privacy">
+
+  <div id="toast-container"></div>
+  <nav id="main-nav" class="navbar"></nav>
+  <div id="mobile-overlay" class="mobile-overlay"></div>
+  <div id="mobile-menu" class="mobile-menu"></div>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="page-header-content">
+      <nav class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Privacy Policy</span>
+      </nav>
+      <h1 class="page-title">Privacy Policy</h1>
+      <p class="page-subtitle">Last updated: January 2025</p>
+    </div>
+  </section>
+
+  <main class="main-container">
+    <div class="legal-content">
+
+      <!-- Table of Contents -->
+      <nav class="legal-toc">
+        <h3>Table of Contents</h3>
+        <ol>
+          <li><a href="#priv-intro">Introduction</a></li>
+          <li><a href="#priv-collect">Information We Collect</a></li>
+          <li><a href="#priv-use">How We Use Your Information</a></li>
+          <li><a href="#priv-storage">Data Storage & Security</a></li>
+          <li><a href="#priv-sharing">Third-Party Sharing</a></li>
+          <li><a href="#priv-cookies">Cookies & Local Storage</a></li>
+          <li><a href="#priv-children">Children's Privacy</a></li>
+          <li><a href="#priv-rights">Your Rights</a></li>
+          <li><a href="#priv-changes">Changes to This Policy</a></li>
+          <li><a href="#priv-contact">Contact Us</a></li>
+        </ol>
+      </nav>
+
+      <!-- 1. Introduction -->
+      <section class="legal-section" id="priv-intro">
+        <h2>1. Introduction</h2>
+        <p>Welcome to Xstream movies ("we", "our", "us", "the Platform"). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our video streaming and sharing services.</p>
+        <p>By accessing or using the Platform, you agree to the collection and use of information in accordance with this policy. If you do not agree with the terms of this Privacy Policy, please do not access the Platform.</p>
+        <p>We are committed to minimizing the data we collect and protecting what we do collect. This policy applies to all users of the Platform, including visitors who do not have an account.</p>
+      </section>
+
+      <!-- 2. Information We Collect -->
+      <section class="legal-section" id="priv-collect">
+        <h2>2. Information We Collect</h2>
+
+        <h3>2.1 Information You Provide Directly</h3>
+        <p>When you create an account, we collect:</p>
+        <ul>
+          <li><strong>Full Name</strong> — Displayed on your public profile and used to personalize your experience.</li>
+          <li><strong>Email Address</strong> — Used for account authentication, password recovery, and support communications.</li>
+          <li><strong>Password</strong> — Encrypted and never stored in plain text. Handled securely by Firebase Auth.</li>
+          <li><strong>Country</strong> — Displayed on your profile and attached to videos you upload for regional discovery.</li>
+          <li><strong>Age</strong> — Collected to verify you meet the minimum age requirement of 13 years.</li>
+        </ul>
+        <p>When you upload videos, we collect:</p>
+        <ul>
+          <li><strong>Video Files</strong> — Hosted on Cloudinary's secure cloud infrastructure.</li>
+          <li><strong>Thumbnail Images</strong> — Optional custom images for your videos.</li>
+          <li><strong>Title & Description</strong> — Text metadata you provide for each video.</li>
+          <li><strong>Category</strong> — The classification you assign to your video.</li>
+        </ul>
+        <p>When you contact us, we collect:</p>
+        <ul>
+          <li><strong>Message Content</strong> — The text of your support request or feedback.</li>
+          <li><strong>Subject & Video Links</strong> — Optional context you provide to help us assist you.</li>
+        </ul>
+
+        <h3>2.2 Information Collected Automatically</h3>
+        <ul>
+          <li><strong>User ID</strong> — A unique anonymous identifier assigned by Firebase Auth when you register.</li>
+          <li><strong>Interaction Data</strong> — Likes, dislikes, and view records stored locally in your browser (not sent to our servers except for view count increments).</li>
+        </ul>
+
+        <h3>2.3 Information We Do NOT Collect</h3>
+        <p>To be transparent, we want to clarify what we do <strong>not</strong> collect:</p>
+        <ul>
+          <li>We do not track your browsing history across other websites.</li>
+          <li>We do not collect your IP address, geolocation, or device information.</li>
+          <li>We do not use analytics trackers like Google Analytics.</li>
+          <li>We do not serve advertisements, so no ad-related data is collected.</li>
+          <li>We do not require or store payment information (the platform is free).</li>
+        </ul>
+      </section>
+
+      <!-- 3. How We Use Your Information -->
+      <section class="legal-section" id="priv-use">
+        <h2>3. How We Use Your Information</h2>
+        <p>We use the information we collect solely for the purpose of operating and improving the Platform:</p>
+        <ul>
+          <li><strong>Account Authentication</strong> — Your email and password are used to verify your identity and provide secure access to your account.</li>
+          <li><strong>Profile Display</strong> — Your name, country, join date, and uploaded videos are displayed on your public profile page.</li>
+          <li><strong>Video Hosting & Display</strong> — Your uploaded videos, thumbnails, titles, and descriptions are stored and displayed on the Platform for other users to watch.</li>
+          <li><strong>Platform Functionality</strong> — View counts are incremented when users watch your videos. Like/dislike counts are updated based on user interactions.</li>
+          <li><strong>Support Requests</strong> — Your contact form submissions are used to respond to your questions, issues, or feedback.</li>
+          <li><strong>Password Recovery</strong> — Your email is used to send password reset links when requested.</li>
+          <li><strong>Platform Integrity</strong> — We may use your data to investigate violations of our Terms of Service, such as inappropriate content uploads.</li>
+        </ul>
+        <p>We do <strong>not</strong> use your information for marketing, advertising, profiling, or selling to third parties.</p>
+      </section>
+
+      <!-- 4. Data Storage & Security -->
+      <section class="legal-section" id="priv-storage">
+        <h2>4. Data Storage & Security</h2>
+        <h3>4.1 Where Your Data Is Stored</h3>
+        <ul>
+          <li><strong>Account Data</strong> — Names, emails, countries, and ages are stored in Google Firebase Realtime Database, hosted on Google Cloud infrastructure.</li>
+          <li><strong>Authentication Data</strong> — Passwords and session tokens are managed by Firebase Auth, which uses industry-standard hashing (bcrypt/scrypt) and encryption.</li>
+          <li><strong>Video Files</strong> — Uploaded videos and thumbnails are hosted on Cloudinary's cloud storage infrastructure.</li>
+          <li><strong>Contact Messages</strong> — Support submissions are stored in our Firebase database under the "contacts" node.</li>
+          <li><strong>Local Browser Data</strong> — Like/dislike history and viewed video IDs are stored in your browser's localStorage. This data never leaves your device.</li>
+        </ul>
+
+        <h3>4.2 Security Measures</h3>
+        <ul>
+          <li>All data transmission between your browser and our servers is encrypted using TLS/SSL (HTTPS).</li>
+          <li>Passwords are never stored in plain text — they are hashed by Firebase Auth before storage.</li>
+          <li>Firebase database security rules restrict data access to authenticated operations where required.</li>
+          <li>Cloudinary provides secure, access-controlled storage for media files.</li>
+        </ul>
+
+        <h3>4.3 Data Retention</h3>
+        <p>Your account data and uploaded videos are retained for as long as your account exists. If you request account deletion, all your personal data and uploaded content will be permanently removed from our servers. Contact form submissions are retained for up to 90 days after resolution for quality assurance purposes.</p>
+      </section>
+
+      <!-- 5. Third-Party Sharing -->
+      <section class="legal-section" id="priv-sharing">
+        <h2>5. Third-Party Sharing</h2>
+        <p>We do not sell, rent, trade, or otherwise share your personal information with third parties for their own marketing or commercial purposes.</p>
+        <p>We do share data with the following service providers, strictly for the purpose of operating the Platform:</p>
+        <ul>
+          <li><strong>Google Firebase</strong> — Provides our database, authentication, and hosting infrastructure. Google's privacy policy applies to data processed by Firebase: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com/privacy</a></li>
+          <li><strong>Cloudinary</strong> — Provides video and image hosting services. Cloudinary's privacy policy applies to media files uploaded through their service: <a href="https://cloudinary.com/privacy" target="_blank" rel="noopener">cloudinary.com/privacy</a></li>
+          <li><strong>Google Fonts</strong> — Fonts are loaded from Google's CDN. Google may collect standard CDN access logs per their privacy policy.</li>
+        </ul>
+        <p>We may also disclose information if required by law, such as in response to a valid legal process, court order, or government request.</p>
+      </section>
+
+      <!-- 6. Cookies & Local Storage -->
+      <section class="legal-section" id="priv-cookies">
+        <h2>6. Cookies & Local Storage</h2>
+        <p>We use minimal browser storage technologies:</p>
+        <ul>
+          <li><strong>Firebase Auth Cookies</strong> — Firebase sets authentication cookies to maintain your login session. These are essential for the Platform to function and cannot be disabled without losing the ability to stay logged in.</li>
+          <li><strong>localStorage</strong> — We store your like/dislike history and viewed video IDs in your browser's localStorage under keys prefixed with "sv_". This data stays on your device and is not transmitted to our servers.</li>
+        </ul>
+        <p>We do <strong>not</strong> use tracking cookies, advertising cookies, or analytics cookies. For full details, please see our separate <a href="cookies.html">Cookie Policy</a>.</p>
+      </section>
+
+      <!-- 7. Children's Privacy -->
+      <section class="legal-section" id="priv-children">
+        <h2>7. Children's Privacy</h2>
+        <p>The Platform is not intended for children under the age of 13. We do not knowingly collect personal information from children under 13. During registration, users must confirm they are at least 13 years old by entering their date of birth or age.</p>
+        <p>If we become aware that a child under 13 has provided us with personal information, we will take steps to delete that information from our servers. If you believe a child under 13 has registered on our Platform, please <a href="contact.html">contact us</a> immediately.</p>
+      </section>
+
+      <!-- 8. Your Rights -->
+      <section class="legal-section" id="priv-rights">
+        <h2>8. Your Rights</h2>
+        <p>You have the following rights regarding your personal data:</p>
+        <ul>
+          <li><strong>Access</strong> — You can view all data associated with your account by visiting your profile page and reviewing your uploaded videos.</li>
+          <li><strong>Correction</strong> — You can update your display name by contacting support. Other profile details may be editable in future updates.</li>
+          <li><strong>Deletion</strong> — You can request full account deletion through our <a href="contact.html">Contact page</a>. This will permanently remove your account data and all uploaded videos.</li>
+          <li><strong>Data Portability</strong> — You can download your videos from your profile page. For other data requests, contact support.</li>
+          <li><strong>Withdrawal of Consent</strong> — You can withdraw consent at any time by deleting your account or clearing your browser's localStorage.</li>
+          <li><strong>Lodging a Complaint</strong> — If you believe we have not handled your data appropriately, you have the right to lodge a complaint with a relevant data protection authority.</li>
+        </ul>
+        <p>To exercise any of these rights, please <a href="contact.html">contact us</a> with "Privacy Request" as the subject.</p>
+      </section>
+
+      <!-- 9. Changes -->
+      <section class="legal-section" id="priv-changes">
+        <h2>9. Changes to This Policy</h2>
+        <p>We may update this Privacy Policy from time to time to reflect changes in our practices, technology, legal requirements, or other factors. When we make changes, we will update the "Last updated" date at the top of this page.</p>
+        <p>We encourage you to review this Privacy Policy periodically to stay informed about how we protect your information. Your continued use of the Platform after any changes constitutes your acceptance of the updated policy.</p>
+      </section>
+
+      <!-- 10. Contact -->
+      <section class="legal-section" id="priv-contact">
+        <h2>10. Contact Us</h2>
+        <p>If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please reach out through any of the following channels:</p>
+        <ul>
+          <li><strong>Email:</strong> <a href="mailto:support@xstream.com">support@xstream.com</a></li>
+          <li><strong>Contact Form:</strong> <a href="contact.html">xstream.com/contact.html</a></li>
+          <li><strong>Help Center:</strong> <a href="helpcenter.html">xstream.com/helpcenter.html</a></li>
+        </ul>
+        <p>We aim to respond to all privacy-related requests within 30 days.</p>
+      </section>
+
+    </div>
+  </main>
+
+  <footer id="main-footer" class="footer"></footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="config.js"></script>
+<script src="js/app.js"></script>
+  <script>
+    /* Smooth scroll for TOC links */
+    (function() {
+      var links = document.querySelectorAll('.legal-toc a');
+      for (var i = 0; i < links.length; i++) {
+        links[i].addEventListener('click', function(e) {
+          e.preventDefault();
+          var target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

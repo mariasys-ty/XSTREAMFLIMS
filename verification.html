@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta name="description" content="Verify your email to complete xStream signup.">
+  <title>Verify Email — xStream</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  
+  <style>
+    /* Scoped strictly to the verification page for dark mode */
+    body[data-page="verification"] .otp-inputs {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin: 25px 0;
+    }
+
+    body[data-page="verification"] .otp-input {
+      width: 52px;
+      height: 62px;
+      text-align: center;
+      font-size: 26px;
+      font-weight: 700;
+      font-family: 'Poppins', sans-serif;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      color: #ffffff;
+      transition: all 0.3s ease;
+      outline: none;
+      -moz-appearance: textfield;
+    }
+
+    body[data-page="verification"] .otp-input::-webkit-outer-spin-button,
+    body[data-page="verification"] .otp-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    body[data-page="verification"] .otp-input:focus {
+      border-color: #e63946;
+      background: rgba(255, 255, 255, 0.07);
+      box-shadow: 0 0 0 4px rgba(230, 57, 70, 0.15);
+      transform: translateY(-2px);
+    }
+
+    body[data-page="verification"] .otp-input.filled {
+      border-color: #e63946;
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    body[data-page="verification"] .otp-input.error {
+      border-color: #ff4757;
+      animation: shake 0.5s ease;
+    }
+
+    body[data-page="verification"] .otp-input.success {
+      border-color: #2ed573;
+      background: rgba(46, 213, 115, 0.1);
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
+    }
+
+    body[data-page="verification"] .otp-email-display {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 14px 20px;
+      margin: 20px 0;
+      text-align: center;
+      font-weight: 500;
+      color: #aaaaaa;
+      font-size: 15px;
+    }
+
+    body[data-page="verification"] .otp-email-display strong {
+      color: #e63946;
+      font-weight: 600;
+    }
+
+    /* ==========================================
+       DELIVERY CHANNELS BADGES
+       ========================================== */
+    body[data-page="verification"] .delivery-channels {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 5px;
+      flex-wrap: wrap;
+    }
+
+    body[data-page="verification"] .channel-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body[data-page="verification"] .channel-badge.email-badge {
+      background: rgba(230, 57, 70, 0.1);
+      color: #e63946;
+      border: 1px solid rgba(230, 57, 70, 0.2);
+    }
+
+    body[data-page="verification"] .channel-badge.whatsapp-badge {
+      background: rgba(37, 211, 102, 0.1);
+      color: #25d366;
+      border: 1px solid rgba(37, 211, 102, 0.2);
+    }
+
+    body[data-page="verification"] .channel-badge svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+    /* ========================================== */
+
+    /* ==========================================
+       SPAM HELPER CARD STYLES
+       ========================================== */
+    body[data-page="verification"] .spam-helper-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 16px 20px;
+      text-align: center;
+      margin: 5px 0 10px 0;
+    }
+
+    body[data-page="verification"] .spam-helper-icon {
+      width: 32px;
+      height: 32px;
+      margin: 0 auto 10px auto;
+      background: rgba(230, 57, 70, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e63946;
+    }
+
+    body[data-page="verification"] .spam-helper-card p {
+      color: #6b6b80;
+      font-size: 12.5px;
+      margin: 0 0 14px 0;
+      line-height: 1.5;
+    }
+
+    body[data-page="verification"] .spam-helper-card p strong {
+      color: #e63946;
+      font-weight: 600;
+    }
+
+    body[data-page="verification"] .spam-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    body[data-page="verification"] .spam-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: rgba(230, 57, 70, 0.1);
+      color: #e63946;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      border: 1px solid rgba(230, 57, 70, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    body[data-page="verification"] .spam-btn:hover {
+      background: #e63946;
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    body[data-page="verification"] .spam-alt-link {
+      color: #4a4a5e;
+      font-size: 11.5px;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      transition: color 0.3s ease;
+    }
+
+    body[data-page="verification"] .spam-alt-link:hover {
+      color: #aaaaaa;
+    }
+    /* ========================================== */
+
+    body[data-page="verification"] .otp-timer {
+      text-align: center;
+      color: #888888;
+      font-size: 14px;
+      margin-top: 15px;
+      min-height: 20px;
+    }
+
+    body[data-page="verification"] .otp-timer .countdown {
+      font-weight: 600;
+      color: #e63946;
+    }
+
+    body[data-page="verification"] .otp-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    body[data-page="verification"] .otp-verify-btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #e63946 0%, #ff6b6b 100%);
+      color: #fff;
+    }
+
+    body[data-page="verification"] .otp-verify-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(230, 57, 70, 0.35);
+    }
+
+    body[data-page="verification"] .otp-verify-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    body[data-page="verification"] .otp-resend-btn {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #e63946;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 500;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: transparent;
+      color: #e63946;
+    }
+
+    body[data-page="verification"] .otp-resend-btn:hover:not(:disabled) {
+      background: #e63946;
+      color: #fff;
+    }
+
+    body[data-page="verification"] .otp-resend-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    body[data-page="verification"] .otp-back-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 500;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: transparent;
+      color: #888888;
+    }
+
+    body[data-page="verification"] .otp-back-btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    body[data-page="verification"] .otp-spinner {
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: otp-spin 0.8s linear infinite;
+    }
+
+    @keyframes otp-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    body[data-page="verification"] .otp-message {
+      text-align: center;
+      padding: 12px 16px;
+      border-radius: 10px;
+      margin-top: 15px;
+      font-size: 14px;
+      font-weight: 500;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    body[data-page="verification"] .otp-message.show {
+      display: block;
+    }
+
+    body[data-page="verification"] .otp-message.error {
+      background: rgba(255, 71, 87, 0.1);
+      color: #ff6b6b;
+      border: 1px solid rgba(255, 71, 87, 0.3);
+    }
+
+    body[data-page="verification"] .otp-message.success {
+      background: rgba(46, 213, 115, 0.1);
+      color: #2ed573;
+      border: 1px solid rgba(46, 213, 115, 0.3);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    body[data-page="verification"] .otp-illustration {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    body[data-page="verification"] .otp-illustration svg {
+      width: 90px;
+      height: 90px;
+    }
+
+    /* Success state overlay */
+    body[data-page="verification"] .otp-success-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #16161c;
+      border-radius: inherit;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      z-index: 10;
+      animation: fadeIn 0.5s ease;
+    }
+
+    body[data-page="verification"] .otp-success-overlay.show {
+      display: flex;
+    }
+
+    body[data-page="verification"] .success-checkmark {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #28a745, #20c997);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      animation: scaleIn 0.5s ease;
+    }
+
+    @keyframes scaleIn {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    body[data-page="verification"] .success-checkmark svg {
+      width: 40px;
+      height: 40px;
+      color: #fff;
+    }
+
+    body[data-page="verification"] .redirect-text {
+      color: #888888;
+      font-size: 14px;
+      margin-top: 15px;
+    }
+
+    body[data-page="verification"] .redirect-text .countdown {
+      font-weight: 600;
+      color: #e63946;
+    }
+
+    /* Responsive adjustments for 6 inputs */
+    @media (max-width: 400px) {
+      body[data-page="verification"] .otp-input {
+        width: 44px;
+        height: 54px;
+        font-size: 22px;
+        border-radius: 10px;
+      }
+      body[data-page="verification"] .otp-inputs {
+        gap: 6px;
+      }
+    }
+  </style>
+</head>
+<body data-page="verification">
+
+  <div id="toast-container"></div>
+  <nav id="main-nav" class="navbar"></nav>
+
+  <main class="auth-page">
+    <div class="auth-bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+    </div>
+    
+    <div class="auth-container">
+      <div class="auth-card" style="position: relative; overflow: hidden;">
+        
+        <!-- Success Overlay -->
+        <div class="otp-success-overlay" id="success-overlay">
+          <div class="success-checkmark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <h2 style="margin-bottom: 8px; color: #ffffff;">Verification Complete!</h2>
+          <p style="color: #aaaaaa;">Your account has been created successfully</p>
+          <p class="redirect-text">Redirecting in <span class="countdown" id="redirect-countdown">3</span> seconds...</p>
+        </div>
+
+        <!-- OTP Verification Content -->
+        <div class="auth-header">
+          <a href="index.html" class="auth-logo">
+            <svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#e63946"/><path d="M13 10l10 6-10 6V10z" fill="#fff"/></svg>
+            xStream
+          </a>
+          <h1>Verify Your Account</h1>
+          <p>We've sent a 6-digit code to your email & WhatsApp</p>
+        </div>
+
+        <!-- Delivery Channel Badges -->
+        <div class="delivery-channels">
+          <span class="channel-badge email-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
+            Email
+          </span>
+          <span class="channel-badge sms-badge" style="background: rgba(52, 152, 219, 0.1); color: #3498db; border: 1px solid rgba(52, 152, 219, 0.2);">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+  </svg>
+  SMS
+</span>
+        </div>
+
+        <!-- Email Display -->
+        <div class="otp-email-display">
+          Code sent to <strong id="display-email">loading...</strong>
+        </div>
+
+        <!-- OTP Illustration -->
+        <div class="otp-illustration">
+          <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="60" cy="60" r="55" fill="rgba(230, 57, 70, 0.05)" stroke="#e63946" stroke-width="2" stroke-dasharray="8 4"/>
+            <rect x="30" y="40" width="60" height="40" rx="6" fill="#1e1e1e" stroke="#e63946" stroke-width="2.5"/>
+            <path d="M30 46L60 66L90 46" stroke="#e63946" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="85" cy="35" r="18" fill="#e63946"/>
+            <text x="85" y="41" text-anchor="middle" fill="#fff" font-size="16" font-weight="700" font-family="Poppins">6</text>
+          </svg>
+        </div>
+
+        <!-- OTP Inputs (6 digits) -->
+        <div class="otp-inputs" id="otp-inputs">
+          <input type="text" class="otp-input" maxlength="1" id="otp-1" inputmode="numeric" autocomplete="one-time-code">
+          <input type="text" class="otp-input" maxlength="1" id="otp-2" inputmode="numeric">
+          <input type="text" class="otp-input" maxlength="1" id="otp-3" inputmode="numeric">
+          <input type="text" class="otp-input" maxlength="1" id="otp-4" inputmode="numeric">
+          <input type="text" class="otp-input" maxlength="1" id="otp-5" inputmode="numeric">
+          <input type="text" class="otp-input" maxlength="1" id="otp-6" inputmode="numeric">
+        </div>
+
+        <!-- ==========================================
+             SPAM HELPER CARD
+             ========================================== -->
+        <div class="spam-helper-card">
+          <div class="spam-helper-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
+          </div>
+          <p>Can't find the code? Check your <strong>Spam/Junk</strong> folder or <strong>WhatsApp messages</strong>.</p>
+          <div class="spam-actions">
+            <a href="https://mail.google.com/mail/u/0/#spam" target="_blank" class="spam-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+              Open Gmail Spam
+            </a>
+            <a href="https://outlook.live.com/mail/0/junkemail" target="_blank" class="spam-alt-link">
+              Open Outlook Junk
+            </a>
+          </div>
+        </div>
+        <!-- ========================================== -->
+
+        <!-- Message -->
+        <div class="otp-message" id="otp-message"></div>
+
+        <!-- Timer -->
+        <div class="otp-timer" id="otp-timer"></div>
+
+        <!-- Actions -->
+        <div class="otp-actions">
+          <button class="otp-verify-btn" id="verify-btn" disabled>
+            <span class="btn-text">Verify Code</span>
+            <div class="otp-spinner" style="display:none;"></div>
+          </button>
+          
+          <button class="otp-resend-btn" id="resend-btn" style="display:none;">
+            Resend Code
+          </button>
+          
+          <button class="otp-back-btn" id="back-btn">
+            ← Back to Signup
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer id="main-footer" class="footer"></footer>
+
+  <!-- Firebase SDKs — Updated to 10.12.2 to match app.js -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+  <!-- Duplicate-app guard: MUST run BEFORE app.js -->
+  <script>
+    (function () {
+      var _orig = firebase.initializeApp;
+      firebase.initializeApp = function (opts, name) {
+        try {
+          return _orig.call(firebase, opts, name);
+        } catch (e) {
+          if (e.code === 'app/duplicate-app') {
+            console.warn('[Firebase] Duplicate init caught — reusing existing app.');
+            return firebase.app(name);
+          }
+          throw e;
+        }
+      };
+    })();
+  </script>
+  
+  <!-- EmailJS for sending emails -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  
+  <!-- Your JS files in perfect order -->
+  <script src="js/optimizer.js"></script>
+  <script src="js/threat.js"></script>
+  <script src="config.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/otp.js"></script>
+</body>
+</html>

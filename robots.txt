@@ -1,0 +1,47 @@
+# ==========================================
+# XSTREAM MOVIES - ROBOTS.TXT
+# ==========================================
+
+# Allow all search engines to crawl the site
+User-agent: *
+Allow: /
+
+# ------------------------------------------
+# 1. BLOCK INTERNAL & ERROR PAGES
+# ------------------------------------------
+# Block the maintenance and error screens
+Disallow: /maintenance.html
+Disallow: /403.html
+Disallow: /404.html
+
+# ------------------------------------------
+# 2. BLOCK USER & ADMIN PAGES (SEO Protection)
+# ------------------------------------------
+# Block profile pages so bots don't index empty "Please Log In" screens
+Disallow: /profile.html
+
+# Block the upload page (even if on a separate admin page, block the URL just in case)
+Disallow: /upload.html
+
+# ------------------------------------------
+# 3. BLOCK DATA & SYSTEM FILES
+# ------------------------------------------
+# Block raw JSON data endpoints from being indexed
+Disallow: /channels.json
+
+# Block Service Workers (bots shouldn't index JavaScript logic)
+Disallow: /sw.js
+
+# ------------------------------------------
+# 4. BLOCK BACKUP & DEVELOPMENT FOLDERS
+# ------------------------------------------
+Disallow: /BACKUP/
+Disallow: /BACKUP2/
+Disallow: /node_modules/
+Disallow: /.firebase/
+
+# ==========================================
+# SITEMAP LOCATION
+# Replace 'yourdomain.com' with your actual URL!
+# ==========================================
+Sitemap: https://yourdomain.com/sitemap.xml

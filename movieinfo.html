@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Movie Info — XSTREAM</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#111111;--card:#181818;--accent:#ff4040;--purple:#7c3aed;
+  --border:rgba(255,255,255,.05);--radius:18px;
+  --text:#fff;--text2:rgba(255,255,255,.6);--text3:rgba(255,255,255,.4);
+  --glass:rgba(24,24,24,.82);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+img{display:block;max-width:100%}
+button{font-family:inherit;cursor:pointer}
+a{color:inherit;text-decoration:none}
+
+/* Loading */
+.mi-loading{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .4s ease}
+.mi-loading.hide{opacity:0;pointer-events:none}
+.mi-spinner{width:44px;height:44px;border:3px solid rgba(255,255,255,.08);border-top-color:var(--accent);border-radius:50%;animation:mi-spin .8s linear infinite}
+@keyframes mi-spin{to{transform:rotate(360deg)}}
+.mi-loading p{color:var(--text3);font-size:14px}
+
+/* Error */
+.mi-error-page{position:fixed;inset:0;z-index:9998;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:40px}
+.mi-error-page.show{display:flex}
+.mi-error-page h2{font-size:20px;color:var(--text2)}
+.mi-error-page p{color:var(--text3);font-size:14px;max-width:400px}
+.mi-error-page button{margin-top:12px;padding:10px 28px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;transition:background .2s}
+.mi-error-page button:hover{background:#e63636}
+
+/* Backdrop */
+.mi-backdrop{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;overflow:hidden}
+.mi-backdrop img{width:100%;height:100%;object-fit:cover;filter:blur(40px) brightness(.35);transform:scale(1.15)}
+.mi-backdrop-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(17,17,17,.6) 0%,rgba(17,17,17,.85) 40%,var(--bg) 100%)}
+
+/* Nav */
+.mi-nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:rgba(17,17,17,.75);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.mi-nav-logo{font-size:22px;font-weight:800;letter-spacing:-.5px;color:var(--accent)}
+.mi-nav-back{font-size:13px;color:var(--text2);display:flex;align-items:center;gap:6px;transition:color .2s}
+.mi-nav-back:hover{color:#fff}
+
+/* Content */
+.mi-content{position:relative;z-index:1;max-width:1440px;margin:0 auto;padding:32px 40px 60px}
+
+/* Hero Grid — 3 columns: poster | info | sidebar */
+.mi-hero{
+  display:grid;
+  grid-template-columns:280px 1fr 320px;
+  gap:32px;
+  align-items:start;
+}
+
+/* Poster */
+.mi-poster-col{position:sticky;top:100px}
+.mi-poster-wrap{position:relative;border-radius:16px;overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,.6),0 4px 16px rgba(0,0,0,.4);aspect-ratio:2/3;background:#0d0d0d}
+.mi-poster-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+.mi-poster-wrap:hover img{transform:scale(1.03)}
+.mi-badge-soon{position:absolute;top:12px;left:12px;background:var(--purple);color:#fff;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:5px 10px;border-radius:6px;box-shadow:0 4px 12px rgba(124,58,237,.45);z-index:2}
+
+/* Info Col */
+.mi-info-col{display:flex;flex-direction:column;gap:18px;min-width:0}
+.mi-title{font-size:32px;font-weight:800;line-height:1.15;letter-spacing:-.5px}
+.mi-rating-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.mi-rating-imdb{display:flex;align-items:center;gap:5px;font-size:15px;font-weight:600}
+.mi-rating-imdb .star{color:#fbbf24}
+.mi-votes{font-size:13px;color:var(--text3)}
+.mi-age-badge{background:rgba(255,255,255,.08);padding:3px 10px;border-radius:5px;font-size:12px;font-weight:600;letter-spacing:.3px}
+.mi-genres{display:flex;flex-wrap:wrap;gap:8px}
+.mi-genre-pill{background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.2);color:#a78bfa;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:500}
+.mi-desc{font-size:14px;line-height:1.7;color:var(--text2);max-width:600px}
+.mi-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 24px}
+.mi-meta-item{display:flex;flex-direction:column;gap:2px}
+.mi-meta-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;font-weight:500}
+.mi-meta-value{font-size:13px;color:var(--text);font-weight:500}
+.mi-buttons{display:flex;gap:12px;flex-wrap:wrap;margin-top:4px}
+.mi-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:10px;font-size:13px;font-weight:600;border:none;transition:transform .2s,box-shadow .2s,background .2s;white-space:nowrap}
+.mi-btn-primary{background:linear-gradient(135deg,#ff4040,#cc2020);color:#fff}
+.mi-btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(255,64,64,.4)}
+.mi-btn-outline{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,.15)}
+.mi-btn-outline:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.25)}
+.mi-btn-outline.active{border-color:var(--accent);color:var(--accent)}
+
+/* Sidebar — 4 stacked cards, sticky */
+.mi-sidebar{display:flex;flex-direction:column;gap:20px;position:sticky;top:100px;min-width:0}
+.mi-card{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:border-color .3s}
+.mi-card:hover{border-color:rgba(255,255,255,.08)}
+.mi-card-title{font-size:14px;font-weight:700;margin-bottom:16px;color:var(--text);display:flex;align-items:center;gap:8px}
+
+/* Rating Card */
+.mi-rc-big{font-size:48px;font-weight:800;line-height:1}
+.mi-rc-stars{color:#fbbf24;font-size:16px;letter-spacing:2px;margin:8px 0 4px}
+.mi-rc-votes{font-size:12px;color:var(--text3);margin-bottom:14px}
+.mi-rc-btn{width:100%;padding:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--text);border-radius:8px;font-size:12px;font-weight:600;transition:background .2s}
+.mi-rc-btn:hover{background:rgba(255,255,255,.1)}
+
+/* Movie Info Card */
+.mi-mi-list{display:flex;flex-direction:column;gap:10px}
+.mi-mi-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;font-size:12px}
+.mi-mi-row .lbl{color:var(--text3);white-space:nowrap;flex-shrink:0}
+.mi-mi-row .val{text-align:right;color:var(--text);font-weight:500;word-break:break-word}
+
+/* Recs Card */
+.mi-recs-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mi-rec-card{cursor:pointer;border-radius:10px;overflow:hidden;transition:transform .25s,box-shadow .25s;background:#0d0d0d}
+.mi-rec-card:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,.4)}
+.mi-rec-poster{aspect-ratio:2/3;overflow:hidden}
+.mi-rec-poster img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.mi-rec-card:hover .mi-rec-poster img{transform:scale(1.08)}
+.mi-rec-info{padding:8px}
+.mi-rec-title{font-size:11px;font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mi-rec-sub{font-size:10px;color:var(--text3);margin-top:3px}
+.mi-recs-skel{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mi-recs-skel div{aspect-ratio:2/3;border-radius:10px;background:linear-gradient(90deg,#1a1a1a 25%,#252525 50%,#1a1a1a 75%);background-size:400% 100%;animation:mi-shimmer 1.5s ease-in-out infinite}
+
+/* Details Card */
+.mi-det-list{display:flex;flex-direction:column;gap:8px}
+.mi-det-row{display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid var(--border)}
+.mi-det-row:last-child{border-bottom:none}
+.mi-det-row .lbl{color:var(--text3)}
+.mi-det-row .val{color:var(--text);font-weight:500;text-align:right}
+
+/* Sections */
+.mi-section{margin-top:48px}
+.mi-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.mi-section-title{font-size:20px;font-weight:700}
+.mi-section-link{font-size:13px;color:var(--accent);font-weight:500;transition:color .2s}
+.mi-section-link:hover{color:#ff6b6b}
+
+/* Trailer */
+.mi-trailer-wrap{position:relative;width:100%;aspect-ratio:16/9;border-radius:var(--radius);overflow:hidden;background:#0a0a0a;cursor:pointer;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.mi-trailer-wrap img{width:100%;height:100%;object-fit:cover;filter:brightness(.45);transition:filter .4s}
+.mi-trailer-wrap:hover img{filter:brightness(.55)}
+.mi-trailer-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.mi-play-btn{width:72px;height:72px;border-radius:50%;background:rgba(255,64,64,.9);display:flex;align-items:center;justify-content:center;transition:transform .25s,box-shadow .25s;box-shadow:0 4px 20px rgba(255,64,64,.4)}
+.mi-play-btn:hover{transform:scale(1.1);box-shadow:0 6px 30px rgba(255,64,64,.6)}
+.mi-play-btn svg{width:28px;height:28px;fill:#fff;margin-left:3px}
+.mi-trailer-label{font-size:14px;font-weight:600;color:rgba(255,255,255,.8)}
+
+/* Gallery */
+.mi-gallery-track{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:8px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent}
+.mi-gallery-track::-webkit-scrollbar{height:4px}
+.mi-gallery-track::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:4px}
+.mi-gallery-item{flex-shrink:0;width:320px;aspect-ratio:16/9;border-radius:14px;overflow:hidden;scroll-snap-align:start;cursor:pointer;transition:transform .3s}
+.mi-gallery-item:hover{transform:scale(1.03)}
+.mi-gallery-item img{width:100%;height:100%;object-fit:cover}
+
+/* Cast */
+.mi-cast-track{display:flex;gap:16px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:8px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent}
+.mi-cast-track::-webkit-scrollbar{height:4px}
+.mi-cast-track::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:4px}
+.mi-cast-card{flex-shrink:0;width:130px;text-align:center;cursor:default;transition:transform .25s}
+.mi-cast-card:hover{transform:translateY(-4px)}
+.mi-cast-avatar{width:90px;height:90px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:rgba(255,255,255,.7);background:linear-gradient(135deg,rgba(124,58,237,.25),rgba(255,64,64,.15));border:2px solid rgba(255,255,255,.06)}
+.mi-cast-name{font-size:12px;font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mi-cast-char{font-size:11px;color:var(--text3);margin-top:3px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+
+/* Reviews */
+.mi-reviews-list{display:flex;flex-direction:column;gap:16px}
+.mi-review-card{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.mi-review-top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.mi-review-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--accent));display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0}
+.mi-review-user{flex:1}
+.mi-review-username{font-size:13px;font-weight:600}
+.mi-review-date{font-size:11px;color:var(--text3)}
+.mi-review-rating{font-size:12px;font-weight:600;color:#fbbf24}
+.mi-review-text{font-size:13px;line-height:1.65;color:var(--text2)}
+.mi-review-actions{display:flex;gap:16px;margin-top:12px}
+.mi-review-actions button{background:none;border:none;color:var(--text3);font-size:12px;display:flex;align-items:center;gap:5px;transition:color .2s}
+.mi-review-actions button:hover{color:var(--text)}
+
+/* Toast */
+.mi-toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(30,30,30,.95);backdrop-filter:blur(10px);color:#fff;padding:12px 24px;border-radius:10px;font-size:13px;font-weight:500;opacity:0;transition:opacity .3s,transform .3s;z-index:10000;pointer-events:none;border:1px solid var(--border)}
+.mi-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@keyframes mi-shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* ===== RESPONSIVE — adjusted to keep 3-column wider ===== */
+
+/* Slightly narrower 3-column for medium desktops */
+@media(max-width:1200px){
+  .mi-hero{grid-template-columns:250px 1fr 290px;gap:24px}
+  .mi-content{padding:28px 28px 48px}
+  .mi-nav{padding:14px 28px}
+}
+
+/* 3-column holds until 900px — this is the key fix */
+@media(max-width:900px){
+  .mi-hero{
+    grid-template-columns:1fr;
+    gap:28px;
+  }
+  .mi-poster-col{
+    position:static;
+    max-width:260px;
+    margin:0 auto;
+  }
+  .mi-sidebar{
+    position:static;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+  }
+}
+
+/* Tablet / large phone */
+@media(max-width:640px){
+  .mi-nav{padding:12px 16px}
+  .mi-content{padding:20px 16px 40px}
+  .mi-title{font-size:24px}
+  .mi-meta-grid{grid-template-columns:1fr}
+  .mi-buttons{flex-direction:column}
+  .mi-btn{justify-content:center}
+  .mi-sidebar{grid-template-columns:1fr}
+  .mi-gallery-item{width:260px}
+  .mi-section{margin-top:36px}
+}
+</style>
+</head>
+<body>
+
+<div id="mi-loading" class="mi-loading">
+  <div class="mi-spinner"></div>
+  <p>Loading movie details...</p>
+</div>
+
+<div id="mi-error-page" class="mi-error-page">
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ff4040" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+  <h2 id="mi-error-title">Movie Not Found</h2>
+  <p id="mi-error-msg">We couldn't load the movie details. Please try again.</p>
+  <button onclick="location.href='index.html'">← Back to Home</button>
+</div>
+
+<div id="mi-backdrop" class="mi-backdrop" style="display:none">
+  <img id="mi-backdrop-img" src="" alt="">
+  <div class="mi-backdrop-overlay"></div>
+</div>
+
+<nav class="mi-nav" id="mi-nav" style="display:none">
+  <a href="index.html" class="mi-nav-logo">XSTREAM</a>
+  <a href="index.html" class="mi-nav-back">← Back to Home</a>
+</nav>
+
+<main id="mi-content" class="mi-content" style="display:none">
+
+  <section class="mi-hero">
+    <div class="mi-poster-col" id="mi-poster-col"></div>
+    <div class="mi-info-col" id="mi-info-col"></div>
+    <div class="mi-sidebar" id="mi-sidebar"></div>
+  </section>
+
+  <section class="mi-section" id="mi-trailer-section"></section>
+  <section class="mi-section" id="mi-gallery-section"></section>
+  <section class="mi-section" id="mi-cast-section"></section>
+  <section class="mi-section" id="mi-reviews-section"></section>
+
+</main>
+
+<div id="mi-toast" class="mi-toast"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- TMDB CONFIGURATION ---------- */
+var TMDB_API_KEY = '54758259d3a4cf5195b79fb8aade4439';   /* ← replace with your key from themoviedb.org */
+var TMDB_BASE    = 'https://api.themoviedb.org/3';
+var TMDB_IMG     = 'https://image.tmdb.org/t/p/';
+var POSTER_SIZE  = 'w500';
+var PROFILE_SIZE = 'w185';
+
+var WATCHLIST_KEY='xstream_watchlist';
+var movieData=null,isUpcoming=false,inWatchlist=false;
+
+var $loading=document.getElementById('mi-loading'),
+    $errorPage=document.getElementById('mi-error-page'),
+    $errorTitle=document.getElementById('mi-error-title'),
+    $errorMsg=document.getElementById('mi-error-msg'),
+    $backdrop=document.getElementById('mi-backdrop'),
+    $backdropImg=document.getElementById('mi-backdrop-img'),
+    $nav=document.getElementById('mi-nav'),
+    $content=document.getElementById('mi-content'),
+    $posterCol=document.getElementById('mi-poster-col'),
+    $infoCol=document.getElementById('mi-info-col'),
+    $sidebar=document.getElementById('mi-sidebar'),
+    $trailerSec=document.getElementById('mi-trailer-section'),
+    $gallerySec=document.getElementById('mi-gallery-section'),
+    $castSec=document.getElementById('mi-cast-section'),
+    $reviewsSec=document.getElementById('mi-reviews-section'),
+    $toast=document.getElementById('mi-toast');
+
+/* ============================================================
+   TMDB SESSION CACHE HELPERS
+   ============================================================ */
+function getTMDBCachedMovie(id){
+  try{
+    var raw=sessionStorage.getItem('xstream_current_movie');
+    if(!raw) return null;
+    var d=JSON.parse(raw);
+    if(d && String(d.id)===String(id)) return d;
+  }catch(e){}
+  return null;
+}
+
+function getInitials(name){
+  return name.split(' ').map(function(w){return w[0]}).join('').substring(0,2).toUpperCase();
+}
+
+/* ============================================================
+   INJECT CAST PHOTO STYLES (only once)
+   ============================================================ */
+(function injectCastStyles(){
+  if(document.getElementById('mi-cast-photo-styles')) return;
+  var s=document.createElement('style');
+  s.id='mi-cast-photo-styles';
+  s.textContent=
+    '.mi-cast-photo{width:80px;height:80px;border-radius:50%;overflow:hidden;background:#1a1a2e;display:flex;align-items:center;justify-content:center;flex-shrink:0}'+
+    '.mi-cast-photo img{width:100%;height:100%;object-fit:cover;display:block}'+
+    '.mi-cast-char{font-size:11px;color:var(--text3);margin-top:2px;max-width:90px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}';
+  document.head.appendChild(s);
+})();
+
+/* ============================================================
+   INIT
+   ============================================================ */
+function init(){
+  var id=getParam('id');
+  if(!id){showError('Missing ID','No movie ID found in the URL.');return}
+  
+  var cached=getTMDBCachedMovie(id);
+  if(cached){
+    movieData=mapTMDBToInternal(cached);
+    isUpcoming=checkUpcoming(movieData.Released);
+    inWatchlist=checkWatchlist(movieData.imdbID);
+    render(movieData);
+    fetchRecommendations(movieData.imdbID);
+    return;
+  }
+
+  fetchMovie(id);
+}
+
+function getParam(k){var m=new RegExp('[?&]'+k+'=([^&]*)').exec(location.search);return m?decodeURIComponent(m[1]):null}
+
+/* ============================================================
+   TMDB FETCH
+   ============================================================ */
+async function fetchMovie(id){
+  if(!TMDB_API_KEY){
+    showError('Configuration Error','TMDB API key is missing.');
+    return;
+  }
+  try{
+    var url=TMDB_BASE+'/movie/'+id+'?api_key='+encodeURIComponent(TMDB_API_KEY)+'&language=en-US&append_to_response=credits,release_dates';
+    var res=await fetch(url);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    var data=await res.json();
+    if(data.success===false) throw new Error(data.status_message||'Movie not found');
+    
+    movieData=mapTMDBToInternal(data);
+    isUpcoming=checkUpcoming(movieData.Released);
+    inWatchlist=checkWatchlist(movieData.imdbID);
+    render(movieData);
+    fetchRecommendations(movieData.imdbID);
+  }catch(e){
+    showError('Failed to Load',e.message||'Something went wrong.');
+  }
+}
+
+/* ============================================================
+   MAP TMDB DATA → INTERNAL FORMAT (Handles both Raw API & Cached)
+   ============================================================ */
+function mapTMDBToInternal(d){
+  var genres=[], countries=[], langs=[], companies=[];
+  var director='N/A', writer='N/A', rated='N/A', revenue='N/A';
+  var castList=[];
+  
+  /* Safely handle the date (TMDB uses release_date, upcoming.js uses releaseDate) */
+  var releaseDate = d.release_date || d.releaseDate || 'N/A';
+
+  /* 1. Genres: Handle array of strings OR array of objects */
+  if(d.genres && Array.isArray(d.genres)) {
+    d.genres.forEach(function(g){
+      if (typeof g === 'string') genres.push(g);
+      else if (g && g.name) genres.push(g.name);
+    });
+  }
+
+  /* 2. Countries */
+  if(d.production_countries && Array.isArray(d.production_countries)) {
+    d.production_countries.forEach(function(c){
+      if (typeof c === 'string') countries.push(c);
+      else if (c && c.name) countries.push(c.name);
+    });
+  } else if (d.country && typeof d.country === 'string' && d.country !== 'N/A') {
+    countries = d.country.split(',').map(function(c){return c.trim()});
+  }
+
+  /* 3. Languages */
+  if(d.spoken_languages && Array.isArray(d.spoken_languages)) {
+    d.spoken_languages.forEach(function(l){
+      if (typeof l === 'string') langs.push(l);
+      else if (l && (l.english_name || l.name)) langs.push(l.english_name || l.name);
+    });
+  } else if (d.language && typeof d.language === 'string' && d.language !== 'N/A') {
+    langs = d.language.split(',').map(function(l){return l.trim()});
+  }
+
+  /* 4. Production Companies */
+  if(d.production_companies && Array.isArray(d.production_companies)) {
+    d.production_companies.forEach(function(c){
+      if (typeof c === 'string') companies.push(c);
+      else if (c && c.name) companies.push(c.name);
+    });
+  } else if (d.production && typeof d.production === 'string' && d.production !== 'N/A') {
+    companies = d.production.split(',').map(function(c){return c.trim()});
+  }
+
+  /* 5. Credits: Handle raw TMDB 'credits' object OR pre-processed 'castList' array */
+  if(d.credits) {
+    if (d.credits.crew) {
+      d.credits.crew.forEach(function(c){
+        if(c.job==='Director' && director==='N/A') director=c.name;
+        if((c.job==='Writer' || c.job==='Screenplay') && writer==='N/A') writer=c.name;
+      });
+    }
+    if (d.credits.cast) {
+      castList = d.credits.cast.slice(0,20).map(function(c){
+        return {
+          id: String(c.id||''),
+          name: c.name||'',
+          character: c.character||'',
+          profile_url: c.profile_path ? (TMDB_IMG+PROFILE_SIZE+c.profile_path) : ''
+        };
+      });
+    }
+  } else if (d.castList && Array.isArray(d.castList)) {
+    castList = d.castList; /* Already processed by upcoming.js */
+  }
+
+  /* 6. Age Rating: Handle pre-processed 'ageRating' string OR raw 'release_dates' object */
+  if (d.ageRating && d.ageRating !== 'N/A') {
+    rated = d.ageRating;
+  } else if(d.release_dates && d.release_dates.results) {
+    var usRelease=null;
+    for(var r=0; r<d.release_dates.results.length; r++){
+      if(d.release_dates.results[r].iso_3166_1==='US'){usRelease=d.release_dates.results[r]; break;}
+    }
+    if(!usRelease && d.release_dates.results.length) usRelease=d.release_dates.results[0];
+    if(usRelease && usRelease.release_dates && usRelease.release_dates.length){
+      rated=usRelease.release_dates[0].certification || 'N/A';
+    }
+  }
+
+  /* 7. Director Fallback */
+  if (director === 'N/A' && d.director && d.director !== 'N/A') {
+    director = d.director;
+  }
+
+  /* 8. Revenue Fallback */
+  if (d.BoxOffice && d.BoxOffice !== 'N/A') {
+    revenue = d.BoxOffice;
+  } else if(d.revenue && d.revenue>0) {
+    revenue='$'+d.revenue.toLocaleString('en-US');
+  }
+
+  /* 9. Poster Fallback */
+  var poster = d.poster || (d.poster_path ? (TMDB_IMG+POSTER_SIZE+d.poster_path) : '');
+
+  /* 10. Rating Fallback */
+  var rating = '—';
+  if (d.rating != null && String(d.rating) !== '' && String(d.rating) !== 'N/A') {
+    rating = parseFloat(d.rating).toFixed(1);
+  } else if (d.vote_average != null && d.vote_average > 0) {
+    rating = d.vote_average.toFixed(1);
+  }
+
+  /* 11. Votes Fallback */
+  var votes = '—';
+  if (d.vote_count) {
+    votes = d.vote_count.toLocaleString('en-US');
+  } else if (d.imdbVotes && d.imdbVotes !== '—') {
+    votes = d.imdbVotes;
+  }
+
+  return {
+    Title: d.title || 'Untitled',
+    Poster: poster,
+    Plot: d.description || d.overview || '',
+    Genre: genres.length ? genres.join(', ') : 'N/A',
+    imdbRating: rating,
+    Rated: rated,
+    Runtime: d.runtime || 'N/A',
+    Director: director,
+    Writer: writer,
+    Actors: castList.map(function(c){return c.name}).join(', ') || d.cast || 'N/A',
+    Country: countries.length ? countries.join(', ') : 'N/A',
+    Language: langs.length ? langs.join(', ') : 'N/A',
+    Released: releaseDate,
+    imdbID: String(d.id || ''),
+    imdbVotes: votes,
+    BoxOffice: revenue,
+    Production: companies.length ? companies.join(', ') : 'N/A',
+    _tmdbCastList: castList
+  };
+}
+
+function checkUpcoming(released){
+  if(!released||released==='N/A') return false;
+  return new Date(released)>new Date();
+}
+
+function render(d){
+  document.title=d.Title+' — XSTREAM';
+  if(d.Poster&&d.Poster!=='N/A'){
+    $backdropImg.src=d.Poster;
+    $backdrop.style.display='';
+  }
+  $nav.style.display='';
+  $content.style.display='';
+  $loading.classList.add('hide');
+  setTimeout(function(){$loading.style.display='none'},500);
+  renderPoster(d);
+  renderInfo(d);
+  renderSidebar(d);
+  renderTrailer(d);
+  renderGallery(d);
+  renderCast(d);
+  renderReviews(d);
+}
+
+function renderPoster(d){
+  var poster=d.Poster&&d.Poster!=='N/A'?d.Poster:'';
+  var badge=isUpcoming?'<span class="mi-badge-soon">COMING SOON</span>':'';
+  $posterCol.innerHTML=
+    '<div class="mi-poster-wrap">'+
+      (poster?'<img src="'+esc(poster)+'" alt="'+esc(d.Title)+'">':'<div style="width:100%;height:100%;background:linear-gradient(135deg,#1a1a2e,#16213e)"></div>')+
+      badge+
+    '</div>';
+}
+
+function renderInfo(d){
+  var rating=d.imdbRating&&d.imdbRating!=='N/A'?d.imdbRating:'—';
+  var votes=d.imdbVotes&&d.imdbVotes!=='N/A'?d.imdbVotes:'—';
+  var rated=d.Rated&&d.Rated!=='N/A'?d.Rated:'N/A';
+  var genres=[];
+  if(d.Genre&&d.Genre!=='N/A') genres=d.Genre.split(',').map(function(g){return g.trim()});
+  var genrePills=genres.map(function(g){return '<span class="mi-genre-pill">'+esc(g)+'</span>'}).join('');
+  var plot=d.Plot&&d.Plot!=='N/A'?d.Plot:'';
+  var writers=cleanWriters(d.Writer,d.Director);
+  var release=d.Released&&d.Released!=='N/A'?formatDate(d.Released):'N/A';
+  var runtime=d.Runtime&&d.Runtime!=='N/A'?d.Runtime:'N/A';
+  var director=d.Director&&d.Director!=='N/A'?d.Director:'N/A';
+  var production=d.Production&&d.Production!=='N/A'?d.Production:'N/A';
+  var country=d.Country&&d.Country!=='N/A'?d.Country:'N/A';
+  var language=d.Language&&d.Language!=='N/A'?d.Language:'N/A';
+  var watchlistCls=inWatchlist?' active':'';
+  var watchlistIcon=inWatchlist?'❤️':'🤍';
+  var watchlistText=inWatchlist?'In Watchlist':'＋ Add to Watchlist';
+
+  $infoCol.innerHTML=
+    '<h1 class="mi-title">'+esc(d.Title)+'</h1>'+
+    '<div class="mi-rating-row">'+
+      '<span class="mi-rating-imdb"><span class="star">★</span> '+rating+'/10</span>'+
+      '<span class="mi-votes">'+votes+' votes</span>'+
+      '<span class="mi-age-badge">'+esc(rated)+'</span>'+
+    '</div>'+
+    '<div class="mi-genres">'+genrePills+'</div>'+
+    '<p class="mi-desc">'+esc(plot)+'</p>'+
+    '<div class="mi-meta-grid">'+
+      metaItem('Release Date',release)+
+      metaItem('Runtime',runtime)+
+      metaItem('Director',director)+
+      metaItem('Writers',writers)+
+      metaItem('Distributor',production)+
+      metaItem('Country',country)+
+      metaItem('Language',language)+
+    '</div>'+
+    '<div class="mi-buttons">'+
+      '<button class="mi-btn mi-btn-primary" id="mi-btn-trailer">▶ Watch Trailer</button>'+
+      '<button class="mi-btn mi-btn-outline'+watchlistCls+'" id="mi-btn-watchlist">'+watchlistIcon+' '+watchlistText+'</button>'+
+      '<button class="mi-btn mi-btn-outline" id="mi-btn-share">↗ Share</button>'+
+    '</div>';
+
+  document.getElementById('mi-btn-trailer').addEventListener('click',function(){
+    var s=document.getElementById('mi-trailer-section');
+    if(s) s.scrollIntoView({behavior:'smooth',block:'center'});
+  });
+  document.getElementById('mi-btn-watchlist').addEventListener('click',toggleWatchlist);
+  document.getElementById('mi-btn-share').addEventListener('click',shareMovie);
+}
+
+function metaItem(l,v){
+  return '<div class="mi-meta-item"><span class="mi-meta-label">'+esc(l)+'</span><span class="mi-meta-value">'+esc(v)+'</span></div>';
+}
+
+function renderSidebar(d){
+  var rating=d.imdbRating&&d.imdbRating!=='N/A'?d.imdbRating:'—';
+  var votes=d.imdbVotes&&d.imdbVotes!=='N/A'?d.votes:'—';
+  var stars=makeStars(rating);
+  var status=isUpcoming?'Upcoming':'Released';
+  var release=d.Released&&d.Released!=='N/A'?formatDate(d.Released):'N/A';
+  var revenue=d.BoxOffice||'N/A';
+  var production=d.Production&&d.Production!=='N/A'?d.Production:'N/A';
+  var genres=d.Genre&&d.Genre!=='N/A'?d.Genre:'N/A';
+  var runtime=d.Runtime&&d.Runtime!=='N/A'?d.Runtime:'N/A';
+  var country=d.Country&&d.Country!=='N/A'?d.Country:'N/A';
+  var language=d.Language&&d.Language!=='N/A'?d.Language:'N/A';
+  var tmdbUrl='https://www.themoviedb.org/movie/'+d.imdbID;
+
+  $sidebar.innerHTML=
+    '<div class="mi-card">'+
+      '<div class="mi-card-title">⭐ User Rating</div>'+
+      '<div class="mi-rc-big">'+esc(rating)+'</div>'+
+      '<div class="mi-rc-stars">'+stars+'</div>'+
+      '<div class="mi-rc-votes">'+esc(votes)+' votes</div>'+
+      '<button class="mi-rc-btn" onclick="window.open(\''+tmdbUrl+'\',\'_blank\')">View on TMDB</button>'+
+    '</div>'+
+    '<div class="mi-card">'+
+      '<div class="mi-card-title">🎬 Movie Info</div>'+
+      '<div class="mi-mi-list">'+
+        miRow('Status',status)+
+        miRow('Release Date',release)+
+        miRow('Original Title',d.Title)+
+        miRow('Budget','N/A')+
+        miRow('Revenue',revenue)+
+        miRow('Production',production)+
+        miRow('TMDB ID',d.imdbID)+
+      '</div>'+
+    '</div>'+
+    '<div class="mi-card" id="mi-recs-card">'+
+      '<div class="mi-card-title">🔥 You May Also Like</div>'+
+      '<div id="mi-recs-grid"><div class="mi-recs-skel"><div></div><div></div><div></div><div></div></div></div>'+
+    '</div>'+
+    '<div class="mi-card">'+
+      '<div class="mi-card-title">📋 Details</div>'+
+      '<div class="mi-det-list">'+
+        detRow('Release Date',release)+
+        detRow('Runtime',runtime)+
+        detRow('Genres',genres)+
+        detRow('Language',language)+
+        detRow('Country',country)+
+      '</div>'+
+    '</div>';
+}
+
+function miRow(l,v){return '<div class="mi-mi-row"><span class="lbl">'+esc(l)+'</span><span class="val">'+esc(v)+'</span></div>'}
+function detRow(l,v){return '<div class="mi-det-row"><span class="lbl">'+esc(l)+'</span><span class="val">'+esc(v)+'</span></div>'}
+
+/* ============================================================
+   RECOMMENDATIONS (TMDB)
+   ============================================================ */
+async function fetchRecommendations(tmdbId){
+  var grid=document.getElementById('mi-recs-grid');
+  if(!grid) return;
+  try{
+    var url=TMDB_BASE+'/movie/'+tmdbId+'/recommendations?api_key='+encodeURIComponent(TMDB_API_KEY)+'&language=en-US&page=1';
+    var res=await fetch(url);
+    var data=await res.json();
+    
+    if(!data.results||!data.results.length){
+      grid.innerHTML='<div class="mi-empty-msg" style="grid-column:1/-1;padding:20px 0;font-size:12px;color:var(--text3)">No recommendations found.</div>';
+      return;
+    }
+    
+    var movies=data.results.filter(function(m){return m.poster_path}).slice(0,4);
+    if(!movies.length){
+      grid.innerHTML='<div class="mi-empty-msg" style="grid-column:1/-1;padding:20px 0;font-size:12px;color:var(--text3)">No recommendations found.</div>';
+      return;
+    }
+    
+    grid.className='mi-recs-grid';
+    grid.innerHTML=movies.map(function(m){
+      return '<a class="mi-rec-card" href="movieinfo.html?id='+m.id+'">'+
+        '<div class="mi-rec-poster"><img src="'+(TMDB_IMG+POSTER_SIZE+m.poster_path)+'" alt="'+esc(m.title)+'" loading="lazy"></div>'+
+        '<div class="mi-rec-info"><div class="mi-rec-title">'+esc(m.title)+'</div><div class="mi-rec-sub">'+esc(m.release_date?m.release_date.substring(0,4):'')+'</div></div>'+
+      '</a>';
+    }).join('');
+  }catch(e){
+    grid.innerHTML='<div class="mi-empty-msg" style="grid-column:1/-1;padding:20px 0;font-size:12px;color:var(--text3)">Could not load recommendations.</div>';
+  }
+}
+
+function renderTrailer(d){
+  var poster=d.Poster&&d.Poster!=='N/A'?d.Poster:'';
+  var ytUrl='https://www.youtube.com/results?search_query='+encodeURIComponent(d.Title+' Official Trailer');
+  $trailerSec.innerHTML=
+    '<div class="mi-section-header"><h2 class="mi-section-title">🎬 Trailer</h2></div>'+
+    '<div class="mi-trailer-wrap" onclick="window.open(\''+ytUrl+'\',\'_blank\')">'+
+      (poster?'<img src="'+esc(poster)+'" alt="Trailer">':'')+
+      '<div class="mi-trailer-overlay">'+
+        '<div class="mi-play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>'+
+        '<span class="mi-trailer-label">Watch on YouTube</span>'+
+      '</div>'+
+    '</div>';
+}
+
+function renderGallery(d){
+  $gallerySec.innerHTML=
+    '<div class="mi-section-header"><h2 class="mi-section-title">📸 Gallery</h2></div>'+
+    '<div style="text-align:center;padding:48px 20px;color:var(--text3);font-size:14px">No screenshots available for this movie.</div>';
+}
+
+/* ============================================================
+   CAST
+   ============================================================ */
+function renderCast(d){
+  var castList=d._tmdbCastList||[];
+
+  var html='<div class="mi-section-header"><h2 class="mi-section-title">🎭 Cast</h2></div>';
+  
+  if(!castList.length){
+    html+='<div style="text-align:center;padding:48px 20px;color:var(--text3);font-size:14px">No cast information available.</div>';
+  }else{
+    html+='<div class="mi-cast-track">';
+    castList.forEach(function(c){
+      var hasPhoto=c.profile_url&&c.profile_url.indexOf('http')===0;
+      var imgHtml=hasPhoto
+        ?'<img src="'+esc(c.profile_url)+'" alt="'+esc(c.name)+'" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">'
+        :'';
+      var fallbackHtml='<div class="mi-cast-avatar" style="'+(hasPhoto?'display:none':'')+'">'+esc(getInitials(c.name))+'</div>';
+
+      html+=
+        '<div class="mi-cast-card">'+
+          '<div class="mi-cast-photo">'+imgHtml+fallbackHtml+'</div>'+
+          '<div class="mi-cast-name">'+esc(c.name)+'</div>'+
+          (c.character?'<div class="mi-cast-char">'+esc(c.character)+'</div>':'')+
+        '</div>';
+    });
+    html+='</div>';
+  }
+  $castSec.innerHTML=html;
+}
+
+function renderReviews(d){
+  var tmdbUrl='https://www.themoviedb.org/movie/'+d.imdbID;
+  $reviewsSec.innerHTML=
+    '<div class="mi-section-header"><h2 class="mi-section-title">💬 Reviews</h2></div>'+
+    '<div style="text-align:center;padding:48px 20px;color:var(--text3);font-size:14px">No reviews available. <a href="'+tmdbUrl+'" target="_blank" style="color:var(--accent)">View on TMDB →</a></div>';
+}
+
+function toggleWatchlist(){
+  if(!movieData) return;
+  var list=getWatchlist();
+  var id=movieData.imdbID;
+  var idx=list.indexOf(id);
+  if(idx>-1){list.splice(idx,1);inWatchlist=false}
+  else{list.push(id);inWatchlist=true}
+  try{localStorage.setItem(WATCHLIST_KEY,JSON.stringify(list))}catch(e){}
+  var btn=document.getElementById('mi-btn-watchlist');
+  if(btn){
+    btn.className='mi-btn mi-btn-outline'+(inWatchlist?' active':'');
+    btn.innerHTML=(inWatchlist?'❤️':'🤍')+' '+(inWatchlist?'In Watchlist':'＋ Add to Watchlist');
+  }
+  showToast(inWatchlist?'Added to Watchlist':'Removed from Watchlist');
+}
+
+function shareMovie(){
+  var url=location.href;
+  var title=movieData?movieData.Title:'Movie';
+  if(navigator.share){
+    navigator.share({title:title,text:'Check out '+title+' on XSTREAM',url:url}).catch(function(){});
+  }else{
+    navigator.clipboard.writeText(url).then(function(){
+      showToast('Link copied to clipboard!');
+    }).catch(function(){
+      showToast('Could not copy link.');
+    });
+  }
+}
+
+function getWatchlist(){
+  try{var r=localStorage.getItem(WATCHLIST_KEY);return r?JSON.parse(r):[]}catch(e){return[]}
+}
+function checkWatchlist(id){return getWatchlist().indexOf(id)>-1}
+
+function showToast(msg){
+  $toast.textContent=msg;
+  $toast.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t=setTimeout(function(){$toast.classList.remove('show')},2500);
+}
+
+function makeStars(rating){
+  var r=parseFloat(rating);if(isNaN(r)) return '☆ ☆ ☆ ☆ ☆';
+  var s=r/2,full=Math.floor(s),half=s-full>=0.25&&s-full<0.75,fullH=s-full>=0.75;
+  if(fullH) full++;
+  var out='';
+  for(var i=0;i<full;i++) out+='★ ';
+  if(half&&!fullH) out+='★ ';
+  var left=5-out.split('★').length+1;
+  for(var j=0;j<left;j++) out+='☆ ';
+  return out.trim();
+}
+
+function formatDate(str){
+  if(!str || str==='N/A') return 'N/A';
+  try{var d=new Date(str+'T00:00:00');if(isNaN(d))return str;return d.toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'})}catch(e){return str}
+}
+
+function cleanWriters(writer,director){
+  if(!writer||writer==='N/A') return 'N/A';
+  var parts=writer.split(',').map(function(w){return w.trim()}).filter(Boolean);
+  if(director&&director!=='N/A'){
+    var dirParts=director.split(',').map(function(w){return w.trim()});
+    parts=parts.filter(function(w){return dirParts.indexOf(w)===-1});
+  }
+  var unique=[],seen={};
+  parts.forEach(function(w){if(!seen[w]){seen[w]=1;unique.push(w)}});
+  return unique.length?unique.join(', '):'N/A';
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function showError(title,msg){
+  $loading.style.display='none';
+  $errorTitle.textContent=title||'Error';
+  $errorMsg.textContent=msg||'Something went wrong.';
+  $errorPage.classList.add('show');
+}
+
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
+else init();
+
+})();
+</script>
+</body>
+</html>

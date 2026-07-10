@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="XStream — Browse all premium adult videos. Filter by category, sort by trending, views, or likes.">
+  <meta name="keywords" content="adult videos, browse all, streaming, premium content, categories">
+  <meta name="author" content="XStream">
+  <meta property="og:title" content="XStream — Browse All Videos">
+  <meta property="og:description" content="Explore all premium 18+ videos filtered and sorted your way.">
+  <link rel="icon" type="image/webp" sizes="16x16" href="https://ik.imagekit.io/s95tumxuk/IMG_2611.png">
+  <link rel="icon" type="image/webp" sizes="32x32" href="https://ik.imagekit.io/s95tumxuk/IMG_2611.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://ik.imagekit.io/s95tumxuk/IMG_2610.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <title>Browse All Movies — XStream</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- 1. Base styles FIRST -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- 2. Desktop override LAST — wins by cascade order -->
+  <link rel="stylesheet" href="css/desktop.css">
+
+  <!-- 3. Inline styles LAST — wins over everything -->
+  <style>
+  /* ── MOBILE-FIRST HERO ARTWORK ── */
+
+.hero-artwork {
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background-size: cover !important;
+  background-position: center top !important;
+  background-repeat: no-repeat !important;
+  z-index: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  transform: none !important;
+  right: auto !important;
+  bottom: auto !important;
+  inset: auto !important;
+}
+
+/* ── NO OVERLAY — image fully visible ── */
+
+.hero-overlay {
+  display: none;
+}
+
+/* ── CONTAINER & CONTENT LAYERS ── */
+
+.page-header {
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.page-header-content {
+  position: relative !important;
+  z-index: 2 !important;
+}
+  
+      ::selection { background: rgba(229,9,20,0.35); color: #fff; }
+      ::-webkit-scrollbar { width: 7px; }
+      ::-webkit-scrollbar-track { background: #050505; }
+      ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: #444; }
+
+      body[data-page="viewall"] { background: #050505; }
+      .main-container { background: #050505 !important; padding: 0 !important; margin: 0 !important; max-width: 100% !important; }
+      .content-grid { display: block !important; max-width: 100% !important; padding: 0 !important; margin: 0 !important; gap: 0 !important; }
+      .content-main { width: 100% !important; max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
+      .content-main > .section { padding: 0 !important; margin: 0 !important; background: transparent !important; }
+
+      .page-header { position: relative; width: 100%; min-height: 370px; padding: 0 !important; margin: 0 !important; overflow: hidden; background: #0a0a0a; }
+      .page-header::before { content: ''; position: absolute; inset: 0; background: rgba(5,5,5,0.6); z-index: 1; pointer-events: none; }
+      .page-header::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, rgba(5,5,5,0.97) 0%, rgba(5,5,5,0.75) 35%, rgba(5,5,5,0.3) 60%, transparent 80%); z-index: 2; pointer-events: none; }
+      .page-header-content::before { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 120px; background: linear-gradient(to top, #050505, transparent); z-index: 2; pointer-events: none; }
+      .page-header-content::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 50%, rgba(5,5,5,0.4) 100%); z-index: 2; pointer-events: none; }
+      .page-header-content { position: relative; z-index: 3; display: flex; flex-direction: column; justify-content: center; min-height: 370px; max-width: 1440px; margin: 0 auto; padding: 52px 56px 60px; }
+
+      .hero-artwork { position: absolute !important; top: 50% !important; left: auto !important; right: 56px !important; bottom: auto !important; width: 42% !important; height: 82% !important; transform: translateY(-50%) !important; border-radius: 18px !important; overflow: hidden; border: 1px solid rgba(255,255,255,0.07) !important; box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04) inset !important; background-position: center !important; }
+
+      .breadcrumb { margin-bottom: 20px; font-family: 'Inter', sans-serif; font-size: 13px; }
+      .breadcrumb a { color: #888; text-decoration: none; transition: color 0.25s; }
+      .breadcrumb a:hover { color: #E50914; }
+      .breadcrumb-sep { color: #444; margin: 0 8px; }
+      .breadcrumb-current { color: #ccc; }
+      .page-title { font-family: 'Poppins', sans-serif; font-size: 46px; font-weight: 900; color: #ffffff; line-height: 1.08; letter-spacing: -0.8px; }
+      .page-subtitle { font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 400; color: #999; margin-top: 14px; line-height: 1.6; max-width: 480px; }
+
+      .stat-cards { display: flex; gap: 14px; margin-top: 28px; position: relative; z-index: 4; }
+      .stat-card { display: flex; align-items: center; gap: 12px; padding: 14px 22px; background: rgba(255,255,255,0.055); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.09); border-radius: 14px; box-shadow: 0 8px 32px rgba(0,0,0,0.35); transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease; }
+      .stat-card:hover { transform: translateY(-3px); background: rgba(255,255,255,0.08); box-shadow: 0 12px 40px rgba(0,0,0,0.45); }
+      .stat-icon { font-size: 26px; line-height: 1; flex-shrink: 0; }
+      .stat-info { display: flex; flex-direction: column; }
+      .stat-number { font-family: 'Poppins', sans-serif; font-size: 19px; font-weight: 800; color: #ffffff; line-height: 1.2; }
+      .stat-label { font-family: 'Inter', sans-serif; font-size: 11.5px; font-weight: 400; color: #888; margin-top: 2px; letter-spacing: 0.2px; }
+
+      .filter-bar { position: sticky; top: 64px; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 14px 56px; margin: 0 !important; background: rgba(10,10,10,0.82); backdrop-filter: blur(28px) saturate(1.4); -webkit-backdrop-filter: blur(28px) saturate(1.4); border-bottom: 1px solid rgba(255,255,255,0.05); transition: box-shadow 0.3s ease; }
+      .filter-bar.scrolled { box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
+      .filter-left .section-title { font-family: 'Poppins', sans-serif; font-size: 19px; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+      .title-icon { width: 20px; height: 20px; color: #E50914; flex-shrink: 0; }
+
+      .search-box { position: relative; width: 400px; flex-shrink: 0; }
+      .search-box .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #666; width: 18px; height: 18px; pointer-events: none; transition: color 0.3s; }
+      .search-box input { width: 100%; padding: 13px 44px 13px 46px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: #ffffff; font-family: 'Inter', sans-serif; font-size: 14px; outline: none; transition: all 0.3s ease; box-sizing: border-box; }
+      .search-box input::placeholder { color: #555; }
+      .search-box input:focus { background: rgba(255,255,255,0.09); border-color: rgba(229,9,20,0.5); box-shadow: 0 0 0 3px rgba(229,9,20,0.12), 0 0 20px rgba(229,9,20,0.06); }
+      .search-box input:focus ~ .search-icon, .search-box input:focus + .search-icon { color: #E50914; }
+
+      .active-filters { display: flex !important; align-items: center; gap: 10px; padding: 10px 56px; background: rgba(16,16,16,0.6); border-bottom: 1px solid rgba(255,255,255,0.03); flex-wrap: wrap; }
+      .active-filters-label { font-family: 'Inter', sans-serif; font-size: 13px; color: #666; white-space: nowrap; }
+      .active-filter-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+      .active-filter-chips span, .active-filter-chips .filter-chip { padding: 4px 14px; background: rgba(229,9,20,0.12); border: 1px solid rgba(229,9,20,0.25); border-radius: 20px; font-family: 'Inter', sans-serif; font-size: 12.5px; color: #ff7b7b; white-space: nowrap; }
+      .clear-filters-btn { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; color: #E50914; background: none; border: none; cursor: pointer; transition: opacity 0.2s; white-space: nowrap; }
+      .clear-filters-btn:hover { opacity: 0.7; }
+
+      .btn-outline { display: inline-flex; align-items: center; gap: 8px; padding: 14px 44px; border-radius: 12px; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 15px; color: #ffffff; background: transparent; border: 1.5px solid rgba(229,9,20,0.45); cursor: pointer; transition: all 0.3s ease; letter-spacing: 0.2px; }
+      .btn-outline:hover { background: #E50914; border-color: #E50914; box-shadow: 0 0 36px rgba(229,9,20,0.28); transform: translateY(-2px); }
+      .spinner { width: 36px; height: 36px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #E50914; border-radius: 50%; animation: xstream-spin 0.7s linear infinite; margin: 0 auto; }
+      @keyframes xstream-spin { to { transform: rotate(360deg); } }
+
+      .empty-state { text-align: center; padding: 90px 32px; }
+      .empty-state svg { color: #2a2a2a; }
+      .empty-state h3 { font-family: 'Poppins', sans-serif; font-size: 24px; font-weight: 700; color: #ffffff; margin-top: 20px; }
+      .empty-state p { font-family: 'Inter', sans-serif; font-size: 15px; color: #777; margin-top: 8px; }
+      .btn-accent { display: inline-flex !important; align-items: center; gap: 8px; padding: 13px 30px; background: #E50914; color: #ffffff; border-radius: 12px; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 14px; text-decoration: none; transition: all 0.3s ease; border: none; cursor: pointer; }
+      .btn-accent:hover { background: #ff1a25; box-shadow: 0 0 36px rgba(229,9,20,0.3); transform: translateY(-2px); color: #ffffff; }
+
+      .footer { background: #0a0a0a !important; border-top: 1px solid rgba(255,255,255,0.05) !important; }
+    }
+  </style>
+</head>
+<body data-page="viewall">
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- Navigation -->
+  <nav id="main-nav" class="navbar"></nav>
+
+  <!-- Mobile Menu Overlay -->
+  <div id="mobile-overlay" class="mobile-overlay"></div>
+  <div id="mobile-menu" class="mobile-menu"></div>
+
+<!-- ══════════════ HERO SECTION ══════════════ -->
+<section class="page-header">
+  <!-- Background artwork — MUST be direct child of page-header -->
+  <div class="hero-artwork" style="background-image: url('https://ik.imagekit.io/s95tumxuk/IMG_3524.png')"></div>
+  <!-- Dark gradient overlay for text readability on mobile -->
+  <div class="hero-overlay"></div>
+  
+  <div class="page-header-content">
+    <nav class="breadcrumb" id="breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-current" id="breadcrumb-current">All Movies</span>
+    </nav>
+    <h1 class="page-title" id="viewall-page-title">All Movies</h1>
+    <p class="page-subtitle" id="viewall-page-subtitle">Browse the complete collection of Movies from creators worldwide.</p>
+    
+    <!-- Floating Stat Cards (desktop only, no JS dependency) -->
+    <div class="stat-cards">
+      <div class="stat-card">
+        <span class="stat-icon">🎬</span>
+        <div class="stat-info">
+          <span class="stat-number" id="stat-movies-count">52,944+</span>
+          <span class="stat-label">Movies Available</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">🌍</span>
+        <div class="stat-info">
+          <span class="stat-number" id="stat-countries-count">41+</span>
+          <span class="stat-label">Countries</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- ══════════════ MAIN CONTENT ══════════════ -->
+  <main class="main-container">
+    <div class="content-grid">
+
+      <!-- Main Column -->
+      <div class="content-main">
+
+        <!-- Filter Bar -->
+        <div class="filter-bar" id="filter-bar">
+          <div class="filter-left">
+            <h2 class="section-title" id="viewall-title">
+              <svg class="title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              All Movies
+            </h2>
+          </div>
+          <div class="filter-right">
+            <div class="search-box" id="viewall-search-box">
+              <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input type="text" id="viewall-search-input" placeholder="Search movies by title, description, genre..." autocomplete="off">
+              <button id="viewall-search-clear" style="display:none; position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--text-muted); cursor:pointer; padding:4px;" aria-label="Clear search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Search/Filters Display -->
+        <div class="active-filters" id="active-filters" style="display:none;">
+          <span class="active-filters-label">Showing results for:</span>
+          <div class="active-filter-chips" id="active-filter-chips"></div>
+          <button class="clear-filters-btn" id="clear-all-filters">Clear All</button>
+        </div>
+
+        <!-- Videos Grid -->
+        <section class="section">
+          <div class="video-grid" id="videos-grid">
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+          </div>
+          <div id="load-more-container" class="load-more-container" style="display:none;">
+            <button id="load-more-btn" class="btn-outline">Load More Videos</button>
+            <div id="load-more-spinner" class="spinner" style="display:none;"></div>
+          </div>
+          <div id="no-videos" class="empty-state" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="64" height="64"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="m10 8 5 4-5 4V8z"/></svg>
+            <h3>No videos found</h3>
+            <p>Try adjusting your filters or search terms.</p>
+            <a href="viewall.html" class="btn-accent" style="margin-top:16px; display:inline-flex; align-items:center; gap:8px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              Reset Filters
+            </a>
+          </div>
+        </section>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer id="main-footer" class="footer"></footer>
+
+  <!-- Firebase SDKs — ONE version, loaded ONCE -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+  <!-- Duplicate-app guard -->
+  <script>
+    (function () {
+      var _orig = firebase.initializeApp;
+      firebase.initializeApp = function (opts, name) {
+        try {
+          return _orig.call(firebase, opts, name);
+        } catch (e) {
+          if (e.code === 'app/duplicate-app') {
+            console.warn('[Firebase] Duplicate init caught — reusing existing app.');
+            return firebase.app(name);
+          }
+          throw e;
+        }
+      };
+    })();
+  </script>
+
+  <!-- JS files — untouched -->
+  <script src="js/optimizer.js"></script>
+  <script src="js/threat.js"></script>
+  <script src="config.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/viewall.js"></script>
+</body>
+</html>

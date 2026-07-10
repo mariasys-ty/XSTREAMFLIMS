@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Device limit reached — xStream Movies">
+  <title>Device Limit Reached — XSTREAM MOVIES</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="device-limit">
+
+  <div id="toast-container"></div>
+  <nav id="main-nav" class="navbar"></nav>
+
+  <main class="auth-page">
+    <div class="auth-bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+    </div>
+
+    <div class="auth-container">
+      <div class="auth-card device-limit-card">
+        
+        <div class="auth-header">
+          <a href="index.html" class="auth-logo">
+            <svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#e63946"/><path d="M13 10l10 6-10 6V10z" fill="#fff"/></svg>
+            xStream Movies
+          </a>
+          <h1>Device Limit Reached</h1>
+          <p>Your account is active on <strong id="device-count">2</strong> devices (maximum allowed)</p>
+        </div>
+
+        <!-- Warning Illustration -->
+        <div class="device-limit-illustration">
+          <svg viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Laptop -->
+            <rect x="30" y="30" width="80" height="55" rx="5" fill="#e8e8e8" stroke="#ccc" stroke-width="2"/>
+            <rect x="35" y="35" width="70" height="42" rx="2" fill="#333"/>
+            <rect x="20" y="85" width="100" height="8" rx="4" fill="#ccc"/>
+            
+            <!-- Phone -->
+            <rect x="130" y="20" width="40" height="70" rx="6" fill="#e8e8e8" stroke="#ccc" stroke-width="2"/>
+            <rect x="134" y="28" width="32" height="50" rx="2" fill="#333"/>
+            <circle cx="150" cy="84" r="3" fill="#ccc"/>
+            
+            <!-- Warning badge -->
+            <circle cx="100" cy="110" r="22" fill="#e63946"/>
+            <text x="100" y="117" text-anchor="middle" fill="#fff" font-size="24" font-weight="800" font-family="Poppins">!</text>
+            
+            <!-- X mark on laptop -->
+            <line x1="60" y1="50" x2="80" y2="70" stroke="#e63946" stroke-width="4" stroke-linecap="round"/>
+            <line x1="80" y1="50" x2="60" y2="70" stroke="#e63946" stroke-width="4" stroke-linecap="round"/>
+            
+            <!-- Check on phone -->
+            <polyline points="140,48 148,58 162,42" stroke="#28a745" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <!-- Devices List -->
+        <div class="device-limit-info">
+          <p>Manage your devices below to sign in on this device.</p>
+        </div>
+
+        <div class="device-list" id="device-list">
+          <!-- Devices will be loaded here -->
+          <div class="device-list-loading" id="device-list-loading">
+            <div class="device-spinner"></div>
+            <p>Loading devices...</p>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="device-limit-actions">
+          <button class="btn-accent btn-full btn-lg" id="try-login-btn" disabled>
+            <span class="btn-text">Sign In on This Device</span>
+            <div class="btn-spinner" style="display:none;"></div>
+          </button>
+
+          <button class="device-limit-back-btn" id="back-to-login-btn">
+            ← Back to Login
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer id="main-footer" class="footer"></footer>
+
+  <script src="js/optimizer.js"></script>
+  <script src="js/threat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="config.js"></script>
+<script src="js/app.js"></script>
+  <script src="js/ADLL.js"></script>
+  
+  <script>
+    (function() {
+      'use strict';
+
+      var limitData = null;
+      var devices = [];
+      var canLogin = false;
+
+      // ============================================
+      // INITIALIZE
+      // ============================================
+      function init() {
+        var stored = sessionStorage.getItem('xstream_device_limit');
+        
+        if (!stored) {
+          window.location.href = 'login.html';
+          return;
+        }
+
+        try {
+          limitData = JSON.parse(stored);
+        } catch (e) {
+          window.location.href = 'login.html';
+          return;
+        }
+
+        // Check if data is too old (5 minutes)
+        if (Date.now() - limitData.timestamp > 300000) {
+          sessionStorage.removeItem('xstream_device_limit');
+          window.location.href = 'login.html';
+          return;
+        }
+
+        document.getElementById('device-count').textContent = ADLL.CONFIG.MAX_DEVICES;
+        
+        setupButtons();
+        loadDevices();
+      }
+
+      // ============================================
+      // LOAD DEVICES
+      // ============================================
+      function loadDevices() {
+        var listContainer = document.getElementById('device-list');
+        var loadingEl = document.getElementById('device-list-loading');
+
+        ADLL.getDevices(limitData.uid)
+          .then(function(loadedDevices) {
+            devices = loadedDevices;
+            loadingEl.style.display = 'none';
+            renderDevices();
+          })
+          .catch(function(error) {
+            console.error('Error loading devices:', error);
+            loadingEl.innerHTML = '<p style="color: #e63946;">Failed to load devices. <a href="login.html" class="link-accent">Try again</a></p>';
+          });
+      }
+
+      // ============================================
+      // RENDER DEVICES
+      // ============================================
+      function renderDevices() {
+        var listContainer = document.getElementById('device-list');
+        var html = '';
+
+        if (devices.length === 0) {
+          html = '<div class="device-empty"><p>No devices found. You can now sign in.</p></div>';
+          canLogin = true;
+          updateLoginButton();
+          listContainer.innerHTML = html;
+          return;
+        }
+
+        for (var i = 0; i < devices.length; i++) {
+          var device = devices[i];
+          var isCurrent = device.id === limitData.currentDeviceId;
+          var isThisDevice = device.id === ADLL.getCurrentDeviceId();
+          var icon = getDeviceIcon(device.os);
+          var timeText = ADLL.timeAgo(device.lastActive);
+
+          html += '<div class="device-item' + (isThisDevice ? ' device-this' : '') + '">';
+          html += '  <div class="device-item-icon">' + icon + '</div>';
+          html += '  <div class="device-item-info">';
+          html += '    <div class="device-item-name">' + escapeHtml(device.name || 'Unknown Device') + '</div>';
+          html += '    <div class="device-item-meta">Last active: ' + timeText + '</div>';
+          html += '  </div>';
+
+          if (isThisDevice) {
+            html += '  <span class="device-badge device-badge-this">This Device</span>';
+          } else if (device.isCurrent) {
+            html += '  <span class="device-badge device-badge-active">Active</span>';
+          }
+
+          if (!isThisDevice) {
+            html += '  <button class="device-remove-btn" data-device-id="' + device.id + '" title="Remove this device">';
+            html += '    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
+            html += '  </button>';
+          }
+
+          html += '</div>';
+        }
+
+        listContainer.innerHTML = html;
+
+        // Attach remove handlers
+        var removeBtns = listContainer.querySelectorAll('.device-remove-btn');
+        for (var j = 0; j < removeBtns.length; j++) {
+          removeBtns[j].addEventListener('click', handleRemoveDevice);
+        }
+      }
+
+      // ============================================
+      // GET DEVICE ICON SVG
+      // ============================================
+      function getDeviceIcon(os) {
+        if (os === 'Windows') {
+          return '<svg viewBox="0 0 24 24" width="28" height="28" fill="#0078d4"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>';
+        } else if (os === 'macOS') {
+          return '<svg viewBox="0 0 24 24" width="28" height="28" fill="#333"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>';
+        } else if (os === 'Android') {
+          return '<svg viewBox="0 0 24 24" width="28" height="28" fill="#3ddc84"><path d="M17.523 15.341a.996.996 0 0 1 0-1.992.996.996 0 0 1 0 1.992m-11.046 0a.996.996 0 0 1 0-1.992.996.996 0 0 1 0 1.992m11.405-6.02l1.997-3.46a.416.416 0 0 0-.152-.567.416.416 0 0 0-.567.152L17.124 8.95a12.16 12.16 0 0 0-5.124-1.122c-1.84 0-3.562.41-5.124 1.122L4.84 5.446a.416.416 0 0 0-.567-.152.416.416 0 0 0-.152.567l1.997 3.46C2.688 11.322.683 14.582.035 18.323h23.93c-.648-3.741-2.653-7.001-5.083-9.002"/></svg>';
+        } else if (os === 'iOS') {
+          return '<svg viewBox="0 0 24 24" width="28" height="28" fill="#333"><path d="M15.769 14.084c-.022-.04-.044-.084-.07-.124a5.55 5.55 0 0 0-.873-1.112c.092-.116.18-.236.262-.36a5.22 5.22 0 0 0 .66-2.504c.058-1.632-.45-3.196-1.388-4.348C13.395 4.506 12.06 4 10.5 4c-.34 0-.68.024-1.012.072C8.604 4.22 7.78 4.64 7.1 5.28c-.952.892-1.536 2.104-1.598 3.44a5.19 5.19 0 0 0 .916 3.14c.18.24.378.468.592.68a5.53 5.53 0 0 0-.88 1.1c-.024.04-.048.08-.068.12C4.088 16.284 2 19.284 2 19.92V20h20v-.08c0-.636-2.088-3.636-6.231-5.836z"/></svg>';
+        } else if (os === 'Linux') {
+          return '<svg viewBox="0 0 24 24" width="28" height="28" fill="#333"><path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.832-.41 1.684-.287 2.489a.424.424 0 0 0-.11.135c-.26.268-.45.6-.663.839-.199.199-.485.267-.797.4-.313.136-.658.269-.864.68-.09.189-.136.394-.132.602 0 .199.027.4.055.536.058.399.116.728.04.97-.249.68-.28 1.145-.106 1.484.174.334.535.47.94.601.81.2 1.91.135 2.774.6.926.466 1.866.67 2.616.47.526-.116.97-.464 1.208-.946.587-.003 1.23-.269 2.26-.334.699-.058 1.574.267 2.577.2.025.134.063.198.114.333l.003.003c.391.778 1.113 1.368 1.884 1.43.868.074 1.741-.308 2.456-1.14.312-.37.676-.787 1.15-1.107.24-.17.536-.265.86-.265.049 0 .098.003.147.008.513.058.938.397 1.26.68.322.28.598.6.998.801.4.2.93.262 1.565.068a.476.476 0 0 0 .298-.226c.393-.602.47-1.218.453-1.777-.016-.56-.12-1.07-.176-1.504a5.89 5.89 0 0 1-.019-1.784c.2-.268.315-.534.353-.8.04-.27-.003-.536-.083-.801-.16-.532-.465-1.066-.729-1.585a7.56 7.56 0 0 1-.498-1.216c-.162-.565-.115-1.24.015-1.983.133-.747.36-1.58.39-2.565.03-1.022-.048-2.229-.63-3.37C17.752 1.258 15.393 0 12.504 0z"/></svg>';
+        }
+        return '<svg viewBox="0 0 24 24" width="28" height="28" fill="#999"><rect x="4" y="4" width="16" height="12" rx="2" fill="none" stroke="#999" stroke-width="2"/><rect x="7" y="16" width="10" height="3" rx="1" fill="none" stroke="#999" stroke-width="2"/></svg>';
+      }
+
+      // ============================================
+      // REMOVE DEVICE
+      // ============================================
+      function handleRemoveDevice(e) {
+        var btn = e.currentTarget;
+        var deviceId = btn.dataset.deviceId;
+
+        if (!confirm('Remove this device? It will be signed out.')) return;
+
+        btn.disabled = true;
+        btn.innerHTML = '<div class="device-spinner-small"></div>';
+
+        ADLL.removeDevice(limitData.uid, deviceId)
+          .then(function() {
+            showToast('Device removed successfully', 'success');
+            loadDevices(); // Reload list
+          })
+          .catch(function(error) {
+            console.error('Remove error:', error);
+            btn.disabled = false;
+            btn.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
+            showToast('Failed to remove device', 'error');
+          });
+      }
+
+      // ============================================
+      // UPDATE LOGIN BUTTON STATE
+      // ============================================
+      function updateLoginButton() {
+        var btn = document.getElementById('try-login-btn');
+        var count = devices.length;
+
+        if (count < ADLL.CONFIG.MAX_DEVICES) {
+          btn.disabled = false;
+          canLogin = true;
+        } else {
+          btn.disabled = true;
+          canLogin = false;
+        }
+      }
+
+      // ============================================
+      // SETUP BUTTONS
+      // ============================================
+      function setupButtons() {
+        // Try login button
+        document.getElementById('try-login-btn').addEventListener('click', function() {
+          if (!canLogin) return;
+
+          var btn = this;
+          var btnText = btn.querySelector('.btn-text');
+          var btnSpinner = btn.querySelector('.btn-spinner');
+
+          btn.disabled = true;
+          btnText.textContent = 'Signing in...';
+          btnSpinner.style.display = 'block';
+
+          // We need to perform the actual Firebase login here
+          // Get credentials from somewhere (we'll need to adjust flow)
+          var loginData = sessionStorage.getItem('xstream_login_credentials');
+          
+          if (!loginData) {
+            showToast('Session expired. Please login again.', 'error');
+            setTimeout(function() {
+              window.location.href = 'login.html';
+            }, 1500);
+            return;
+          }
+
+          try {
+            var creds = JSON.parse(loginData);
+            
+            auth.signInWithEmailAndPassword(creds.email, creds.password)
+              .then(function(result) {
+                return ADLL.registerDevice(result.user.uid).then(function() {
+                  sessionStorage.removeItem('xstream_device_limit');
+                  sessionStorage.removeItem('xstream_login_credentials');
+                  showToast('Welcome back!', 'success');
+                  setTimeout(function() {
+                    window.location.href = 'profile.html';
+                  }, 800);
+                });
+              })
+              .catch(function(err) {
+                console.error('Login error:', err);
+                btn.disabled = false;
+                btnText.textContent = 'Sign In on This Device';
+                btnSpinner.style.display = 'none';
+                showToast(getAuthErrorMessage(err.code), 'error');
+              });
+
+          } catch (e) {
+            btn.disabled = false;
+            btnText.textContent = 'Sign In on This Device';
+            btnSpinner.style.display = 'none';
+            showToast('Session expired. Please login again.', 'error');
+            setTimeout(function() {
+              window.location.href = 'login.html';
+            }, 1500);
+          }
+        });
+
+        // Back to login
+        document.getElementById('back-to-login-btn').addEventListener('click', function() {
+          sessionStorage.removeItem('xstream_device_limit');
+          sessionStorage.removeItem('xstream_login_credentials');
+          window.location.href = 'login.html';
+        });
+      }
+
+      // ============================================
+      // ESCAPE HTML
+      // ============================================
+      function escapeHtml(text) {
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(text));
+        return div.innerHTML;
+      }
+
+      // ============================================
+      // INIT
+      // ============================================
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+
+    })();
+  </script>
+</body>
+</html>

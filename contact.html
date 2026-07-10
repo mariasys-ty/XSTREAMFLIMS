@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Contact xstream support — Get help with your account, report content, or send us feedback.">
+  <title>Contact Us — XSTREAM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    #live-chat-container {
+      display: none !important;
+      flex-direction: column;
+      height: 520px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--bg-secondary, #1a1a2e);
+      border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+      width: 100%;
+    }
+    #live-chat-container.chat-visible {
+      display: flex !important;
+    }
+    #contact-form-card.form-hidden, #request-form-card.form-hidden {
+      display: none !important;
+    }
+    .chat-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      background: linear-gradient(135deg, var(--accent, #e2b04a), var(--accent-dark, #c49a3a));
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .chat-header-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .chat-header-info { flex: 1; }
+    .chat-header-info h4 {
+      margin: 0 0 2px 0;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+    }
+    .chat-header-info span { font-size: 12px; opacity: 0.9; }
+    .chat-back-btn {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: #fff;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .chat-back-btn:hover { background: rgba(255,255,255,0.3); }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-height: 0;
+    }
+    .chat-messages::-webkit-scrollbar { width: 6px; }
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: var(--border-color, rgba(255,255,255,0.15));
+      border-radius: 3px;
+    }
+    .chat-msg {
+      display: flex;
+      gap: 10px;
+      max-width: 85%;
+      animation: msgFadeIn 0.3s ease;
+    }
+    @keyframes msgFadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .chat-msg.bot { align-self: flex-start; }
+    .chat-msg.user { align-self: flex-end; flex-direction: row-reverse; }
+    .chat-msg-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .chat-msg.bot .chat-msg-avatar {
+      background: linear-gradient(135deg, var(--accent, #e2b04a), var(--accent-dark, #c49a3a));
+      color: #fff;
+    }
+    .chat-msg.user .chat-msg-avatar {
+      background: var(--bg-tertiary, #2a2a4a);
+      color: var(--text-secondary, #a0a0b0);
+    }
+    .chat-msg-bubble {
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.5;
+      word-wrap: break-word;
+    }
+    .chat-msg.bot .chat-msg-bubble {
+      background: var(--bg-tertiary, #2a2a4a);
+      color: var(--text-primary, #fff);
+      border-bottom-left-radius: 4px;
+    }
+    .chat-msg.user .chat-msg-bubble {
+      background: linear-gradient(135deg, var(--accent, #e2b04a), var(--accent-dark, #c49a3a));
+      color: #1a1a2e;
+      border-bottom-right-radius: 4px;
+    }
+    .chat-msg-time {
+      font-size: 11px;
+      color: var(--text-muted, #666);
+      margin-top: 4px;
+      padding: 0 4px;
+    }
+    .chat-msg.user .chat-msg-time { text-align: right; }
+    .chat-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0 20px 12px;
+      flex-shrink: 0;
+    }
+    .chat-suggestion-btn {
+      background: var(--bg-tertiary, #2a2a4a);
+      border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+      color: var(--text-primary, #fff);
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+      white-space: nowrap;
+    }
+    .chat-suggestion-btn:hover {
+      background: var(--accent, #e2b04a);
+      color: #1a1a2e;
+      border-color: var(--accent, #e2b04a);
+    }
+    .chat-input-area {
+      display: flex;
+      gap: 10px;
+      padding: 14px 20px;
+      background: var(--bg-tertiary, #2a2a4a);
+      border-top: 1px solid var(--border-color, rgba(255,255,255,0.1));
+      flex-shrink: 0;
+    }
+    .chat-input {
+      flex: 1;
+      background: var(--bg-secondary, #1a1a2e);
+      border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+      color: var(--text-primary, #fff);
+      padding: 12px 16px;
+      border-radius: 24px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+      min-width: 0;
+    }
+    .chat-input:focus { border-color: var(--accent, #e2b04a); }
+    .chat-input::placeholder { color: var(--text-muted, #666); }
+    .chat-send-btn {
+      width: 46px;
+      height: 46px;
+      min-width: 46px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent, #e2b04a), var(--accent-dark, #c49a3a));
+      border: none;
+      color: #1a1a2e;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .chat-send-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(226, 176, 74, 0.4);
+    }
+    .chat-send-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    .chat-send-btn svg { width: 20px; height: 20px; }
+    .typing-indicator { display: flex; gap: 4px; padding: 4px 0; }
+    .typing-indicator span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-muted, #888);
+      animation: typingBounce 1.4s infinite;
+    }
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-8px); }
+    }
+    .info-trigger {
+      cursor: pointer !important;
+      pointer-events: auto !important;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .info-trigger:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
+    .request-form-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 5px;
+    }
+    .close-form-btn {
+      background: var(--bg-tertiary, #2a2a4a);
+      border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+      color: var(--text-secondary, #a0a0b0);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      font-size: 16px;
+    }
+    .close-form-btn:hover {
+      background: var(--error, #e74c3c);
+      color: #fff;
+      border-color: var(--error, #e74c3c);
+    }
+  </style>
+
+  <!-- DEFINE GLOBAL FUNCTIONS FIRST -->
+  <script>
+    window.chatSessionId = null;
+    window.isBotTyping = false;
+    window.database = null;
+    window.auth = null;
+    window.firebaseInitialized = false;
+
+    window.openLiveChat = function() {
+      var formCard = document.getElementById('contact-form-card');
+      var reqCard = document.getElementById('request-form-card');
+      var chatBox = document.getElementById('live-chat-container');
+      
+      if (formCard) formCard.classList.add('form-hidden');
+      if (reqCard) reqCard.classList.add('form-hidden');
+      if (chatBox) chatBox.classList.add('chat-visible');
+      
+      if (typeof getOrCreateChatSession === 'function') {
+        getOrCreateChatSession(function(sessionId) {
+          if (!sessionId) {
+            addChatMessage("Sorry, I couldn't start a chat session. Please try again or use the contact form.", 'bot', false);
+            return;
+          }
+          
+          window.database.ref('live chat/' + sessionId + '/messages').orderByChild('timestamp').limitToLast(50).once('value', function(snap) {
+            var chatMessages = document.getElementById('chat-messages');
+            if (chatMessages) chatMessages.innerHTML = '';
+            
+            var data = snap.val();
+            
+            if (data) {
+              var keys = Object.keys(data);
+              var msgs = keys.map(function(k) { return data[k]; });
+              
+              for (var i = 0; i < msgs.length; i++) {
+                addChatMessage(msgs[i].text, msgs[i].sender, false);
+              }
+              
+              var lastMsg = msgs[msgs.length - 1];
+              if (!lastMsg || Date.now() - lastMsg.timestamp > 3600000) {
+                addChatMessage("Hey there! 👋 Welcome to XStream Support! I'm here to help you with any questions about movies, your account, or general inquiries. What can I help you with today?", 'bot', false);
+                showChatSuggestions('initial');
+              }
+            } else {
+              addChatMessage("Hey there! 👋 Welcome to XStream Support! I'm here to help you with any questions about movies, your account, or general inquiries. What can I help you with today?", 'bot', false);
+              showChatSuggestions('initial');
+            }
+          }, function(err) {
+            console.error('Error loading messages:', err);
+            addChatMessage("Hey there! 👋 Welcome to XStream Support! I'm here to help you with any questions about movies, your account, or general inquiries. What can I help you with today?", 'bot', false);
+            showChatSuggestions('initial');
+          });
+        });
+      }
+    };
+
+    window.closeLiveChat = function() {
+      var formCard = document.getElementById('contact-form-card');
+      var chatBox = document.getElementById('live-chat-container');
+      
+      if (formCard) formCard.classList.remove('form-hidden');
+      if (chatBox) chatBox.classList.remove('chat-visible');
+    };
+
+    window.openRequestForm = function() {
+      var formCard = document.getElementById('contact-form-card');
+      var chatBox = document.getElementById('live-chat-container');
+      var reqCard = document.getElementById('request-form-card');
+      
+      if (formCard) formCard.classList.add('form-hidden');
+      if (chatBox) chatBox.classList.remove('chat-visible');
+      if (reqCard) reqCard.classList.remove('form-hidden');
+    };
+
+    window.closeRequestForm = function() {
+      var formCard = document.getElementById('contact-form-card');
+      var reqCard = document.getElementById('request-form-card');
+      
+      if (formCard) formCard.classList.remove('form-hidden');
+      if (reqCard) reqCard.classList.add('form-hidden');
+    };
+
+    window.sendChatMessage = function() {
+      var chatInput = document.getElementById('chat-input');
+      var chatSendBtn = document.getElementById('chat-send-btn');
+      if (!chatInput) return;
+      
+      var text = chatInput.value.trim();
+      if (!text || window.isBotTyping) return;
+
+      addChatMessage(text, 'user');
+      chatInput.value = '';
+      if (chatSendBtn) chatSendBtn.disabled = true;
+
+      showBotTyping();
+      var delay = 800 + Math.random() * 1200;
+      
+      setTimeout(function() {
+        hideBotTyping();
+        var response = getBotResponse(text);
+        addChatMessage(response, 'bot');
+      }, delay);
+    };
+  </script>
+</head>
+<body data-page="contact">
+
+  <div id="toast-container"></div>
+  <nav id="main-nav" class="navbar"></nav>
+  <div id="mobile-overlay" class="mobile-overlay"></div>
+  <div id="mobile-menu" class="mobile-menu"></div>
+
+  <section class="page-header">
+    <div class="page-header-content">
+      <nav class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Contact Us</span>
+      </nav>
+      <h1 class="page-title">Contact Us</h1>
+      <p class="page-subtitle">Have a question, issue, or feedback? We'd love to hear from you.</p>
+    </div>
+  </section>
+
+  <main class="main-container">
+    <div class="contact-layout">
+
+      <div class="contact-info">
+        <div class="contact-info-card">
+          <div class="contact-info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <h3>Email Us</h3>
+          <p>For general inquiries and support requests</p>
+          <a href="mailto:support@xstream.com" class="contact-info-link">support@xstream.com</a>
+        </div>
+
+        <!-- NEW: Request Content Trigger -->
+        <div class="contact-info-card info-trigger" onclick="openRequestForm()">
+          <div class="contact-info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          </div>
+          <h3>Request Content</h3>
+          <p>Can't find what you're looking for?</p>
+          <span class="contact-info-link" style="color: var(--accent);">Request Movie/Series →</span>
+        </div>
+
+        <div class="contact-info-card info-trigger" id="live-chat-trigger" onclick="openLiveChat()">
+          <div class="contact-info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <h3>Live Chat</h3>
+          <p>Chat with our support bot instantly</p>
+          <span class="contact-info-link" style="color: var(--accent);">Start Chat →</span>
+        </div>
+
+        <div class="contact-info-card">
+          <div class="contact-info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <h3>Help Center</h3>
+          <p>Browse FAQs and self-service articles</p>
+          <a href="helpcenter.html" class="contact-info-link">Visit Help Center</a>
+        </div>
+
+        <div class="contact-info-card">
+          <div class="contact-info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+          </div>
+          <h3>Social Media</h3>
+          <p>Follow us for updates and announcements</p>
+          <div class="contact-socials">
+            <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+            <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+            <a href="#" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form-wrapper">
+        
+        <!-- DEFAULT: Contact Form -->
+        <div class="contact-form-card" id="contact-form-card">
+          <h2 class="contact-form-title">Send Us a Message</h2>
+          <p class="contact-form-subtitle">Fill out the form below and we'll get back to you as soon as possible.</p>
+
+          <form id="contact-form" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="contact-name">Full Name <span class="required">*</span></label>
+                <input type="text" id="contact-name" class="input" placeholder="John Doe" required>
+                <span class="form-error" id="contact-name-error"></span>
+              </div>
+              <div class="form-group">
+                <label for="contact-email">Email Address <span class="required">*</span></label>
+                <input type="email" id="contact-email" class="input" placeholder="john@example.com" required>
+                <span class="form-error" id="contact-email-error"></span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="contact-subject">Subject <span class="required">*</span></label>
+              <select id="contact-subject" class="input" required>
+                <option value="">Select a subject...</option>
+                <option value="general">General Inquiry</option>
+                <option value="account">Account Issue</option>
+                <option value="playback">Playback Issue</option>
+                <option value="report">Report Content</option>
+                <option value="deletion">Account Deletion</option>
+                <option value="feedback">Feedback & Suggestions</option>
+                <option value="business">Business / Partnership</option>
+                <option value="other">Other</option>
+              </select>
+              <span class="form-error" id="contact-subject-error"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="contact-video-link">Related Video Link <span class="optional">(optional)</span></label>
+              <input type="url" id="contact-video-link" class="input" placeholder="https://yoursite.com/video.html?id=...">
+              <span class="form-error" id="contact-video-link-error"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="contact-message">Message <span class="required">*</span></label>
+              <textarea id="contact-message" class="input textarea" rows="6" placeholder="Describe your issue or question in detail..." required></textarea>
+              <div class="char-count"><span id="contact-message-count">0</span> / 1000</div>
+              <span class="form-error" id="contact-message-error"></span>
+            </div>
+
+            <button type="submit" id="contact-submit" class="btn-accent btn-full">
+              <span class="btn-text">Send Message</span>
+              <div class="btn-spinner"></div>
+            </button>
+          </form>
+        </div>
+
+        <!-- NEW: Movie/Series Request Form -->
+        <div class="contact-form-card form-hidden" id="request-form-card">
+          <div class="request-form-header">
+            <div>
+              <h2 class="contact-form-title" style="margin-bottom: 4px;">Request a Movie or Series</h2>
+              <p class="contact-form-subtitle">Can't find your favorite title? Let us know and we'll try to add it!</p>
+            </div>
+            <button class="close-form-btn" onclick="closeRequestForm()" title="Back to contact form">✕</button>
+          </div>
+
+          <form id="request-form" novalidate style="margin-top: 20px;">
+            <div class="form-group">
+              <label for="req-title">Title <span class="required">*</span></label>
+              <input type="text" id="req-title" class="input" placeholder="e.g., Inception, Breaking Bad" required>
+              <span class="form-error" id="req-title-error"></span>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="req-type">Type <span class="required">*</span></label>
+                <select id="req-type" class="input" required>
+                  <option value="">Select type...</option>
+                  <option value="movie">Movie</option>
+                  <option value="series">TV Series</option>
+                  <option value="anime">Anime</option>
+                  <option value="documentary">Documentary</option>
+                </select>
+                <span class="form-error" id="req-type-error"></span>
+              </div>
+              <div class="form-group">
+                <label for="req-year">Release Year <span class="optional">(optional)</span></label>
+                <input type="number" id="req-year" class="input" placeholder="e.g., 2023" min="1900" max="2099">
+                <span class="form-error" id="req-year-error"></span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="req-link">IMDb / TMDB Link <span class="optional">(optional)</span></label>
+              <input type="url" id="req-link" class="input" placeholder="https://www.imdb.com/title/tt1375666/">
+              <span class="form-error" id="req-link-error"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="req-notes">Additional Notes <span class="optional">(optional)</span></label>
+              <textarea id="req-notes" class="input textarea" rows="3" placeholder="Any specific details (e.g., specific season, director, why you want it added)..."></textarea>
+            </div>
+
+            <button type="submit" id="req-submit" class="btn-accent btn-full">
+              <span class="btn-text">Submit Request</span>
+              <div class="btn-spinner"></div>
+            </button>
+          </form>
+        </div>
+
+        <!-- Live Chat Container -->
+        <div id="live-chat-container">
+          <div class="chat-header">
+            <div class="chat-header-avatar">🤖</div>
+            <div class="chat-header-info">
+              <h4>XStream Support Bot</h4>
+              <span>● Online</span>
+            </div>
+            <button class="chat-back-btn" onclick="closeLiveChat()" title="Back to form">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </button>
+          </div>
+          <div class="chat-messages" id="chat-messages"></div>
+          <div class="chat-suggestions" id="chat-suggestions"></div>
+          <div class="chat-input-area">
+            <input type="text" class="chat-input" id="chat-input" placeholder="Type your message..." maxlength="500">
+            <button class="chat-send-btn" id="chat-send-btn" onclick="sendChatMessage()" title="Send message">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer id="main-footer" class="footer"></footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+  <script src="config.js"></script>
+  <script src="js/app.js"></script>
+  
+  <script>
+    /* ============================================
+       FIREBASE INITIALIZATION FROM CONFIG.JS
+       ============================================ */
+    
+    function initializeFirebaseFromConfig() {
+      try {
+        if (typeof firebaseConfig !== 'undefined' && firebaseConfig) {
+          if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+            console.log('Firebase initialized from config.js');
+          }
+          window.database = firebase.database();
+          window.auth = firebase.auth();
+          window.firebaseInitialized = true;
+          
+          window.auth.onAuthStateChanged(function(user) {
+            console.log('Auth state changed:', user ? user.uid : 'not logged in');
+          });
+          
+          return true;
+        } else {
+          console.error('Firebase config not found in config.js');
+          return false;
+        }
+      } catch(e) {
+        console.error('Firebase init error:', e);
+        return false;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeFirebaseFromConfig();
+    });
+
+    /* Bot Responses */
+    var botResponses = {
+      movies: "🎬 We have a huge collection of movies and shows! You can browse by genre, search for specific titles, or check out our trending section. Is there a particular movie or genre you're looking for?",
+      account: "🔐 For account issues like password reset, email change, or profile updates, visit your Account Settings. Having trouble logging in? Try 'Forgot Password' on the login page. Need help with something specific?",
+      playback: "🎥 Having playback issues? Try these quick fixes:\n\n• Refresh the page\n• Check your internet connection\n• Try a different browser\n• Disable ad-blockers\n• Clear browser cache\n\nStill having issues? Use the contact form with the video link!",
+      subscription: "💰 We offer various subscription plans! View all plans on our Subscription page. We also offer a free trial for new users. Want to know more about our plans?",
+      help: "🆘 I can help you with:\n\n• 📺 Movie & show recommendations\n• 🔐 Account & login issues\n• 🎥 Playback troubleshooting\n• 💳 Subscription & billing\n• 📱 App & device support\n• 📝 Content requests\n\nJust ask away!",
+      contact: "📧 To reach our human support team:\n\n• Use the contact form on this page\n• Email us at support@xstream.com\n• We typically respond within 24 hours",
+      download: "📱 Downloading is available on our mobile apps! Look for the download icon next to any title. Available for premium subscribers.",
+      devices: "💻 XStream works on:\n\n• 🖥️ Desktop browsers (Chrome, Firefox, Safari, Edge)\n• 📱 iOS & Android apps\n• 📺 Smart TVs (Samsung, LG, etc.)\n• 🎮 Gaming consoles\n• 🍎 Apple TV & Fire Stick",
+      default: "I'm not quite sure I understand. Could you rephrase that or choose one of the suggested questions below?"
+    };
+
+    var suggestionSets = {
+      initial: ["🎬 How do I find movies?", "🔐 Account issues", "🎥 Playback problems", "💰 Subscription info", "🆘 What can you help with?", "📧 Contact human support"],
+      movies: ["What genres are available?", "How to search for a movie?", "Are there new releases?", "Can I request a movie?"],
+      account: ["How to reset password?", "Change my email", "Delete my account", "Update profile info"],
+      playback: ["Video won't play", "Buffering issues", "No sound", "Subtitle problems"]
+    };
+
+    /* Chat Helper Functions */
+    function getOrCreateChatSession(callback) {
+      if (!window.database) { 
+        if (initializeFirebaseFromConfig()) {} 
+        else { callback(null); return; }
+      }
+      
+      var userId = (window.auth && window.auth.currentUser) ? window.auth.currentUser.uid : 'guest';
+      var savedSession = localStorage.getItem('xstream_chat_session');
+      
+      if (savedSession) {
+        window.database.ref('live chat/' + savedSession).once('value').then(function(snap) {
+          if (snap.exists()) {
+            window.chatSessionId = savedSession;
+            callback(savedSession);
+          } else {
+            createChatSession(userId, callback);
+          }
+        }).catch(function() {
+          createChatSession(userId, callback);
+        });
+      } else {
+        createChatSession(userId, callback);
+      }
+    }
+
+    function createChatSession(userId, callback) {
+      var sessionData = {
+        userId: userId,
+        userName: (window.auth && window.auth.currentUser) ? (window.auth.currentUser.displayName || 'User') : 'Guest',
+        userEmail: (window.auth && window.auth.currentUser) ? (window.auth.currentUser.email || '') : '',
+        createdAt: Date.now(),
+        lastActivity: Date.now(),
+        status: 'active'
+      };
+
+      window.database.ref('live chat').push(sessionData).then(function(ref) {
+        window.chatSessionId = ref.key;
+        localStorage.setItem('xstream_chat_session', ref.key);
+        callback(ref.key);
+      }).catch(function(err) {
+        console.error('Session error:', err);
+        callback(null);
+      });
+    }
+
+    function addChatMessage(text, sender, saveToDb) {
+      if (typeof saveToDb === 'undefined') saveToDb = true;
+      var chatMessages = document.getElementById('chat-messages');
+      if (!chatMessages) return;
+      
+      var msgDiv = document.createElement('div');
+      msgDiv.className = 'chat-msg ' + sender;
+      var now = new Date();
+      var timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      var avatarContent = sender === 'bot' ? '🤖' : '👤';
+      msgDiv.innerHTML = '<div class="chat-msg-avatar">' + avatarContent + '</div><div><div class="chat-msg-bubble">' + text.replace(/\n/g, '<br>') + '</div><div class="chat-msg-time">' + timeStr + '</div></div>';
+      
+      chatMessages.appendChild(msgDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      if (saveToDb && window.chatSessionId && window.database) {
+        window.database.ref('live chat/' + window.chatSessionId + '/messages').push({
+          text: text, sender: sender, timestamp: Date.now()
+        });
+        window.database.ref('live chat/' + window.chatSessionId).update({ lastActivity: Date.now() });
+      }
+    }
+
+    function showBotTyping() {
+      window.isBotTyping = true;
+      var chatMessages = document.getElementById('chat-messages');
+      if (!chatMessages) return;
+      var typingDiv = document.createElement('div');
+      typingDiv.className = 'chat-msg bot';
+      typingDiv.id = 'typing-indicator';
+      typingDiv.innerHTML = '<div class="chat-msg-avatar">🤖</div><div><div class="chat-msg-bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div></div>';
+      chatMessages.appendChild(typingDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function hideBotTyping() {
+      window.isBotTyping = false;
+      var typing = document.getElementById('typing-indicator');
+      if (typing) typing.remove();
+    }
+
+    function showChatSuggestions(setName) {
+      var suggestionsEl = document.getElementById('chat-suggestions');
+      if (!suggestionsEl) return;
+      var suggestions = suggestionSets[setName] || suggestionSets.initial;
+      suggestionsEl.innerHTML = '';
+      for (var i = 0; i < suggestions.length; i++) {
+        (function(text) {
+          var btn = document.createElement('button');
+          btn.className = 'chat-suggestion-btn';
+          btn.textContent = text;
+          btn.onclick = function() {
+            document.getElementById('chat-input').value = text;
+            sendChatMessage();
+          };
+          suggestionsEl.appendChild(btn);
+        })(suggestions[i]);
+      }
+    }
+
+    function getBotResponse(userMsg) {
+      var msg = userMsg.toLowerCase();
+      if (msg.includes('movie') || msg.includes('film') || msg.includes('show') || msg.includes('watch') || msg.includes('genre') || msg.includes('recommend')) { showChatSuggestions('movies'); return botResponses.movies; }
+      if (msg.includes('account') || msg.includes('login') || msg.includes('password') || msg.includes('sign in') || msg.includes('profile') || msg.includes('email change') || msg.includes('delete account')) { showChatSuggestions('account'); return botResponses.account; }
+      if (msg.includes('play') || msg.includes('buffer') || msg.includes('load') || msg.includes('video') || msg.includes('stream') || msg.includes('sound') || msg.includes('subtitle') || msg.includes('audio')) { showChatSuggestions('playback'); return botResponses.playback; }
+      if (msg.includes('subscri') || msg.includes('plan') || msg.includes('price') || msg.includes('payment') || msg.includes('billing') || msg.includes('premium') || msg.includes('trial')) { showChatSuggestions('initial'); return botResponses.subscription; }
+      if (msg.includes('help') || msg.includes('assist') || msg.includes('support') || msg.includes('what can')) { showChatSuggestions('initial'); return botResponses.help; }
+      if (msg.includes('contact') || msg.includes('human') || msg.includes('agent') || msg.includes('real person') || msg.includes('talk to')) { showChatSuggestions('initial'); return botResponses.contact; }
+      if (msg.includes('download') || msg.includes('offline')) { showChatSuggestions('initial'); return botResponses.download; }
+      if (msg.includes('device') || msg.includes('tv') || msg.includes('phone') || msg.includes('app') || msg.includes('browser') || msg.includes('console')) { showChatSuggestions('initial'); return botResponses.devices; }
+      if (msg.includes('request') || msg.includes('add movie') || msg.includes('missing')) {
+        showChatSuggestions('initial');
+        return "📝 Want to request a specific movie or series? Click on the 'Request Content' card on the left side of this page, and fill out the quick form! We do our best to add highly requested titles.";
+      }
+      if (msg.includes('hello') || msg.includes('hi') || msg.includes('hey') || msg.includes('good morning') || msg.includes('good evening')) { showChatSuggestions('initial'); return "Hello! 😊 How can I assist you today?"; }
+      if (msg.includes('thank') || msg.includes('thanks')) { document.getElementById('chat-suggestions').innerHTML = ''; return "You're welcome! 😊 Anything else I can help with?"; }
+      if (msg.includes('bye') || msg.includes('goodbye')) { document.getElementById('chat-suggestions').innerHTML = ''; return "Goodbye! 👋 Have a great day!"; }
+      showChatSuggestions('initial'); return botResponses.default;
+    }
+
+    /* ============================================
+       CONTACT FORM LOGIC
+       ============================================ */
+    (function() {
+      var form = document.getElementById('contact-form');
+      if (!form) return;
+      var messageInput = document.getElementById('contact-message');
+      var messageCount = document.getElementById('contact-message-count');
+
+      if (messageInput && messageCount) {
+        messageInput.addEventListener('input', function() {
+          var len = messageInput.value.length;
+          messageCount.textContent = len;
+          messageCount.style.color = len > 1000 ? 'var(--error, #e74c3c)' : '';
+        });
+      }
+
+      var inputs = form.querySelectorAll('.input');
+      for (var i = 0; i < inputs.length; i++) {
+        (function(input) {
+          input.addEventListener('input', function() { document.getElementById(input.id + '-error').textContent = ''; input.style.borderColor = ''; });
+        })(inputs[i]);
+      }
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var errors = form.querySelectorAll('.form-error'); for (var j = 0; j < errors.length; j++) errors[j].textContent = '';
+        var allInputs = form.querySelectorAll('.input'); for (var j = 0; j < allInputs.length; j++) allInputs[j].style.borderColor = '';
+
+        var name = document.getElementById('contact-name').value.trim();
+        var email = document.getElementById('contact-email').value.trim();
+        var subject = document.getElementById('contact-subject').value;
+        var videoLink = document.getElementById('contact-video-link').value.trim();
+        var message = document.getElementById('contact-message').value.trim();
+        var valid = true;
+
+        if (!name || name.length < 2) { document.getElementById('contact-name-error').textContent = 'Please enter your full name'; document.getElementById('contact-name').style.borderColor = 'var(--error, #e74c3c)'; valid = false; }
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { document.getElementById('contact-email-error').textContent = 'Please enter a valid email address'; document.getElementById('contact-email').style.borderColor = 'var(--error, #e74c3c)'; valid = false; }
+        if (!subject) { document.getElementById('contact-subject-error').textContent = 'Please select a subject'; document.getElementById('contact-subject').style.borderColor = 'var(--error, #e74c3c)'; valid = false; }
+        if (videoLink && !/^https?:\/\/.+/i.test(videoLink)) { document.getElementById('contact-video-link-error').textContent = 'Please enter a valid URL'; document.getElementById('contact-video-link').style.borderColor = 'var(--error, #e74c3c)'; valid = false; }
+        if (!message || message.length < 10) { document.getElementById('contact-message-error').textContent = 'Please write at least 10 characters'; document.getElementById('contact-message').style.borderColor = 'var(--error, #e74c3c)'; valid = false; }
+        if (message.length > 1000) { document.getElementById('contact-message-error').textContent = 'Message must be under 1000 characters'; document.getElementById('contact-message').style.borderColor = 'var(--error, #e74c3c)'; valid = false; }
+        
+        if (!valid) return;
+        if (!window.database && !initializeFirebaseFromConfig()) { alert('Firebase not initialized. Please check your config.js file.'); return; }
+
+        var btn = document.getElementById('contact-submit'); var btnText = btn.querySelector('.btn-text'); var btnSpinner = btn.querySelector('.btn-spinner');
+        btn.disabled = true; if (btnText) btnText.style.opacity = '0'; if (btnSpinner) btnSpinner.style.display = 'block';
+
+        var userId = 'guest', userName = name, userEmail = email;
+        if (window.auth && window.auth.currentUser) { userId = window.auth.currentUser.uid; if (window.auth.currentUser.displayName) userName = window.auth.currentUser.displayName; if (window.auth.currentUser.email) userEmail = window.auth.currentUser.email; }
+
+        window.database.ref('contact us').push({
+          fullName: userName, emailAddress: userEmail, subject: subject, relatedVideoLink: videoLink || null, message: message, userId: userId, status: 'open', createdAt: Date.now(), updatedAt: Date.now()
+        }).then(function() {
+          if (btnText) btnText.textContent = 'Message Sent!'; if (btnSpinner) btnSpinner.style.display = 'none'; if (btnText) btnText.style.opacity = '1'; btn.style.background = '#27ae60';
+          if (typeof showToast === 'function') showToast('Message sent successfully!', 'success');
+          setTimeout(function() { form.reset(); if (messageCount) messageCount.textContent = '0'; if (btnText) btnText.textContent = 'Send Message'; btn.style.background = ''; btn.disabled = false; }, 3000);
+        }).catch(function(err) {
+          console.error('Contact form error:', err); if (btnSpinner) btnSpinner.style.display = 'none'; if (btnText) btnText.style.opacity = '1'; btn.disabled = false;
+          if (typeof showToast === 'function') showToast('Failed to send message.', 'error'); else alert('Failed to send message.');
+        });
+      });
+    })();
+
+    /* ============================================
+       NEW: MOVIE/SERIES REQUEST FORM LOGIC
+       ============================================ */
+    (function() {
+      var form = document.getElementById('request-form');
+      if (!form) return;
+
+      var inputs = form.querySelectorAll('.input');
+      for (var i = 0; i < inputs.length; i++) {
+        (function(input) {
+          input.addEventListener('input', function() { document.getElementById(input.id + '-error').textContent = ''; input.style.borderColor = ''; });
+        })(inputs[i]);
+      }
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Clear errors
+        var errors = form.querySelectorAll('.form-error'); for (var j = 0; j < errors.length; j++) errors[j].textContent = '';
+        var allInputs = form.querySelectorAll('.input'); for (var j = 0; j < allInputs.length; j++) allInputs[j].style.borderColor = '';
+
+        var title = document.getElementById('req-title').value.trim();
+        var type = document.getElementById('req-type').value;
+        var year = document.getElementById('req-year').value.trim();
+        var link = document.getElementById('req-link').value.trim();
+        var notes = document.getElementById('req-notes').value.trim();
+        var valid = true;
+
+        if (!title || title.length < 2) { document.getElementById('req-title-error').textContent = 'Please enter the title'; document.getElementById('req-title').style.borderColor = 'var(--error, #e74c3c)'; valid = false; }
+        if (!type) { document.getElementById('req-type-error').textContent = 'Please select a type'; document.getElementById('req-type').style.borderColor = 'var(--error, #e74c3c)'; valid = false; }
+        if (year && (isNaN(year) || year < 1900 || year > 2099)) { document.getElementById('req-year-error').textContent = 'Enter a valid year'; document.getElementById('req-year').style.borderColor = 'var(--error, #e74c3c)'; valid = false; }
+        if (link && !/^https?:\/\/.+/i.test(link)) { document.getElementById('req-link-error').textContent = 'Please enter a valid URL'; document.getElementById('req-link').style.borderColor = 'var(--error, #e74c3c)'; valid = false; }
+        
+        if (!valid) return;
+        if (!window.database && !initializeFirebaseFromConfig()) { alert('Firebase not initialized.'); return; }
+
+        var btn = document.getElementById('req-submit'); var btnText = btn.querySelector('.btn-text'); var btnSpinner = btn.querySelector('.btn-spinner');
+        btn.disabled = true; if (btnText) btnText.style.opacity = '0'; if (btnSpinner) btnSpinner.style.display = 'block';
+
+        var userId = 'guest', userName = 'Guest', userEmail = '';
+        if (window.auth && window.auth.currentUser) { 
+          userId = window.auth.currentUser.uid; 
+          if (window.auth.currentUser.displayName) userName = window.auth.currentUser.displayName; 
+          if (window.auth.currentUser.email) userEmail = window.auth.currentUser.email; 
+        }
+
+        // Save to "movie requests" node
+        window.database.ref('movie requests').push({
+          title: title,
+          type: type,
+          year: year ? parseInt(year) : null,
+          link: link || null,
+          notes: notes || null,
+          requestedBy: userId,
+          requestedByName: userName,
+          requestedByEmail: userEmail,
+          status: 'pending',
+          votes: 1, // Initial vote by the requester
+          createdAt: Date.now()
+        }).then(function() {
+          if (btnText) btnText.textContent = 'Request Submitted!'; if (btnSpinner) btnSpinner.style.display = 'none'; if (btnText) btnText.style.opacity = '1'; btn.style.background = '#27ae60';
+          if (typeof showToast === 'function') showToast('Request submitted successfully! We will look into it.', 'success');
+          
+          setTimeout(function() { 
+            form.reset(); 
+            if (btnText) btnText.textContent = 'Submit Request'; 
+            btn.style.background = ''; 
+            btn.disabled = false; 
+            // Optionally switch back to contact form
+            // window.closeRequestForm();
+          }, 3000);
+        }).catch(function(err) {
+          console.error('Request form error:', err); 
+          if (btnSpinner) btnSpinner.style.display = 'none'; 
+          if (btnText) btnText.style.opacity = '1'; 
+          btn.disabled = false;
+          if (typeof showToast === 'function') showToast('Failed to submit request.', 'error'); else alert('Failed to submit request.');
+        });
+      });
+    })();
+
+    /* Chat input events */
+    (function() {
+      var chatInput = document.getElementById('chat-input');
+      var chatSendBtn = document.getElementById('chat-send-btn');
+      if (chatInput) {
+        chatInput.addEventListener('keydown', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); } });
+        chatInput.addEventListener('input', function() { if (chatSendBtn) chatSendBtn.disabled = !chatInput.value.trim(); });
+      }
+    })();
+  </script>
+</body>
+</html>

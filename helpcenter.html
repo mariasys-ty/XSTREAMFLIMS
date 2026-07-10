@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+ 
+  <meta name="description" content="XSTREAM MOVUES Help Center — Find answers to common questions about uploading, accounts, playback, and more.">
+  <title>Help Center — Xstream</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="helpcenter">
+
+  <div id="toast-container"></div>
+  <nav id="main-nav" class="navbar"></nav>
+  <div id="mobile-overlay" class="mobile-overlay"></div>
+  <div id="mobile-menu" class="mobile-menu"></div>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="page-header-content">
+      <nav class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Help Center</span>
+      </nav>
+      <h1 class="page-title">Help Center</h1>
+      <p class="page-subtitle">Find answers to frequently asked questions or browse by topic below.</p>
+    </div>
+  </section>
+
+  <!-- Help Search -->
+  <section class="help-search-section">
+    <div class="help-search-box">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="help-search-input" placeholder="Search for help articles..." autocomplete="off">
+      <button id="help-search-btn" class="btn-accent">Search</button>
+    </div>
+  </section>
+
+  <!-- Help Categories Grid -->
+  <main class="main-container">
+    <div class="help-categories-grid">
+      <a href="#faq-account" class="help-category-card">
+        <div class="help-cat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <h3>Account & Profile</h3>
+        <p>Sign up, log in, password reset, profile settings</p>
+        <span class="help-cat-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span>
+      </a>
+      
+      </a>
+      <a href="#faq-playback" class="help-category-card">
+        <div class="help-cat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5,3 19,12 5,21"/></svg>
+        </div>
+        <h3>Playback Issues</h3>
+        <p>Video won't play, buffering, quality, subtitles</p>
+        <span class="help-cat-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span>
+      </a>
+      <a href="#faq-browse" class="help-category-card">
+        <div class="help-cat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </div>
+        <h3>Browsing & Search</h3>
+        <p>Finding videos, filters, categories, sorting</p>
+        <span class="help-cat-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span>
+      </a>
+      <a href="#faq-interact" class="help-category-card">
+        <div class="help-cat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/></svg>
+        </div>
+        <h3>Likes & Interactions</h3>
+        <p>Liking, disliking, view counts, sharing</p>
+        <span class="help-cat-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span>
+      </a>
+      <a href="#faq-safety" class="help-category-card">
+        <div class="help-cat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Safety & Privacy</h3>
+        <p>Reporting content, account security, data privacy</p>
+        <span class="help-cat-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span>
+      </a>
+    </div>
+
+    <!-- FAQ Sections -->
+    <div class="faq-container">
+
+      <!-- Account & Profile -->
+      <section class="faq-section" id="faq-account">
+        <h2 class="faq-section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Account & Profile
+        </h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>How do I create an account?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>Click the "Sign Up" button in the top navigation bar. Fill in your full name, email address, choose a secure password (at least 8 characters with a mix of letters, numbers, and symbols), select your country, enter your age, and agree to the Terms of Service. You'll be automatically signed in after registration.</p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>I forgot my password. How do I reset it?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>Go to the Sign In page and click "Forgot Password?" below the login form. Enter the email address associated with your account and click "Send Reset Link". Check your inbox (and spam folder) for an email from us. Click the link in that email to set a new password. The link expires after a short time for security.</p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>How do I change my display name or profile details?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>Currently, your display name is set during registration. To view your profile, click your avatar in the top-right corner and select "My Profile". Future updates will allow editing profile details directly from this page.</p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>How do I delete my account?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>Account deletion is handled on request. Please use the <a href="contact.html">Contact page</a> and select "Account Deletion" as the subject. Provide the email associated with your account. Your videos will also be removed. This action is irreversible.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+  
+
+      <!-- Playback Issues -->
+      <section class="faq-section" id="faq-playback">
+        <h2 class="faq-section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5,3 19,12 5,21"/></svg>
+          Playback Issues
+        </h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>The video won't play. What should I try?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>Try these steps in order: (1) Refresh the page, (2) Clear your browser cache and cookies, (3) Try a different browser (Chrome, Firefox, Edge), (4) Disable any ad blockers or browser extensions that may interfere, (5) Check your internet connection. If none of these work, the video file itself may be corrupted or in an unsupported format.</p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>The video keeps buffering. How can I fix this?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>Buffering is usually caused by a slow internet connection. Try: (1) Pausing the video for 10-15 seconds to let it buffer ahead, (2) Closing other tabs or downloads using bandwidth, (3) Moving closer to your Wi-Fi router or switching to a wired connection, (4) Reducing video quality in the player settings if available.</p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>There is no sound in the video.</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>First, make sure your device volume is turned up and not muted. Check if the video player's volume icon is unmuted. Try playing a different video to see if the issue is with that specific video. If only one video has no sound, the original file may have been uploaded without an audio track.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Browsing & Search -->
+      <section class="faq-section" id="faq-browse">
+        <h2 class="faq-section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          Browsing & Search
+        </h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>How do I search for specific videos?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>Use the search box in the hero section on the home page, or the search widget in the sidebar. Type your query and press Enter. The search looks through video titles, descriptions, and country tags. You can also click on trending tags in the sidebar to find related content.</p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>How do I filter videos by category?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>There are three ways: (1) Click a category chip on the home page hero section, (2) Use the "All Categories" dropdown in the filter bar above the video grid, (3) Click a category in the sidebar "Categories" widget. All three methods update the video grid instantly.</p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>What does "Trending" mean?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>Trending videos are calculated using a weighted score that combines total views, total likes, and how recently the video was uploaded. This means a new video with many quick views can trend higher than an older video with slightly more total views.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Likes & Interactions -->
+      <section class="faq-section" id="faq-interact">
+        <h2 class="faq-section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/></svg>
+          Likes & Interactions
+        </h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>How do likes and dislikes work?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>On any video page, click the thumbs up icon to like or thumbs down to dislike. You can only have one active reaction — liking a video automatically removes any previous dislike, and vice versa. Your preference is saved locally in your browser so it persists across page reloads on the same device.</p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>Can I undo a like or dislike?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>Yes. Simply click the same button again to remove your reaction. The like/dislike count will decrease by one and the button will return to its neutral state.</p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>How are view counts calculated?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>A view is counted the first time a video is loaded on your browser. Refreshing the same video does not increase the count — this is tracked locally to prevent artificial inflation. The count may take a few seconds to update on the page after your first visit.</p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>How do I share a video?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>Click the Share button on the video page. This copies the video's URL to your clipboard. You can then paste it anywhere — messages, social media, emails. The recipient will be taken directly to that video.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Safety & Privacy -->
+      <section class="faq-section" id="faq-safety">
+        <h2 class="faq-section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Safety & Privacy
+        </h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>How do I report an inappropriate video?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>Go to the <a href="contact.html">Contact page</a> and select "Report Content" as the subject. Provide the video title or URL and a description of the issue. Our team reviews all reports and takes appropriate action, which may include removing the content or suspending the uploader's account.</p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>Is my personal data secure?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>We take privacy seriously. Your email and profile information are stored securely in Firebase and are never shared with third parties. Authentication is handled by Firebase Auth with industry-standard encryption. We only collect the minimum information needed to provide the service.</p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>What is the minimum age requirement?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>You must be at least 13 years old to create an account and use the platform. This is enforced during registration — if you enter an age below 13, the form will not submit. Users found to be under 13 may have their accounts terminated.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Still Need Help -->
+    <div class="help-cta">
+      <h2>Still need help?</h2>
+      <p>Couldn't find what you were looking for? Our team is here to assist you.</p>
+      <a href="contact.html" class="btn-accent">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Contact Support
+      </a>
+    </div>
+  </main>
+
+  <footer id="main-footer" class="footer"></footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="config.js"></script>
+<script src="js/app.js"></script>
+  <script>
+    /* FAQ Accordion — self-contained, no app.js changes needed */
+    (function() {
+      var faqItems = document.querySelectorAll('.faq-item');
+      for (var i = 0; i < faqItems.length; i++) {
+        (function(item) {
+          var btn = item.querySelector('.faq-question');
+          if (!btn) return;
+          btn.addEventListener('click', function() {
+            var isOpen = item.classList.contains('open');
+            /* Close all others in the same section */
+            var parent = item.parentElement;
+            var siblings = parent.querySelectorAll('.faq-item');
+            for (var j = 0; j < siblings.length; j++) {
+              siblings[j].classList.remove('open');
+            }
+            /* Toggle current */
+            if (!isOpen) item.classList.add('open');
+          });
+        })(faqItems[i]);
+      }
+
+      /* Help search — filters FAQ items by text */
+      var helpSearchInput = document.getElementById('help-search-input');
+      var helpSearchBtn = document.getElementById('help-search-btn');
+      var doHelpSearch = function() {
+        var q = (helpSearchInput ? helpSearchInput.value : '').trim().toLowerCase();
+        var allItems = document.querySelectorAll('.faq-item');
+        var allSections = document.querySelectorAll('.faq-section');
+        if (!q) {
+          /* Show everything */
+          for (var i = 0; i < allItems.length; i++) {
+            allItems[i].style.display = '';
+            allItems[i].classList.remove('open');
+          }
+          for (var s = 0; s < allSections.length; s++) {
+            allSections[s].style.display = '';
+          }
+          return;
+        }
+        for (var i = 0; i < allItems.length; i++) {
+          var text = allItems[i].textContent.toLowerCase();
+          var match = text.indexOf(q) >= 0;
+          allItems[i].style.display = match ? '' : 'none';
+          if (match) allItems[i].classList.add('open');
+        }
+        /* Hide sections with no visible items */
+        for (var s = 0; s < allSections.length; s++) {
+          var visibleItems = allSections[s].querySelectorAll('.faq-item:not([style*="display: none"])');
+          allSections[s].style.display = visibleItems.length > 0 ? '' : 'none';
+        }
+      };
+      if (helpSearchBtn) helpSearchBtn.addEventListener('click', doHelpSearch);
+      if (helpSearchInput) helpSearchInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doHelpSearch(); });
+    })();
+  </script>
+</body>
+</html>

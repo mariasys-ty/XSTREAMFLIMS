@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="XStream — Browse all translated movies by your favorite VJs.">
+  <meta name="keywords" content="translated movies, vj movies, streaming, vj junior, vj jingo, premium content">
+  <meta name="author" content="XStream">
+  <meta property="og:title" content="XStream — Translated Movies">
+  <meta property="og:description" content="Explore the complete collection of translated movies sorted by VJ.">
+  <title>Translated Movies — XStream</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/desktop2.css">
+</head>
+<body data-page="translated">
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- Navigation -->
+  <nav id="main-nav" class="navbar"></nav>
+
+  <!-- Mobile Menu Overlay -->
+  <div id="mobile-overlay" class="mobile-overlay"></div>
+  <div id="mobile-menu" class="mobile-menu"></div>
+
+  <!-- Page Header — Cinematic Hero -->
+  <section class="page-header translated-hero">
+    <img id="translated-hero-image" src="https://ik.imagekit.io/s95tumxuk/IMG_3536.png" alt="">
+    <div class="page-header-content hero-content">
+      <div class="hero-left">
+        <nav class="breadcrumb" id="breadcrumb">
+          <a href="index.html">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <span class="breadcrumb-current" id="breadcrumb-current">Translated Movies by vj's</span>
+        </nav>
+        <h1 class="page-title" id="viewall-page-title">Translated Movies</h1>
+        <p class="page-subtitle" id="viewall-page-subtitle">Browse the complete collection of translated movies from top VJs worldwide.</p>
+        <div class="hero-stats" style="display:none;">
+          <div class="hero-stat-card">
+            <span class="hero-stat-icon">🌐</span>
+            <div class="hero-stat-info">
+              <span class="hero-stat-number">25,640+</span>
+              <span class="hero-stat-label">Translated Movies</span>
+            </div>
+          </div>
+          <div class="hero-stat-card">
+            <span class="hero-stat-icon">👥</span>
+            <div class="hero-stat-info">
+              <span class="hero-stat-number">35+</span>
+              <span class="hero-stat-label">VJs Worldwide</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main-container">
+    <div class="content-grid">
+
+      <!-- Main Column -->
+      <div class="content-main">
+
+        <!-- Filter Bar -->
+        <div class="filter-bar" id="filter-bar">
+          <div class="filter-left">
+            <h2 class="section-title" id="viewall-title">
+              <svg class="title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+              All Translations 
+            </h2>
+          </div>
+          <div class="filter-right">
+            <div class="toolbar-search" style="display:none;">
+              <svg class="toolbar-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input type="text" id="toolbar-search-input" placeholder="Search by movie title or VJ..." autocomplete="off">
+            </div>
+            <select id="category-filter" class="filter-select">
+              <option value="all">All VJs</option>
+              <option value="vj-junior">VJ Junior</option>
+              <option value="vj-jingo">VJ Jingo</option>
+              <option value="vj-emmy">VJ Emmy</option>
+              <option value="vj-ice-p">VJ Ice P</option>
+              <option value="vj-mark">VJ Mark</option>
+              <option value="vj-kevo">VJ Kevo</option>
+              <option value="vj-hd">VJ HD</option>
+              <option value="vj-silver">VJ Silver</option>
+              <option value="vj-heavy-q">VJ Heavy Q</option>
+              <option value="vj-lance">VJ Lance</option>
+              <option value="vj-jimmy">VJ Jimmy</option>
+              <option value="vj-grade">VJ Grade</option>
+              <option value="vj-ivo">VJ Ivo</option>
+              <option value="vj-muba">VJ Muba</option>
+              <option value="vj-ulio">VJ Ulio</option>
+              <option value="vj-kimuli">VJ Kimuli</option>
+              <option value="vj-banks">VJ Banks</option>
+              <option value="vj-tom">VJ Tom</option>
+              <option value="vj-dan-de">VJ Dan De</option>
+              <option value="vj-eddy">VJ Eddy</option>
+              <option value="vj-ks">VJ KS</option>
+              <option value="vj-henrico">VJ Henrico</option>
+              <option value="vj-cabs">VJ Cabs</option>
+              <option value="vj-fredy">VJ Fredy</option>
+              <option value="vj-baros">VJ Baros</option>
+              <option value="vj-jovan">VJ Jovan</option>
+              <option value="vj-kevin">VJ Kevin</option>
+              <option value="vj-nelly">VJ Nelly</option>
+              <option value="vj-kriss">VJ Kriss</option>
+              <option value="vj-soul">VJ Soul</option>
+            </select>
+            <select id="sort-filter" class="filter-select">
+              <option value="recent">Newest Translations</option>
+              <option value="trending">Trending</option>
+              <option value="views">Most Viewed</option>
+              <option value="likes">Most Liked</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Active Search/Filters Display -->
+        <div class="active-filters" id="active-filters" style="display:none;">
+          <span class="active-filters-label">Showing results for:</span>
+          <div class="active-filter-chips" id="active-filter-chips"></div>
+          <button class="clear-filters-btn" id="clear-all-filters">Clear All</button>
+        </div>
+
+        <!-- Videos Grid -->
+        <section class="section">
+          <div class="video-grid" id="videos-grid">
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-thumb"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+          </div>
+          <div id="load-more-container" class="load-more-container" style="display:none;">
+            <button id="load-more-btn" class="btn-outline">Load More Videos</button>
+            <div id="load-more-spinner" class="spinner" style="display:none;"></div>
+          </div>
+          <div id="no-videos" class="empty-state" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="64" height="64"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="m10 8 5 4-5 4V8z"/></svg>
+            <h3>No translations found</h3>
+            <p>Try adjusting your filters or search terms.</p>
+            <button onclick="clearTranslatedFilters()" class="btn-accent" style="margin-top:16px; display:inline-flex; align-items:center; gap:8px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              Reset Filters
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <!-- Search Widget -->
+        <div class="widget">
+          <h3 class="widget-title">Search Translations</h3>
+          <div class="search-box">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="text" id="sidebar-search" placeholder="Search by VJ or title..." autocomplete="off">
+          </div>
+        </div>
+
+        <!-- Categories (VJs) Widget -->
+        <div class="widget">
+          <h3 class="widget-title">Browse by VJ</h3>
+          <div class="vj-grid" id="sidebar-categories">
+            <a href="#" data-category="all" class="vj-btn active"> All VJs</a>
+            <a href="#" data-category="vj-junior" class="vj-btn"> VJ Junior</a>
+            <a href="#" data-category="vj-jingo" class="vj-btn">VJ Jingo</a>
+            <a href="#" data-category="vj-emmy" class="vj-btn">VJ Emmy</a>
+            <a href="#" data-category="vj-ice-p" class="vj-btn">VJ Ice P</a>
+            <a href="#" data-category="vj-mark" class="vj-btn"> VJ Mark</a>
+            <a href="#" data-category="vj-kevo" class="vj-btn">VJ Kevo</a>
+            <a href="#" data-category="vj-hd" class="vj-btn">VJ HD</a>
+            <a href="#" data-category="vj-silver" class="vj-btn"> VJ Silver</a>
+            <a href="#" data-category="vj-heavy-q" class="vj-btn"> VJ Heavy Q</a>
+            <a href="#" data-category="vj-lance" class="vj-btn">VJ Lance</a>
+            <a href="#" data-category="vj-jimmy" class="vj-btn"> VJ Jimmy</a>
+            <a href="#" data-category="vj-grade" class="vj-btn">VJ Grade</a>
+            <a href="#" data-category="vj-ivo" class="vj-btn"> VJ Ivo</a>
+            <a href="#" data-category="vj-muba" class="vj-btn"> VJ Muba</a>
+            <a href="#" data-category="vj-ulio" class="vj-btn">VJ Ulio</a>
+            <a href="#" data-category="vj-kimuli" class="vj-btn"> VJ Kimuli</a>
+            <a href="#" data-category="vj-banks" class="vj-btn">VJ Banks</a>
+            <a href="#" data-category="vj-tom" class="vj-btn">VJ Tom</a>
+            <a href="#" data-category="vj-dan-de" class="vj-btn"> VJ Dan De</a>
+            <a href="#" data-category="vj-eddy" class="vj-btn"> VJ Eddy</a>
+            <a href="#" data-category="vj-ks" class="vj-btn">VJ KS</a>
+            <a href="#" data-category="vj-henrico" class="vj-btn"> VJ Henrico</a>
+            <a href="#" data-category="vj-cabs" class="vj-btn"> VJ Cabs</a>
+            <a href="#" data-category="vj-fredy" class="vj-btn"> VJ Fredy</a>
+            <a href="#" data-category="vj-baros" class="vj-btn"> VJ Baros</a>
+            <a href="#" data-category="vj-jovan" class="vj-btn"> VJ Jovan</a>
+            <a href="#" data-category="vj-kevin" class="vj-btn"> VJ Kevin</a>
+            <a href="#" data-category="vj-nelly" class="vj-btn"> VJ Nelly</a>
+            <a href="#" data-category="vj-kriss" class="vj-btn"> VJ Kriss</a>
+            <a href="#" data-category="vj-soul" class="vj-btn"> VJ Soul</a>
+          </div>
+        </div>
+
+      </aside>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer id="main-footer" class="footer"></footer>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="js/optimizer.js"></script>
+  <script src="js/threat.js"></script>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+  <!-- app.js MUST load before translated.js -->
+  <script src="config.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/translated.js"></script>
+
+  <!-- Desktop: Sync toolbar search with sidebar search -->
+  <script>
+  (function() {
+    var tb = document.getElementById('toolbar-search-input');
+    var sb = document.getElementById('sidebar-search');
+    if (tb && sb) {
+      var lock = false;
+      tb.addEventListener('input', function() {
+        if (!lock) { lock = true; sb.value = this.value; sb.dispatchEvent(new Event('input', { bubbles: true })); lock = false; }
+      });
+      sb.addEventListener('input', function() {
+        if (!lock) { lock = true; tb.value = this.value; lock = false; }
+      });
+    }
+  })();
+  </script>
+</body>
+</html>
